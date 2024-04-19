@@ -109,7 +109,6 @@ dist
 .bak
 .idea
 
-.env
 yarn.lock
 package-lock.json
 
