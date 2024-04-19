@@ -109,4 +109,6 @@ dist
 .bak
 .idea
 
+yarn.lock
+package-lock.json
 
