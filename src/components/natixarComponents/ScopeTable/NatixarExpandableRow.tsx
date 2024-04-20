@@ -1,32 +1,15 @@
 import { CSSObject } from "@mui/material/styles"
-import LinearProgress, {
-  linearProgressClasses,
-} from "@mui/material/LinearProgress"
-import {
-  useTheme,
-  Divider,
-  styled,
-  Stack,
-  Box,
-  Collapse,
-  Link,
-} from "@mui/material"
+import { Stack, Box, Collapse } from "@mui/material"
 import { StackProps, SxProps } from "@mui/system"
 import React from "react"
-import { useNavigate } from "react-router-dom"
 
 import {
   scopeColor,
   scopeTextColor,
 } from "../CO2DonutSection/EmissionByScopeDonutSection"
-import { RightArrowIcon } from "assets/icons/RightArrowIcon"
 import { UpArrowIcon } from "assets/icons/UpArrowIcon"
 import { DownArrowIcon } from "assets/icons/DownArrowIcon"
-import {
-  extractNameOfEra,
-  formatEmissionAmount,
-  getScopesOfProtocol,
-} from "data/domain/transformers/EmissionTransformers"
+import { formatEmissionAmount } from "data/domain/transformers/EmissionTransformers"
 import { ScopeTable, ScopeTableItemProps } from "./index"
 
 export interface NewScopeTableProps extends StackProps {
@@ -52,34 +35,6 @@ export const NatixarExpandableRow = ({
   const rows = data
 
   const total = formatEmissionAmount(data[0].value[1])
-
-  const theme = useTheme()
-
-  const styleSubRow = (): CSSObject => ({
-    font: "normal 400 20px/21px Questrial",
-    color: "#053759",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "12px 24px",
-    cursor: "pointer",
-  })
-
-  const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
-    height: 8,
-    borderRadius: 5,
-    width: 150,
-    marginRight: 32,
-    [`&.${linearProgressClasses.colorPrimary}`]: {
-      backgroundColor: theme.palette.grey[200],
-    },
-    [`& .${linearProgressClasses.bar}`]: {
-      borderRadius: 5,
-      backgroundColor:
-        theme.palette.mode === "light"
-          ? theme.palette.primary.lighter
-          : theme.palette.primary.lighter,
-    },
-  }))
 
   const styleHeaderRow = (): CSSObject => ({
     padding: "12px 24px",
@@ -107,13 +62,6 @@ export const NatixarExpandableRow = ({
   } as SxProps
 
   const stackProps: any = { ...props } as any
-
-  const navigate = useNavigate()
-
-  const handleOnCategoryClick = (event: any, scopeID: number) => {
-    event.stopPropagation()
-    navigate(`/contributor/category-analysis/${scopeID}`)
-  }
 
   return (
     <React.Fragment>

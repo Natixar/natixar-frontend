@@ -1,5 +1,4 @@
 import { Box, Stack, useMediaQuery, useTheme } from "@mui/material"
-import { NavLink, useParams } from "react-router-dom"
 
 import { filter, sum, summarize, tidy } from "@tidyjs/tidy"
 import { ApexOptions } from "apexcharts"
@@ -27,31 +26,34 @@ import ReactApexChart from "react-apexcharts"
 import { useSelector } from "react-redux"
 import { getColorByCategory } from "utils/CategoryColors"
 import useAsyncWork from "hooks/useAsyncWork"
-// import { NatixarExpandableRow } from "../ScopeTable/NatixarExpandableRow"
 import {
   ChartContainerStyles,
   ContainerStyles,
-  LegendsContainerStyles,
 } from "./styled"
-import LabelBox from "./LabelBox"
 import { IdTreeNode } from "data/domain/types/structures/StructuralTypes"
 import { getCategoryDescription } from "data/domain/transformers/DataDetectors"
 import {
-  ScopeTable,
   ScopeTableItemProps,
 } from "../../../components/natixarComponents/ScopeTable"
 import { NatixarExpandableRow } from "../ScopeTable/NatixarExpandableRow"
 
 export const scopeColor = [
-  "#8ECBF5", // 1
-  "#053759", // 2
-  "#1DB447", // 3
+  "#8ECBF5", // 1 bleu clair
+  "#053759", // 2 bleu très foncé
+  "#1DB447", // 3 vert
+  "#0e96f1", // 4  bleu
+  "#126e2c", // 5 vert foncé
+  "#7bea9b", // 6 vrt clair
 ]
 export const scopeTextColor = [
   "#053759", // 1
   "#fff", // 2
   "#fff", // 3
+  "#fff", // 4
+  "#fff", // 5
+  "#053759", // 6
 ]
+
 interface ByCategoryItem {
   categoryId: number
   count: number
@@ -141,6 +143,7 @@ const EmissionByCategorySection = ({
     [protocol, alignedIndexes.categories],
   )
 
+  // Make scope data with extra data for display
   const [customScopes, setCustomScopes] = useState(
     scopes.map((item, index) => ({
       ...item,
@@ -149,6 +152,8 @@ const EmissionByCategorySection = ({
       bgcolor: scopeColor[index],
     })),
   )
+
+  // Set the row clicked active or not (open or not)
   const handleRowClicked = (scopeId: number) => {
     setCustomScopes(
       customScopes.map((item) => ({
@@ -191,7 +196,6 @@ const EmissionByCategorySection = ({
   const labels = pieChartData.map((a) => a.categoryName)
   const colors = pieChartData.map((a) => a.categoryColor)
 
-  // console.log("scopes", series)
   const totalEmission = series.reduce((a, b) => a + b, 0)
 
   const theme = useTheme()
@@ -222,7 +226,6 @@ const EmissionByCategorySection = ({
         protocolNode?.children ?? [],
       )
     }, [scopeId, currentProtocol, categories, categoryHierarchy])
-    const scope = categories[scopeId]
 
     // Walk over subcategories.
     const subcategories: IdTreeNode[] = scopeNode?.children ?? []
