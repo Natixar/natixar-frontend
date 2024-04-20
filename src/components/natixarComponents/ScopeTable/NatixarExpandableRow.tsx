@@ -34,7 +34,10 @@ export const NatixarExpandableRow = ({
 }: NewScopeTableProps) => {
   const rows = data
 
-  const total = formatEmissionAmount(data[0].value[1])
+  let total = ""
+  if (data && data[0]) {
+    total = formatEmissionAmount(data[0].value[1])
+  }
 
   const styleHeaderRow = (): CSSObject => ({
     padding: "12px 24px",
