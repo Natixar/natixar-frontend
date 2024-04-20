@@ -52,15 +52,6 @@ enum View {
 const NatixarChart = () => {
   const [view, setView] = useState("scopes-emissions")
 
-  const handleClickView = () => {
-    if (view == View.SCOPES) {
-      setView(View.EMISSIONS)
-    } else {
-      setView(View.SCOPES)
-    }
-  }
-
-  // const [totalUnit, setTotalUnit] = useState("Month")
   const [comparisonUnit, setComparisonUnit] = useState("Month")
 
   const alignedIndexes = useSelector(indexSelector)
@@ -91,16 +82,6 @@ const NatixarChart = () => {
         </MainCard>
       </Grid>
 
-      {/* <Grid item xs={12} md={12} lg={12}>
-        <TotalEmissionByTimeSection
-          emissionPoints={allPoints}
-          unitLayout={detailUnitLayout}
-          startDate={minDate}
-          endDate={maxDate}
-          timeDetailUnit={totalUnit}
-          setTimeDetailUnit={setTotalUnit}
-        />
-      </Grid> */}
       <Grid item xs={12} md={12} lg={12}>
         <EmissionByTimeCompareToPreviousSection
           emissionPoints={allPoints}
@@ -111,12 +92,6 @@ const NatixarChart = () => {
           setTimeDetailUnit={setComparisonUnit}
         />
       </Grid>
-      {/* <Typography
-        sx={{ marginTop: 6, textDecoration: "underline", cursor: "pointer" }}
-        onClick={handleClickView}
-      >
-        {view == View.SCOPES ? "See Total Emissions" : "See Scopes"}
-      </Typography> */}
     </Grid>
   )
 }
