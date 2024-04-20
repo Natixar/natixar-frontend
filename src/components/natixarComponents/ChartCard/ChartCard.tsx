@@ -113,57 +113,28 @@ export const ChartCard = ({
       >
         <Grid item xs={12}>
           {showCompareButton && setCompare && (
-            // <Button
-            //   sx={{
-            // color: compare ? "#1890FF" : "#000000",
-            // borderColor: compare ? "#1890FF" : "#D9D9D9",
-            //   }}
-            //   variant="outlined"
-            //   color="secondary"
-            //   onClick={() => setCompare(!compare)}
-            // >
-            //   Compare to previous year
-            // </Button>
             <Stack direction="row" flexWrap="wrap" gap={2} mb={4}>
-              <Button
-                variant={isMonth ? "contained" : "outlined"}
-                color={isMonth ? "success" : "primary"}
-                sx={{
-                  marginRight: 2,
-                  fontSize: "18px",
-                  minWidth: 110,
-                  color: isMonth ? "#fff" : "",
-                }}
-                onClick={() => setSelectedSlot("Month")}
-              >
-                Month
-              </Button>
-              <Button
-                variant={isQuarter ? "contained" : "outlined"}
-                color={isQuarter ? "success" : "primary"}
-                sx={{
-                  marginRight: 2,
-                  fontSize: "18px",
-                  minWidth: 110,
-                  color: isQuarter ? "#fff" : "",
-                }}
-                onClick={() => setSelectedSlot("Quarter")}
-              >
-                Quarter
-              </Button>
-              <Button
-                variant={isYear ? "contained" : "outlined"}
-                color={isYear ? "success" : "primary"}
-                sx={{
-                  marginRight: 2,
-                  fontSize: "18px",
-                  minWidth: 110,
-                  color: isYear ? "#fff" : "",
-                }}
-                onClick={() => setSelectedSlot("Year")}
-              >
-                Year
-              </Button>
+              {slots &&
+                slots.map((timeDetailSlot: string) => (
+                  <Button
+                    variant={
+                      selectedSlot === timeDetailSlot ? "contained" : "outlined"
+                    }
+                    color={
+                      selectedSlot === timeDetailSlot ? "success" : "primary"
+                    }
+                    sx={{
+                      marginRight: 2,
+                      fontSize: "18px",
+                      minWidth: 110,
+                      color: selectedSlot === timeDetailSlot ? "#fff" : "",
+                    }}
+                    onClick={() => setSelectedSlot(timeDetailSlot)}
+                  >
+                    {timeDetailSlot}
+                  </Button>
+                ))}
+
               <Box flexGrow={1}></Box>
               <Button
                 variant="contained"
