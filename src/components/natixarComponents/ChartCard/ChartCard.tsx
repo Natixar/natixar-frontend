@@ -114,6 +114,7 @@ export const ChartCard = ({
               {slots &&
                 slots.map((timeDetailSlot: string) => (
                   <Button
+                    key={timeDetailSlot}
                     variant={
                       selectedSlot === timeDetailSlot ? "contained" : "outlined"
                     }
