@@ -110,7 +110,7 @@ export const ChartCard = ({
       >
         <Grid item xs={12}>
           {showCompareButton && setCompare && (
-            <Stack direction="row" flexWrap="wrap" gap={2} mb={4}>
+            <Stack direction="row" flexWrap="wrap" gap={1} mb={4}>
               {slots &&
                 slots.map((timeDetailSlot: string) => (
                   <Button
@@ -122,7 +122,7 @@ export const ChartCard = ({
                       selectedSlot === timeDetailSlot ? "success" : "primary"
                     }
                     sx={{
-                      marginRight: 2,
+                      marginRight: 0,
                       fontSize: "18px",
                       minWidth: 110,
                       color: selectedSlot === timeDetailSlot ? "#fff" : "",
