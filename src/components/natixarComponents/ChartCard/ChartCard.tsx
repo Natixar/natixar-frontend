@@ -91,9 +91,6 @@ export const ChartCard = ({
   ) => {
     if (newAlignment) setSelectedSlot(newAlignment)
   }
-  const isMonth = selectedSlot === "Month"
-  const isYear = selectedSlot === "Year"
-  const isQuarter = selectedSlot === "Quarter"
 
   return (
     <Stack
@@ -129,7 +126,7 @@ export const ChartCard = ({
                       minWidth: 110,
                       color: selectedSlot === timeDetailSlot ? "#fff" : "",
                     }}
-                    onClick={() => setSelectedSlot(timeDetailSlot)}
+                    onClick={(event) => handleChange(event, timeDetailSlot)}
                   >
                     {timeDetailSlot}
                   </Button>
@@ -155,10 +152,8 @@ export const ChartCard = ({
               </Button>
             </Stack>
           )}
-          {/* <Typography variant="h5">{title}</Typography> */}
 
           <NatixarSectionTitle>Total Emissions</NatixarSectionTitle>
-          {/* <NatixarSectionTitle>{title}</NatixarSectionTitle> */}
         </Grid>
         <MainCard
           sx={{ width: "100%", boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.25)" }}
@@ -187,45 +182,6 @@ export const ChartCard = ({
               {title}
             </Typography>
           </Stack>
-          {/* <Grid item xs={12} justifySelf="end" textAlign="end">
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="end"
-              gap="7px"
-            >
-              <Typography whiteSpace="nowrap">Detail by</Typography>
-              {slots && (
-                <ToggleButtonGroup
-                  exclusive
-                  size="small"
-                  value={selectedSlot}
-                  onChange={handleChange}
-                >
-                  {slots.map((timeDetailSlot) => (
-                    <ToggleButton
-                      key={timeDetailSlot}
-                      value={timeDetailSlot}
-                      sx={{
-                        px: 2,
-                        py: 0.5,
-                        color: "#000000",
-                        textTransform: "capitalize",
-                        whiteSpace: "nowrap",
-                        "&.MuiToggleButton-root.Mui-selected": {
-                          color: "#FFFFFF",
-                          backgroundColor: "#1890FF",
-                          borderColor: "#1890FF",
-                        },
-                      }}
-                    >
-                      {timeDetailSlot}
-                    </ToggleButton>
-                  ))}
-                </ToggleButtonGroup>
-              )}
-            </Stack>
-          </Grid> */}
           {children}
         </MainCard>
       </Grid>

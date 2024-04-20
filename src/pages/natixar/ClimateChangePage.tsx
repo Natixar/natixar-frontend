@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, Typography } from "@mui/material"
+import { Grid } from "@mui/material"
 
 // project import
 import MainCard from "components/MainCard"
@@ -10,7 +10,6 @@ import {
   selectTimeWindow,
 } from "data/store/api/EmissionSelectors"
 import { useSelector } from "react-redux"
-import TotalEmissionByTimeSection from "sections/charts/emissions/TotalEmissionByTimeSection"
 import EmissionByTimeCompareToPreviousSection from "sections/charts/emissions/EmissionByTimeCompareToPreviousSection"
 import {
   getTimeOffsetForSlot,
@@ -45,13 +44,7 @@ const detailUnitLayout: Record<
   Year: [timestampToYear, (a, b) => a.localeCompare(b)],
 }
 
-enum View {
-  SCOPES = "scopes-emissions",
-  EMISSIONS = "total-emissions",
-}
 const NatixarChart = () => {
-  const [view, setView] = useState("scopes-emissions")
-
   const [comparisonUnit, setComparisonUnit] = useState("Month")
 
   const alignedIndexes = useSelector(indexSelector)
