@@ -101,8 +101,6 @@ export const ChartCard = ({
         width: "100%",
         padding: "24px",
         backgroundColor: "white",
-        border: "1px solid",
-        borderColor: "#e6ebf1",
         borderRadius: "4px",
       }}
     >

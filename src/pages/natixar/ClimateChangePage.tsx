@@ -81,17 +81,16 @@ const NatixarChart = () => {
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={3}>
-      {view == View.SCOPES && (
-        <Grid item xs={12} md={12} xl={12}>
-          <MainCard>
-            <NatixarSectionTitle>Scope Emissions</NatixarSectionTitle>
-            <EmissionByCategorySection
-              allDataPoints={allPoints}
-              alignedIndexes={alignedIndexes}
-            />
-          </MainCard>
-        </Grid>
-      )}
+      <Grid item xs={12} md={12} xl={12}>
+        <MainCard>
+          <NatixarSectionTitle>Scope Emissions</NatixarSectionTitle>
+          <EmissionByCategorySection
+            allDataPoints={allPoints}
+            alignedIndexes={alignedIndexes}
+          />
+        </MainCard>
+      </Grid>
+
       {/* <Grid item xs={12} md={12} lg={12}>
         <TotalEmissionByTimeSection
           emissionPoints={allPoints}
@@ -102,25 +101,22 @@ const NatixarChart = () => {
           setTimeDetailUnit={setTotalUnit}
         />
       </Grid> */}
-      {view == View.EMISSIONS && (
-        <Grid item xs={12} md={12} lg={12}>
-          <EmissionByTimeCompareToPreviousSection
-            emissionPoints={allPoints}
-            unitLayout={detailUnitLayout}
-            startDate={minDate}
-            endDate={maxDate}
-            timeDetailUnit={comparisonUnit}
-            setTimeDetailUnit={setComparisonUnit}
-          />
-        </Grid>
-      )}
-
-      <Typography
+      <Grid item xs={12} md={12} lg={12}>
+        <EmissionByTimeCompareToPreviousSection
+          emissionPoints={allPoints}
+          unitLayout={detailUnitLayout}
+          startDate={minDate}
+          endDate={maxDate}
+          timeDetailUnit={comparisonUnit}
+          setTimeDetailUnit={setComparisonUnit}
+        />
+      </Grid>
+      {/* <Typography
         sx={{ marginTop: 6, textDecoration: "underline", cursor: "pointer" }}
         onClick={handleClickView}
       >
         {view == View.SCOPES ? "See Total Emissions" : "See Scopes"}
-      </Typography>
+      </Typography> */}
     </Grid>
   )
 }
