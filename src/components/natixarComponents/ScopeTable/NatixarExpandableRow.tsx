@@ -34,7 +34,6 @@ export interface NewScopeTableProps extends StackProps {
   active: boolean
   onRowClicked: Function
   index: number
-  data: ScopeTableItemProps[]
   bgcolor: string
   textColor: string
   title: string
