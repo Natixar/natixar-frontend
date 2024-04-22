@@ -192,9 +192,14 @@ const EmissionByCategorySection = ({
   return (
     <Stack
       sx={{ ...ContainerStyles, gap: "30px", flexWrap: "wrap" }}
-      direction={downMD ? "column" : "row"}
+      flexDirection={downMD ? "column" : "row"}
     >
       <Box sx={ChartContainerStyles}>
+        <Stack alignItems={"center"} justifyContent={"center"} minWidth={100}>
+          {series.reduce((acc, item) => acc + item, 0) == 0
+            ? "No data found"
+            : ""}
+        </Stack>
         <ReactApexChart
           options={{
             ...optionsOverrides,
