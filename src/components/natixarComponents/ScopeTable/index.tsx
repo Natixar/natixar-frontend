@@ -44,8 +44,8 @@ export const ScopeTable = ({ data, ...sxProps }: ScopeTableProps & SxProps) => {
       ...AWESOME_COLUMN,
       field: "category",
       headerName: "Category name",
-      flex: 1,
-      width: 100,
+      flex: 2,
+
       sortComparator: (categoryA, categoryB) =>
         categoryA.name.localeCompare(categoryB.name),
       renderCell: (params) => (
@@ -53,6 +53,7 @@ export const ScopeTable = ({ data, ...sxProps }: ScopeTableProps & SxProps) => {
           sx={{
             width: "100%",
             display: "flex",
+            flexGrow: 1,
             alignItems: "center",
             columnGap: "5px",
             textDecoration: "underline",
@@ -83,17 +84,17 @@ export const ScopeTable = ({ data, ...sxProps }: ScopeTableProps & SxProps) => {
       field: "value",
       headerName: "Value",
       flex: 1,
-      minWidth: 300,
       sortComparator: (emissionDataA, emissionDataB) =>
         emissionDataA[0] - emissionDataB[0],
       renderCell: (params) => (
-        <Stack alignItems="start" sx={{ width: "100%", mt: -2 }}>
+        <Stack alignItems="start" sx={{ width: "100px", mt: -2 }}>
           <Typography mr={2}>
             {formatEmissionAmount(params.row.value[0])}
           </Typography>
           <LinearProgress
             sx={{
-              width: "100%",
+              minWidth: "150px",
+              flexShrink: "1",
               height: 8,
               borderRadius: 5,
               marginRight: 32,
