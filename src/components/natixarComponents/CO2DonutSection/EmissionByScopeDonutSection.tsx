@@ -191,7 +191,7 @@ const EmissionByCategorySection = ({
 
   return (
     <Stack
-      sx={{ ...ContainerStyles, gap: "50px" }}
+      sx={{ ...ContainerStyles, gap: "30px", flexWrap: "wrap" }}
       direction={downMD ? "column" : "row"}
     >
       <Box sx={ChartContainerStyles}>
@@ -208,11 +208,9 @@ const EmissionByCategorySection = ({
         />
       </Box>
 
-      <Stack minWidth={430} width="100%" flexDirection="column" gap={2}>
+      <Stack minWidth={500} flex="2 1 0" flexDirection="column" gap={2}>
         {pieChartData.map((scope, index) => (
           <>
-            {/* <div key={index}>{JSON.stringify(scope)}</div> */}
-            {/* <div key={"1" + index}>{JSON.stringify(scope.categoryId)}</div> */}
             <NatixarExpandableRow
               scopeId={scope.categoryId}
               index={index}

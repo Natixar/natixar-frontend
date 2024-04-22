@@ -175,8 +175,6 @@ export const NatixarExpandableRow = ({
           onRowClicked(index)
         }}
       >
-        <Box component="span" mr={1}></Box>
-        {/* <Collapse sx={{ flexGrow: 1, marginRight: 2 }} in={active}> */}
         <Stack
           flexDirection="row"
           mx={3}
@@ -188,7 +186,6 @@ export const NatixarExpandableRow = ({
           <Box>{title}</Box>
           <Box>Total : {total}</Box>
         </Stack>
-        {/* </Collapse> */}
         {active && <UpArrowIcon customColor={textColor} />}
         {!active && <DownArrowIcon customColor={textColor} />}
       </Stack>
