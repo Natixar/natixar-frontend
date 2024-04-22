@@ -55,11 +55,8 @@ export const NatixarExpandableRow = ({
   const allPoints = useSelector(selectVisiblePoints)
   const currentProtocol = useSelector(selectRequestEmissionProtocol)
   const getRows = (idStr: number | string) => {
-    console.log("entered in get rows", idStr)
     const scopeId = parseInt(String(idStr)!, 10)
 
-    console.log("categories", categories)
-    console.log("categoryHierarchy", categoryHierarchy)
     const scopeNode = useMemo(() => {
       // We first select subtree of hierarchy for the protocol we use.
       // Just so we don't have to look over whole category tree
@@ -70,7 +67,6 @@ export const NatixarExpandableRow = ({
         categoryHierarchy,
       )
 
-      console.log("ni scopeNode : protocolNode ", protocolNode)
       return findNodeBy(
         (category) => scopeId === category.id,
         categories,
@@ -103,13 +99,11 @@ export const NatixarExpandableRow = ({
         dataPointsByCategory[matchingCategoryId].push(emissionPoint)
       }
     })
-    console.log("all points after foreach", allPoints)
     // Then just sum them and send to the scope table
     const totalEmissionCategory = Object.values(dataPointsByCategory)
       .flatMap((points) => points)
       .reduce((acc, cur) => acc + cur.totalEmissionAmount, 0)
 
-    console.log("totalEmissionCategory", totalEmissionCategory)
     const rows: ScopeTableItemProps[] = Object.entries(dataPointsByCategory)
       .map((entry) => [
         parseInt(entry[0], 10),
@@ -128,7 +122,6 @@ export const NatixarExpandableRow = ({
             number,
           ],
         }
-        console.log("in map rows", toreturn)
         return toreturn
       })
     return rows
@@ -137,7 +130,7 @@ export const NatixarExpandableRow = ({
   const data = getRows(scopeId)
   const rows = data
 
-  let total = ""
+  let total = "0"
   if (data && data[0]) {
     total = formatEmissionAmount(data[0].value[1])
   }
