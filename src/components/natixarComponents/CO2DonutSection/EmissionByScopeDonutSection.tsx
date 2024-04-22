@@ -26,15 +26,10 @@ import ReactApexChart from "react-apexcharts"
 import { useSelector } from "react-redux"
 import { getColorByCategory } from "utils/CategoryColors"
 import useAsyncWork from "hooks/useAsyncWork"
-import {
-  ChartContainerStyles,
-  ContainerStyles,
-} from "./styled"
+import { ChartContainerStyles, ContainerStyles } from "./styled"
 import { IdTreeNode } from "data/domain/types/structures/StructuralTypes"
 import { getCategoryDescription } from "data/domain/transformers/DataDetectors"
-import {
-  ScopeTableItemProps,
-} from "../../../components/natixarComponents/ScopeTable"
+import { ScopeTableItemProps } from "../../../components/natixarComponents/ScopeTable"
 import { NatixarExpandableRow } from "../ScopeTable/NatixarExpandableRow"
 
 export const scopeColor = [
@@ -59,6 +54,7 @@ interface ByCategoryItem {
   count: number
   categoryName: string
   categoryColor: string
+  active: boolean
 }
 
 export interface EmissionByCategorySectionProps {
@@ -143,24 +139,11 @@ const EmissionByCategorySection = ({
     [protocol, alignedIndexes.categories],
   )
 
-  // Make scope data with extra data for display
-  const [customScopes, setCustomScopes] = useState(
-    scopes.map((item, index) => ({
-      ...item,
-      active: false,
-      textColor: scopeTextColor[index],
-      bgcolor: scopeColor[index],
-    })),
-  )
-
   // Set the row clicked active or not (open or not)
+  const [selectedScopeId, setSelectedScopeId]: [number | null, Function] =
+    useState(null)
   const handleRowClicked = (scopeId: number) => {
-    setCustomScopes(
-      customScopes.map((item) => ({
-        ...item,
-        active: item.id === scopeId && !item.active ? true : false,
-      })),
-    )
+    setSelectedScopeId(selectedScopeId != scopeId ? scopeId : null)
   }
 
   useAsyncWork(
@@ -179,17 +162,22 @@ const EmissionByCategorySection = ({
         )[0].totalEmission
 
         const era = extractNameOfEra(scope.era)
+
+        // Make scope data with extra data for display
         categoryAggregators[era] = {
           categoryId: scope.id,
           count: total,
           categoryName: scope.name,
           categoryColor: getColorByCategory(era),
+          active: (scope.id === selectedScopeId && !scope.active
+            ? true
+            : false) as boolean,
         }
       })
       return Object.values(categoryAggregators)
     },
     setPieChartData,
-    [allDataPoints, alignedIndexes, setPieChartData],
+    [allDataPoints, alignedIndexes, selectedScopeId, setPieChartData],
   )
 
   const series = pieChartData.map((a) => a.count)
@@ -200,81 +188,6 @@ const EmissionByCategorySection = ({
 
   const theme = useTheme()
   const downMD = useMediaQuery(theme.breakpoints.down("md"))
-
-  /** scopes */
-
-  const getRows = (idStr: number | string) => {
-    const scopeId = parseInt(String(idStr)!, 10)
-
-    const { categories, categoryHierarchy } = useSelector(selectAlignedIndexes)
-    const allPoints = useSelector(selectVisiblePoints)
-
-    const currentProtocol = useSelector(selectRequestEmissionProtocol)
-    const scopeNode = useMemo(() => {
-      // We first select subtree of hierarchy for the protocol we use.
-      // Just so we don't have to look over whole category tree
-      const protocolNode = findNodeBy(
-        (category: EmissionCategory) =>
-          category.name.toLowerCase() === currentProtocol.toLowerCase(),
-        categories,
-        categoryHierarchy,
-      )
-
-      return findNodeBy(
-        (category) => scopeId === category.id,
-        categories,
-        protocolNode?.children ?? [],
-      )
-    }, [scopeId, currentProtocol, categories, categoryHierarchy])
-
-    // Walk over subcategories.
-    const subcategories: IdTreeNode[] = scopeNode?.children ?? []
-    const categoryIds = subcategories.map((subcategory) => subcategory.value)
-    const idsToFilterWith: Record<number, number[]> = Object.fromEntries(
-      // Collect all their included ids
-      categoryIds.map((categoryId) => [
-        categoryId,
-        expandId([categoryId], subcategories),
-      ]),
-    )
-
-    // Then just aggregate data points to different subcategories
-    const dataPointsByCategory: Record<number, EmissionDataPoint[]> = {}
-    categoryIds.forEach((categoryId) => {
-      dataPointsByCategory[categoryId] = []
-    })
-
-    allPoints.forEach((emissionPoint: any) => {
-      const matchingCategoryId = categoryIds.find((categoryId) =>
-        idsToFilterWith[categoryId].includes(emissionPoint.categoryId),
-      )
-      if (typeof matchingCategoryId !== "undefined") {
-        dataPointsByCategory[matchingCategoryId].push(emissionPoint)
-      }
-    })
-    // Then just sum them and send to the scope table
-    const totalEmissionCategory = Object.values(dataPointsByCategory)
-      .flatMap((points) => points)
-      .reduce((acc, cur) => acc + cur.totalEmissionAmount, 0)
-
-    const rows: ScopeTableItemProps[] = Object.entries(dataPointsByCategory)
-      .map((entry) => [
-        parseInt(entry[0], 10),
-        entry[1].reduce((acc, cur) => acc + cur.totalEmissionAmount, 0),
-      ])
-      .map((idToEmissionPair) => {
-        const [categoryId, emissionAmountForThisCategory] = idToEmissionPair
-        const categoryData = categories[categoryId]
-        return {
-          id: categoryData.id,
-          category: categoryData,
-          description: getCategoryDescription(categoryId),
-          categoryColor: getColorByCategory(categoryData.era),
-          value: [emissionAmountForThisCategory, totalEmissionCategory],
-        }
-      })
-    return rows
-  }
 
   return (
     <Stack
@@ -296,17 +209,21 @@ const EmissionByCategorySection = ({
       </Box>
 
       <Stack minWidth={430} width="100%" flexDirection="column" gap={2}>
-        {customScopes.map((scope, index) => (
-          <NatixarExpandableRow
-            data={getRows(scope.id)}
-            index={index}
-            title={scope.name}
-            key={scope.id + "-" + index}
-            onRowClicked={() => handleRowClicked(scope.id)}
-            active={scope.active}
-            textColor={scope.textColor}
-            bgcolor={scope.bgcolor}
-          />
+        {pieChartData.map((scope, index) => (
+          <>
+            {/* <div key={index}>{JSON.stringify(scope)}</div> */}
+            {/* <div key={"1" + index}>{JSON.stringify(scope.categoryId)}</div> */}
+            <NatixarExpandableRow
+              scopeId={scope.categoryId}
+              index={index}
+              title={scope.categoryName}
+              key={scope.categoryId + "-" + index}
+              onRowClicked={() => handleRowClicked(scope.categoryId)}
+              active={scope.active}
+              textColor={"#fff"}
+              bgcolor={scope.categoryColor}
+            />
+          </>
         ))}
       </Stack>
     </Stack>

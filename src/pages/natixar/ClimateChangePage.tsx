@@ -11,6 +11,7 @@ import {
 } from "data/store/api/EmissionSelectors"
 import { useSelector } from "react-redux"
 import EmissionByTimeCompareToPreviousSection from "sections/charts/emissions/EmissionByTimeCompareToPreviousSection"
+import TotalEmissionByTimeSection from "sections/charts/emissions/TotalEmissionByTimeSection"
 import {
   getTimeOffsetForSlot,
   sortDays,
@@ -45,6 +46,7 @@ const detailUnitLayout: Record<
 }
 
 const NatixarChart = () => {
+  const [totalUnit, setTotalUnit] = useState("Month")
   const [comparisonUnit, setComparisonUnit] = useState("Month")
 
   const alignedIndexes = useSelector(indexSelector)
@@ -74,7 +76,16 @@ const NatixarChart = () => {
           />
         </MainCard>
       </Grid>
-
+      <Grid item xs={12} md={12} lg={12}>
+        <TotalEmissionByTimeSection
+          emissionPoints={allPoints}
+          unitLayout={detailUnitLayout}
+          startDate={minDate}
+          endDate={maxDate}
+          timeDetailUnit={totalUnit}
+          setTimeDetailUnit={setTotalUnit}
+        />
+      </Grid>
       <Grid item xs={12} md={12} lg={12}>
         <EmissionByTimeCompareToPreviousSection
           emissionPoints={allPoints}
