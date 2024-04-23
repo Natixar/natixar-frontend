@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Grid,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material"
+import { Box, Button, Grid, Stack, Typography } from "@mui/material"
 import { Dispatch, ReactNode, SetStateAction } from "react"
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
@@ -109,31 +101,30 @@ export const ChartCard = ({
         alignItems="center"
       >
         <Grid item xs={12}>
-          {showCompareButton && setCompare && (
-            <Stack direction="row" flexWrap="wrap" gap={1} mb={4}>
-              {slots &&
-                slots.map((timeDetailSlot: string) => (
-                  <Button
-                    key={timeDetailSlot}
-                    variant={
-                      selectedSlot === timeDetailSlot ? "contained" : "outlined"
-                    }
-                    color={
-                      selectedSlot === timeDetailSlot ? "success" : "primary"
-                    }
-                    sx={{
-                      marginRight: 0,
-                      fontSize: "18px",
-                      minWidth: 110,
-                      color: selectedSlot === timeDetailSlot ? "#fff" : "",
-                    }}
-                    onClick={(event) => handleChange(event, timeDetailSlot)}
-                  >
-                    {timeDetailSlot}
-                  </Button>
-                ))}
-
-              <Box flexGrow={1}></Box>
+          <Stack direction="row" flexWrap="wrap" gap={1} mb={4}>
+            {slots &&
+              slots.map((timeDetailSlot: string) => (
+                <Button
+                  key={timeDetailSlot}
+                  variant={
+                    selectedSlot === timeDetailSlot ? "contained" : "outlined"
+                  }
+                  color={
+                    selectedSlot === timeDetailSlot ? "success" : "primary"
+                  }
+                  sx={{
+                    marginRight: 0,
+                    fontSize: "18px",
+                    minWidth: 110,
+                    color: selectedSlot === timeDetailSlot ? "#fff" : "",
+                  }}
+                  onClick={(event) => handleChange(event, timeDetailSlot)}
+                >
+                  {timeDetailSlot}
+                </Button>
+              ))}
+            <Box flexGrow={1}></Box>
+            {showCompareButton && setCompare && (
               <Button
                 variant="contained"
                 color="primary"
@@ -151,8 +142,8 @@ export const ChartCard = ({
                 />
                 Compare to previous year
               </Button>
-            </Stack>
-          )}
+            )}
+          </Stack>
 
           <NatixarSectionTitle>Total Emissions</NatixarSectionTitle>
         </Grid>
