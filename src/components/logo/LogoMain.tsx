@@ -1,5 +1,6 @@
 // material-ui
-import logoIconDark from "../../assets/images/natixar-logo.png"
+// import logoIconDark from "../../assets/images/natixar-logo.png"
+import logoIconWhite from "../../assets/images/white-natixar-logo.png"
 
 /**
  * if you want to use image instead of <svg> uncomment following.
@@ -12,7 +13,7 @@ import logoIconDark from "../../assets/images/natixar-logo.png"
 // ==============================|| LOGO SVG ||============================== //
 
 const LogoMain = () => (
-  <img src={logoIconDark} alt="Natixar" width="100" />
+  <img src={logoIconWhite} alt="Natixar" width="100" />
 
   /**
    * if you want to use image instead of svg uncomment following, and comment out <svg> element.

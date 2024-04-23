@@ -10,12 +10,12 @@ import { ThemeMode } from "types/config"
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: DRAWER_WIDTH,
-  borderRight: `1px solid ${theme.palette.divider}`,
   transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: "hidden",
+  border: 'none',
   boxShadow:
     theme.palette.mode === ThemeMode.DARK ? theme.customShadows.z1 : "none",
 })

@@ -81,7 +81,7 @@ const Protocol = memo(
         >
           <List sx={{ width: 220 }}>
             {allProtocols.map((protocol) => (
-              <ListItem disablePadding>
+              <ListItem key={protocol} disablePadding>
                 <ListItemButton
                   onClick={() => selectProtocolCallback(protocol)}
                 >

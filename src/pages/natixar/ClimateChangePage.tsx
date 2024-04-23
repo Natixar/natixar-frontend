@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, Typography } from "@mui/material"
+import { Grid } from "@mui/material"
 
 // project import
 import MainCard from "components/MainCard"
@@ -10,8 +10,8 @@ import {
   selectTimeWindow,
 } from "data/store/api/EmissionSelectors"
 import { useSelector } from "react-redux"
-import TotalEmissionByTimeSection from "sections/charts/emissions/TotalEmissionByTimeSection"
 import EmissionByTimeCompareToPreviousSection from "sections/charts/emissions/EmissionByTimeCompareToPreviousSection"
+import TotalEmissionByTimeSection from "sections/charts/emissions/TotalEmissionByTimeSection"
 import {
   getTimeOffsetForSlot,
   sortDays,
@@ -27,6 +27,7 @@ import {
 import _ from "lodash"
 import { useState } from "react"
 import EmissionByCategorySection from "../../components/natixarComponents/CO2DonutSection/EmissionByScopeDonutSection"
+import { NatixarSectionTitle } from "components/natixarComponents/ChartCard/NatixarSectionTitle"
 
 // ==============================|| WIDGET - CHARTS ||============================== //
 
@@ -68,9 +69,7 @@ const NatixarChart = () => {
     <Grid container rowSpacing={4.5} columnSpacing={3}>
       <Grid item xs={12} md={12} xl={12}>
         <MainCard>
-          <Typography variant="h5" sx={{ marginBottom: "15px" }}>
-            Scope Emissions
-          </Typography>
+          <NatixarSectionTitle>Scope Emissions</NatixarSectionTitle>
           <EmissionByCategorySection
             allDataPoints={allPoints}
             alignedIndexes={alignedIndexes}
