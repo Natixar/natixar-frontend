@@ -7,29 +7,18 @@ import {
   formatEmissionAmount,
   getScopesOfProtocol,
 } from "data/domain/transformers/EmissionTransformers"
-import {
-  expandId,
-  findNodeBy,
-} from "data/domain/transformers/StructuralTransformers"
+import { expandId } from "data/domain/transformers/StructuralTransformers"
 import {
   AlignedIndexes,
-  EmissionCategory,
   EmissionDataPoint,
 } from "data/domain/types/emissions/EmissionTypes"
-import {
-  selectRequestEmissionProtocol,
-  selectAlignedIndexes,
-  selectVisiblePoints,
-} from "data/store/api/EmissionSelectors"
+import { selectRequestEmissionProtocol } from "data/store/api/EmissionSelectors"
 import { memo, useMemo, useState } from "react"
 import ReactApexChart from "react-apexcharts"
 import { useSelector } from "react-redux"
 import { getColorByCategory } from "utils/CategoryColors"
 import useAsyncWork from "hooks/useAsyncWork"
-import { ChartContainerStyles, ContainerStyles } from "./styled"
-import { IdTreeNode } from "data/domain/types/structures/StructuralTypes"
-import { getCategoryDescription } from "data/domain/transformers/DataDetectors"
-import { ScopeTableItemProps } from "../../../components/natixarComponents/ScopeTable"
+import { ContainerStyles } from "./styled"
 import { NatixarExpandableRow } from "../ScopeTable/NatixarExpandableRow"
 
 export const scopeColor = [
@@ -189,17 +178,19 @@ const EmissionByCategorySection = ({
   const theme = useTheme()
   const downMD = useMediaQuery(theme.breakpoints.down("md"))
 
+  const noDataFound = series.reduce((acc, item) => acc + item, 0) == 0
+
   return (
     <Stack
       sx={{ ...ContainerStyles, gap: "30px", flexWrap: "wrap" }}
       flexDirection={downMD ? "column" : "row"}
     >
-      <Box sx={ChartContainerStyles}>
+      {noDataFound && (
         <Stack alignItems={"center"} justifyContent={"center"} minWidth={100}>
-          {series.reduce((acc, item) => acc + item, 0) == 0
-            ? "No data found"
-            : ""}
+          No data found
         </Stack>
+      )}
+      <Stack justifyContent="center" alignItems="center">
         <ReactApexChart
           options={{
             ...optionsOverrides,
@@ -211,7 +202,7 @@ const EmissionByCategorySection = ({
           type="donut"
           width={400}
         />
-      </Box>
+      </Stack>
 
       <Stack minWidth={500} flex="2 1 0" flexDirection="column" gap={2}>
         {pieChartData.map((scope, index) => (
