@@ -41,7 +41,7 @@ const DateRangeControlForm = ({
       const newTimeRange = getTimeRangeFor(scale)
       dispatch(selectTimeRange(newTimeRange))
     },
-    [dispatch, selectTimeRange],
+    [dispatch, selectTimeRange, timeRange],
   )
 
   const startChangeCallback = useCallback(
