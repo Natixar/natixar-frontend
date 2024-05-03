@@ -3,11 +3,35 @@ import {
   TimeSection,
   TimeWindow,
 } from "data/domain/types/time/TimeRelatedTypes"
-import { format, isSameYear, parse, subMonths } from "date-fns"
+import { format, isSameYear, parse, subMonths, getISOWeek, getISOWeekYear, parseISO } from "date-fns"
 
 const HOUR_TIME_FORMAT = " p"
 const DAY_TIME_FORMAT = "PP"
+const MINUTE_TIME_FORMAT = "HH:mm"
 
+export const timestampToMinute = (timestamp: number): string =>
+  format(timestamp, MINUTE_TIME_FORMAT);
+
+export const sortMinutes = (timeA: string, timeB: string): number =>
+  parse(timeA, MINUTE_TIME_FORMAT, new Date()).getTime() -
+  parse(timeB, MINUTE_TIME_FORMAT, new Date()).getTime();
+
+export const timestampToWeek = (timestamp: number): string => {
+  const date = new Date(timestamp);
+  const weekNumber = getISOWeek(date);
+  const year = getISOWeekYear(date);
+  return `Week ${weekNumber} of ${year}`;
+};
+
+export const sortWeeks = (timeA: string, timeB: string): number => {
+  const [weekA, yearA] = timeA.replace('Week ', '').replace(' of ', '-').split('-').map(Number);
+  const [weekB, yearB] = timeB.replace('Week ', '').replace(' of ', '-').split('-').map(Number);
+
+  if (yearA !== yearB) {
+    return yearA - yearB;
+  }
+  return weekA - weekB;
+};
 export const timestampToHour = (timestamp: number): string =>
   format(timestamp, HOUR_TIME_FORMAT)
 

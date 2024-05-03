@@ -16,12 +16,16 @@ import {
   getTimeOffsetForSlot,
   sortDays,
   sortHours,
+  sortMinutes,
   sortMonths,
   sortQuarters,
+  sortWeeks,
   timestampToDay,
   timestampToHour,
+  timestampToMinute,
   timestampToMonth,
   timestampToQuarter,
+  timestampToWeek,
   timestampToYear,
 } from "data/domain/transformers/TimeTransformers"
 import _ from "lodash"
@@ -38,8 +42,10 @@ const detailUnitLayout: Record<
     (timeStrA: string, timeStrB: string) => number,
   ]
 > = {
+  Minute: [timestampToMinute, sortMinutes],
   Hour: [timestampToHour, sortHours],
   Day: [timestampToDay, sortDays],
+  Week: [timestampToWeek, sortWeeks],
   Month: [timestampToMonth, sortMonths],
   Quarter: [timestampToQuarter, sortQuarters],
   Year: [timestampToYear, (a, b) => a.localeCompare(b)],
