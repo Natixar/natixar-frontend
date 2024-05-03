@@ -46,10 +46,15 @@ const NavItem = ({ item, level, isParents = false }: Props) => {
     itemTarget = "_blank"
   }
 
+  const iconSelectedColor =
+    theme.palette.mode === ThemeMode.DARK && drawerOpen
+      ? "#fff"
+      : "#fff"
   const Icon = item.icon!
   const itemIcon = item.icon ? (
     <Icon
       style={{
+        color: iconSelectedColor,
         fontSize: drawerOpen ? "1rem" : "1.25rem",
         ...(menuOrientation === MenuOrientation.HORIZONTAL &&
           isParents && { fontSize: 20, stroke: "1.5" }),
@@ -67,11 +72,9 @@ const NavItem = ({ item, level, isParents = false }: Props) => {
       : !!matchPath({ path, end: false }, pathname)
 
   const textColor =
-    theme.palette.mode === ThemeMode.DARK ? "grey.400" : "text.primary"
-  const iconSelectedColor =
-    theme.palette.mode === ThemeMode.DARK && drawerOpen
-      ? "text.primary"
-      : "primary.main"
+    theme.palette.mode === ThemeMode.DARK ? "grey.400" : "common.white"
+  // bgColor for selected and hover on item
+  const bgcolor = theme.palette.mode === ThemeMode.DARK ? "divider" : "primary.light";
 
   const handleItemClick = () => {
     setIsShowExtraHeader(false)
@@ -93,25 +96,20 @@ const NavItem = ({ item, level, isParents = false }: Props) => {
               pl: drawerOpen ? `${level * 28}px` : 1.5,
               py: !drawerOpen && level === 1 ? 1.25 : 1,
               ...(drawerOpen && {
+                ml: '16px',
+                pl: `${level * 8}px`,
+                pr: '8px',
+                py: !drawerOpen && level === 1 ? 1.2 : 1,
+                width: 224,
+                my: "4px",
+                borderRadius: '12px',
                 "&:hover": {
-                  bgcolor:
-                    theme.palette.mode === ThemeMode.DARK
-                      ? "divider"
-                      : "primary.lighter",
+                  bgcolor,
                 },
                 "&.Mui-selected": {
-                  bgcolor:
-                    theme.palette.mode === ThemeMode.DARK
-                      ? "divider"
-                      : "primary.lighter",
-                  borderRight: `2px solid ${theme.palette.primary.main}`,
-                  color: iconSelectedColor,
+                  bgcolor,
                   "&:hover": {
-                    color: iconSelectedColor,
-                    bgcolor:
-                      theme.palette.mode === ThemeMode.DARK
-                        ? "divider"
-                        : "primary.lighter",
+                    bgcolor,
                   },
                 },
               }),
@@ -135,7 +133,6 @@ const NavItem = ({ item, level, isParents = false }: Props) => {
               <ListItemIcon
                 sx={{
                   minWidth: 28,
-                  color: isSelected ? iconSelectedColor : textColor,
                   ...(!drawerOpen && {
                     borderRadius: 1.5,
                     width: 36,
@@ -143,25 +140,16 @@ const NavItem = ({ item, level, isParents = false }: Props) => {
                     alignItems: "center",
                     justifyContent: "center",
                     "&:hover": {
-                      bgcolor:
-                        theme.palette.mode === ThemeMode.DARK
-                          ? "secondary.light"
-                          : "secondary.lighter",
+                      bgcolor,
                     },
                   }),
                   ...(!drawerOpen &&
                     isSelected && {
-                      bgcolor:
-                        theme.palette.mode === ThemeMode.DARK
-                          ? "primary.900"
-                          : "primary.lighter",
-                      "&:hover": {
-                        bgcolor:
-                          theme.palette.mode === ThemeMode.DARK
-                            ? "primary.darker"
-                            : "primary.lighter",
-                      },
-                    }),
+                    bgcolor,
+                    "&:hover": {
+                      bgcolor,
+                    },
+                  }),
                 }}
               >
                 {itemIcon}
@@ -236,6 +224,7 @@ const NavItem = ({ item, level, isParents = false }: Props) => {
             })}
         </Box>
       ) : (
+        // Case Horizontal menu and not downLG
         <ListItemButton
           component={Link}
           to={item.url!}
@@ -275,11 +264,11 @@ const NavItem = ({ item, level, isParents = false }: Props) => {
                 }),
                 ...(!drawerOpen &&
                   isSelected && {
+                  bgcolor: "transparent",
+                  "&:hover": {
                     bgcolor: "transparent",
-                    "&:hover": {
-                      bgcolor: "transparent",
-                    },
-                  }),
+                  },
+                }),
               }}
             >
               {itemIcon}
@@ -300,11 +289,11 @@ const NavItem = ({ item, level, isParents = false }: Props) => {
                 }),
                 ...(!drawerOpen &&
                   isSelected && {
+                  bgcolor: "transparent",
+                  "&:hover": {
                     bgcolor: "transparent",
-                    "&:hover": {
-                      bgcolor: "transparent",
-                    },
-                  }),
+                  },
+                }),
               }}
             >
               <Dot size={4} color={isSelected ? "primary" : "secondary"} />

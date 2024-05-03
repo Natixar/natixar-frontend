@@ -8,7 +8,11 @@ export default function InputLabel(theme: Theme) {
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: theme.palette.grey[600],
+          color: theme.palette.primary.darker,
+          lineHeight: '1',
+          left: 12,
+          top: 4,
+          fontSize: 16
         },
         outlined: {
           lineHeight: "1rem",

@@ -51,10 +51,19 @@ export default function OutlinedInput(theme: Theme) {
               : theme.palette.grey[300],
         },
         root: {
+          fontSize: 16,
+          backgroundColor: '#EEF7FF',
+          borderRadius: '20px',
+          color: theme.palette.primary.main,
+          fontFamily: 'Urbanist',
           ...getColor({ variant: "primary", theme }),
           "&.Mui-error": {
             ...getColor({ variant: "error", theme }),
           },
+          '& input[type=password]': {
+            color: theme.palette.primary.light,
+            fontFamily: 'circular'
+          }
         },
         inputSizeSmall: {
           padding: "7.5px 8px 7.5px 12px",

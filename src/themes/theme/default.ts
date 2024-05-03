@@ -3,7 +3,7 @@ import { PaletteThemeProps } from "types/theme"
 import { PalettesProps } from "@ant-design/colors"
 import { PaletteColorOptions } from "@mui/material/styles"
 
-// ==============================|| PRESET THEME - DEFAULT ||============================== //
+// ==============================|| PRESET THEME - DEFAULT AN OVERRIDES ||============================== //
 
 const Default = (colors: PalettesProps): PaletteThemeProps => {
   const { blue, red, gold, cyan, green, grey } = colors
@@ -30,15 +30,15 @@ const Default = (colors: PalettesProps): PaletteThemeProps => {
 
   return {
     primary: {
-      lighter: blue[0],
+      lighter: "#8ECBF5",
       100: blue[1],
       200: blue[2],
-      light: blue[3],
+      light: "#13537E",
       400: blue[4],
-      main: "#1890FF",
+      main: "#053759",
       dark: blue[6],
       700: blue[7],
-      darker: blue[8],
+      darker: "#053759",
       900: blue[9],
       contrastText,
     },
@@ -85,8 +85,8 @@ const Default = (colors: PalettesProps): PaletteThemeProps => {
     success: {
       lighter: green[0],
       light: green[3],
-      main: green[5],
-      dark: green[7],
+      main: '#1DB447',
+      dark: '#159238',
       darker: green[9],
       contrastText,
     },

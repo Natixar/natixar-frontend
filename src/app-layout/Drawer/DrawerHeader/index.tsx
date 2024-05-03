@@ -30,6 +30,7 @@ const DrawerHeader = ({ open }: Props) => {
       sx={{
         minHeight: isHorizontal ? "unset" : "60px",
         width: isHorizontal ? { xs: "100%", lg: "424px" } : "inherit",
+        backgroundColor: "#053759",
         paddingTop: isHorizontal ? { xs: "10px", lg: "0" } : "8px",
         paddingBottom: isHorizontal ? { xs: "18px", lg: "0" } : "8px",
         // eslint-disable-next-line no-nested-ternary

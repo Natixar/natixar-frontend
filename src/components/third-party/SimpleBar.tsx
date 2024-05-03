@@ -13,6 +13,7 @@ const RootStyle = styled(BrowserView)({
   flexGrow: 1,
   height: "100%",
   overflow: "hidden",
+  backgroundImage: 'linear-gradient(#053759,#0B76BF)',
 })
 
 // scroll bar wrapper
@@ -35,6 +36,9 @@ const SimpleBarStyle = styled(SimpleBar)(({ theme }) => ({
   "& .simplebar-mask": {
     zIndex: "inherit",
   },
+  "& hr": {
+    display: 'none'
+  }
 }))
 
 // ==============================|| SIMPLE SCROLL BAR ||============================== //

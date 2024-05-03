@@ -46,17 +46,16 @@ const Header = () => {
 
   // common header
   const mainHeader: ReactNode = (
-    <Toolbar>
+    <Toolbar sx={{ bgcolor: "primary.main" }}>
       {!isHorizontal ? (
         <IconButton
           aria-label="open drawer"
           onClick={() => handlerDrawerOpen(!drawerOpen)}
           edge="start"
-          color="secondary"
           variant="light"
           sx={{
-            color: "text.primary",
-            bgcolor: drawerOpen ? "transparent" : iconBackColor,
+            color: "common.white",
+            bgcolor: "transparent",
             ml: { xs: 0, lg: -2 },
           }}
         >
@@ -90,11 +89,11 @@ const Header = () => {
       width: isHorizontal
         ? "100%"
         : {
-            xs: "100%",
-            lg: drawerOpen
-              ? `calc(100% - ${DRAWER_WIDTH}px)`
-              : `calc(100% - ${MINI_DRAWER_WIDTH}px)`,
-          },
+          xs: "100%",
+          lg: drawerOpen
+            ? `calc(100% - ${DRAWER_WIDTH}px)`
+            : `calc(100% - ${MINI_DRAWER_WIDTH}px)`,
+        },
     },
   }
 

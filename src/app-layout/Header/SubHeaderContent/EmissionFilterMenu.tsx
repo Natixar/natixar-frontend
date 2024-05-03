@@ -10,7 +10,11 @@ import {
   Stack,
   SxProps,
   Typography,
+  useTheme,
 } from "@mui/material"
+import BarChartIcon from "@mui/icons-material/BarChart"
+import { FactoryIcon } from "assets/icons/FactoryIcon"
+import { PinIcon } from "assets/icons/PinIcon"
 import { CategoryLabel } from "components/categories/CategoriesLegend"
 import DateRangePicker from "components/inputs/date/DateRangePicker"
 import { CheckboxItem } from "components/natixarComponents/AreaCheckbox/CheckboxItem"
@@ -119,6 +123,16 @@ const entitiesToCheckboxes = (
     treeItems,
   )
 
+const StyleLabel = () => ({
+  color: "#053759",
+  fontFamily: "Urbanist",
+  fontWeight: 600,
+  marginLeft: 2,
+  mt: 1,
+  fontSize: "16px",
+  lineHeight: "24px",
+  marginBottom: 0.3,
+})
 const EntityControlForm = memo(
   ({
     allEntities,
@@ -139,10 +153,17 @@ const EntityControlForm = memo(
       entityHierarchy,
       checkCallback,
     )
-
+    const theme = useTheme()
     return (
-      <FormControl sx={{ width: 220 }}>
-        <InputLabel>Business Entity / Facility</InputLabel>
+      <FormControl sx={{ mt: -3, width: 220 }}>
+        <Typography sx={StyleLabel}>
+          <FactoryIcon
+            sx={{ position: "relative", top: 3, marginRight: 1 }}
+            customColor={theme.palette.primary.main}
+          />
+          Business Entity / Facility
+        </Typography>
+        {/* <InputLabel>Business Entity / Facility</InputLabel> */}
         <Select value={selectedLabels} renderValue={multiSelectJoiner} multiple>
           {entityCheckboxes}
         </Select>
@@ -171,10 +192,18 @@ const AreaControlForm = memo(
       areaHierarchy,
       checkCallback,
     )
+    const theme = useTheme()
 
     return (
-      <FormControl sx={{ width: 160 }}>
-        <InputLabel>Geographic Area</InputLabel>
+      <FormControl sx={{ mt: -3, width: 190 }}>
+        <Typography sx={StyleLabel}>
+          <PinIcon
+            sx={{ position: "relative", top: 3, marginRight: 1 }}
+            customColor={theme.palette.primary.main}
+          />
+          Geographic Area
+        </Typography>
+        {/* <InputLabel>Geographic Area</InputLabel> */}
         <Select
           value={selectedAreaLabels}
           renderValue={multiSelectJoiner}
@@ -208,8 +237,15 @@ const CategoriesControlForm = memo(
       ))
 
     return (
-      <FormControl sx={{ width: 100 }}>
-        <InputLabel>Scope</InputLabel>
+      <FormControl sx={{ mt: -3, width: 120 }}>
+        <Typography sx={StyleLabel}>
+          <BarChartIcon
+            sx={{ position: "relative", top: 3, marginRight: 1 }}
+            color="primary"
+          />
+          Scope
+        </Typography>
+        {/* <InputLabel>Scope</InputLabel> */}
         <Select
           value={selectedCategories}
           renderValue={multiSelectJoiner}
