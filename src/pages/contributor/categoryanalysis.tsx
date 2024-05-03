@@ -12,13 +12,9 @@ const createData = (year: number, methodology: string, amount: number) => ({
   amount,
 })
 
-const calculationMethods = [
-  createData(2024, "Emission Factors", 63.5),
-  createData(2023, "Emission Factors", 32),
-  createData(2022, "Emission Factors", 10),
-  createData(2021, "Emission Factors", 34),
-  createData(2020, "Emission Factors", 76),
-  createData(2019, "Emission Factors", 8.4),
+//TODO add data from API
+const calculationMethods: any[] = [
+  // createData(2024, "Emission Factors", 63.5),
 ]
 
 const CategoryAnalysis = () => {
