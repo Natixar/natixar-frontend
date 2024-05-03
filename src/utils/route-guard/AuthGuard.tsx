@@ -22,11 +22,15 @@ const AuthGuard = ({ children }: GuardProps) => {
   }, [])
 
   useEffect(() => {
-    if (!isLoading && fusionIsEnabled && fusionIsEnabled === "true" && !isAuthenticated) {
-      navigate("authentication/login")
+    if (!isLoading && !isAuthenticated && fusionIsEnabled === "true") {
+      navigate("/authentication/login")
     }
   }, [fusionIsEnabled, isAuthenticated, navigate, location])
-  return children
+  return fusionIsEnabled === "true"
+    ? isAuthenticated
+      ? children
+      : navigate("/authentication/login")
+    : children
 }
 
 export default AuthGuard
