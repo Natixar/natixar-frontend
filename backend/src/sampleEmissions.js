@@ -1174,7 +1174,7 @@ const emissions_beges = [
       [ 21, 1, 0.001,    22, 1, 4, 16, 17, 32],
       [ 22, 1, 0.001002, 23, 1, 4, 16, 17, 32],
       [ 23, 1, 0.000997, 24, 1, 4, 16, 17, 32],
-      
+
       [  0, 1, 0.001002,  3, 1, 4, 16, 17, 32],
       [  3, 1, 0.000801, 15, 1, 4, 16, 17, 32],
       [ 15, 1, 0.000603, 24, 1, 4, 16, 17, 32]
@@ -1337,7 +1337,7 @@ const generateDataPoint = (start_time, end_time, time_scale, taxonomy) => {
   }
   let randomCategory = _.random(start, end)
 
-  // Compute final category, skipping scopes and other non-category 
+  // Compute final category, skipping scopes and other non-category
   // members of the hierarchy.
   for (const ignored of categoriesToIgnore) {
     if (ignored <= randomCategory) {
@@ -1351,11 +1351,11 @@ const generateDataPoint = (start_time, end_time, time_scale, taxonomy) => {
   const randomArea = _.sample(areas)
   const randomAmount = _.random(.0001, 2, true)
   const randomThirdParty = energyCategories.includes(randomCategory) ? 17 : _.sample(thirdParties)
-  
-  // time 
+
+  // time
   const randomSlot = _.random(2, 10)
   const randomDelta = _.random(1, 10)
-  
+
   // synthesis of CDP
   return [
     randomSlot,
