@@ -1,5 +1,5 @@
 export const generalCategoryText =
-  "Bien sûr, voici une description en français pour chaque catégorie feuille de la hiérarchie du GHG Protocol, y compris les sous-niveaux de Upstream et Downstream :"
+  "List of relevant categories :"
 
 export const frCategoryMessages: Record<number, string> = {
   /// /// GHG
