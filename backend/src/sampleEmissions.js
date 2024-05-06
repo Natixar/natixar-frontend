@@ -753,6 +753,191 @@ const emissions_categories= [
             era: "U"
           },
           {
+            id: 58,
+            parent: 1,
+            name: "ISO/TR 14069:2013",
+            era: ""
+          },
+          {
+            id: 59,
+            parent: 58,
+            name: "Scope 1",
+            era: "O"
+          },
+          {
+            id: 60,
+            parent: 59,
+            name: "Emissions directes des sources fixes de combustion",
+            code: "1",
+            era: "O"
+          },
+          {
+            id: 61,
+            parent: 59,
+            name: "Emissions directes des sources mobiles de combustion",
+            code: "2",
+            era: "O"
+          },
+          {
+            id: 62,
+            parent: 59,
+            name: "Emissions directes des procédés",
+            code: "3",
+            era: "O"
+          },
+          {
+            id: 63,
+            parent: 59,
+            name: "Emissions directes fugitives",
+            code: "4",
+            era: "O"
+          },
+          {
+            id: 64,
+            parent: 59,
+            name: "Emissions directes issues de l'UTCF",
+            code: "5",
+            era: "O"
+          },
+          {
+            id: 65,
+            parent: 58,
+            name: "Scope 2",
+            era: "U"
+          },
+          {
+            id: 66,
+            parent: 65,
+            name: "Emissions indirectes liées à la consommation d'électricité",
+            code: "6",
+            era: "U"
+          },
+          {
+            id: 67,
+            parent: 65,
+            name: "Emissions indirectes liées à la consommation d'énergie de réseau (hors électricité)",
+            code: "7",
+            era: "U"
+          },
+          {
+            id: 68,
+            parent: 58,
+            name: "Scope 3",
+            era: ""
+          },
+          {
+            id: 69,
+            parent: 68,
+            name: "Emissions liées à l'énergie non incluses dans les postes 1 à 7",
+            code: "8",
+            era: "U"
+          },
+          {
+            id: 70,
+            parent: 68,
+            name: "Achats de produits",
+            code: "9",
+            era: "U"
+          },
+          {
+            id: 71,
+            parent: 68,
+            name: "Biens immobilisés",
+            code: "10",
+            era: "U"
+          },
+          {
+            id: 72,
+            parent: 68,
+            name: "Déchets générés",
+            code: "11",
+            era: "U"
+          },
+          {
+            id: 73,
+            parent: 68,
+            name: "Transport de marchandise amont et distribution",
+            code: "12",
+            era: "U"
+          },
+          {
+            id: 74,
+            parent: 68,
+            name: "Déplacements professionnels",
+            code: "13",
+            era: "U"
+          },
+          {
+            id: 75,
+            parent: 68,
+            name: "Actifs en leasing amont",
+            code: "14",
+            era: "U"
+          },
+          {
+            id: 76,
+            parent: 68,
+            name: "Investissements",
+            code: "15",
+            era: "D"
+          },
+          {
+            id: 77,
+            parent: 68,
+            name: "Transport des visiteurs et des clients",
+            code: "16",
+            era: "U"
+          },
+          {
+            id: 78,
+            parent: 68,
+            name: "Transport de marchandise aval et distribution",
+            code: "17",
+            era: "D"
+          },
+          {
+            id: 79,
+            parent: 68,
+            name: "Utilisation des produits vendus",
+            code: "18",
+            era: "D"
+          },
+          {
+            id: 80,
+            parent: 68,
+            name: "Fin de vie des produits vendus",
+            code: "19",
+            era: "D"
+          },
+          {
+            id: 81,
+            parent: 68,
+            name: "Franchise aval",
+            code: "20",
+            era: "D"
+          },
+          {
+            id: 82,
+            parent: 68,
+            name: "Leasing aval",
+            code: "21",
+            era: "D"
+          },
+          {
+            id: 83,
+            parent: 68,
+            name: "Déplacements domicile travail",
+            code: "22",
+            era: "U"
+          },
+          {
+            id: 84,
+            parent: 68,
+            name: "Autres émissions indirectes",
+            code: "23",
+            era: "U"
+          },
+          {
             id: 85,
             parent: 1,
             name: "BEGES v5",
@@ -1349,7 +1534,7 @@ const emissions_ghgprotocol = [
   }
 ]
 
-const categoriesToIgnore = [32, 38, 41]
+const categoriesToIgnore = [3, 8, 11, 32, 38, 41, 59, 65, 68, 86, 92, 95, 101, 107, 112]
 const areas = [4, 5, 9, 10, 12, 13, 16, 17, 18]
 
 // Disconnected in this version. Only valid for BEGES taxonomy (uses BEGES categories)
