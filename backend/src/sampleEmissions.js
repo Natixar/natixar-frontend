@@ -907,7 +907,7 @@ const emissions_categories= [
           },
           {
             id: 107,
-            parent: 41,
+            parent: 85,
             name: "Emissions indirectes associées aux produits vendus",
             code: "5",
             era: ""
@@ -942,7 +942,7 @@ const emissions_categories= [
           },
           {
             id: 112,
-            parent: 41,
+            parent: 85,
             name: "Autres émissions indirectes",
             code: "6",
             era: ""
