@@ -22,7 +22,11 @@ import {
   BusinessEntity,
   GeographicalArea,
 } from "data/domain/types/participants/ContributorsTypes"
-import { TimeRange, TimeWindow } from "data/domain/types/time/TimeRelatedTypes"
+import {
+  TimeRange,
+  TimeWindow,
+  TimeMeasurement,
+} from "data/domain/types/time/TimeRelatedTypes"
 import {
   expandId,
   extractHierarchyOf,
@@ -61,6 +65,7 @@ const initialState: EmissionRangeState = {
   dataRetrievalParameters: {
     timeRangeOfInterest: getTimeRangeFor(12),
     protocol: EmissionProtocol.BEGES,
+    timeMeasurement: TimeMeasurement.MONTHS,
   },
 }
 
@@ -268,6 +273,13 @@ const selectProtocolReducer: CaseReducer<
   state.dataRetrievalParameters.protocol = action.payload
 }
 
+const selectTimeMeasurementReducer: CaseReducer<
+  EmissionRangeState,
+  PayloadAction<TimeMeasurement>
+> = (state, action) => {
+  state.dataRetrievalParameters.timeMeasurement = action.payload
+}
+
 export const emissionsRangeSlice = createSlice({
   name: "emissionRanges",
   initialState,
@@ -278,6 +290,7 @@ export const emissionsRangeSlice = createSlice({
     updateFilterSelection: setNewFilterReducer,
     selectTimeRange: selectTimeRangeReducer,
     selectProtocol: selectProtocolReducer,
+    selectTimeMeasurement: selectTimeMeasurementReducer,
     clearFilterSelection: clearFilterSelectionsReducer,
   },
   extraReducers: (builder) => {
@@ -314,5 +327,6 @@ export const {
   clearFilterSelection,
   selectTimeRange,
   selectProtocol,
+  selectTimeMeasurement,
 } = emissionsRangeSlice.actions
 export default emissionsRangeSlice.reducer

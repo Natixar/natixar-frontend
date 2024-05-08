@@ -25,9 +25,12 @@ import {
   timestampToYear,
 } from "data/domain/transformers/TimeTransformers"
 import _ from "lodash"
-import { useState } from "react"
-import EmissionByCategorySection from "../../components/natixarComponents/CO2DonutSection/EmissionByScopeDonutSection"
+import { useCallback, useState } from "react"
 import { NatixarSectionTitle } from "components/natixarComponents/ChartCard/NatixarSectionTitle"
+import { selectTimeMeasurement } from "data/store/features/emissions/ranges/EmissionRangesSlice"
+import { TimeMeasurement } from "data/domain/types/time/TimeRelatedTypes"
+import { useAppDispatch } from "data/store"
+import EmissionByCategorySection from "../../components/natixarComponents/CO2DonutSection/EmissionByScopeDonutSection"
 
 // ==============================|| WIDGET - CHARTS ||============================== //
 
@@ -45,10 +48,22 @@ const detailUnitLayout: Record<
   Year: [timestampToYear, (a, b) => a.localeCompare(b)],
 }
 
+const mapTimeUnitimeMeasurement = (timeUnit: string): TimeMeasurement => {
+  if (!(timeUnit in detailUnitLayout)) return TimeMeasurement.MONTHS
+
+  if (timeUnit === "Hour") return TimeMeasurement.HOURS
+  if (timeUnit === "Day") return TimeMeasurement.DAYS
+  if (timeUnit === "Month") return TimeMeasurement.MONTHS
+  if (timeUnit === "Quarter") return TimeMeasurement.QUARTERS
+  if (timeUnit === "Year") return TimeMeasurement.YEARS
+  return TimeMeasurement.MONTHS
+}
+
 const NatixarChart = () => {
   const [totalUnit, setTotalUnit] = useState("Month")
   const [comparisonUnit, setComparisonUnit] = useState("Month")
 
+  const dispatch = useAppDispatch()
   const alignedIndexes = useSelector(indexSelector)
   const allPoints = useSelector(emissionsSelector)
   const timeWindow = useSelector(selectTimeWindow)
@@ -64,6 +79,24 @@ const NatixarChart = () => {
 
   const minDate = new Date(minTime)
   const maxDate = new Date(maxTime)
+
+  const onTotalEmissionUnitClick = useCallback(
+    (timeUnit: string) => {
+      setTotalUnit(timeUnit)
+      const timeMeasurement = mapTimeUnitimeMeasurement(timeUnit)
+      dispatch(selectTimeMeasurement(timeMeasurement))
+    },
+    [dispatch, selectTimeMeasurement],
+  )
+
+  const onTimeCompareEmissionUnitClick = useCallback(
+    (timeUnit: string) => {
+      setComparisonUnit(timeUnit)
+      const timeMeasurement = mapTimeUnitimeMeasurement(timeUnit)
+      dispatch(selectTimeMeasurement(timeMeasurement))
+    },
+    [dispatch, selectTimeMeasurement],
+  )
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={3}>
@@ -83,7 +116,7 @@ const NatixarChart = () => {
           startDate={minDate}
           endDate={maxDate}
           timeDetailUnit={totalUnit}
-          setTimeDetailUnit={setTotalUnit}
+          setTimeDetailUnit={onTotalEmissionUnitClick}
         />
       </Grid>
       <Grid item xs={12} md={12} lg={12}>
@@ -93,7 +126,7 @@ const NatixarChart = () => {
           startDate={minDate}
           endDate={maxDate}
           timeDetailUnit={comparisonUnit}
-          setTimeDetailUnit={setComparisonUnit}
+          setTimeDetailUnit={onTimeCompareEmissionUnitClick}
         />
       </Grid>
     </Grid>

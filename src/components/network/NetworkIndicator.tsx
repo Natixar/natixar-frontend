@@ -23,10 +23,10 @@ const NetworkIndicator = (props: SxProps) => {
     pollingInterval: 2000,
   })
 
-  const { timeRangeOfInterest, protocol } = useSelector(
+  const { timeRangeOfInterest, protocol, timeMeasurement } = useSelector(
     selectEmissionRangeRequestParameters,
   )
-  const scale: string = `1${TimeMeasurement.MINUTES}`
+  const scale: string = `1${timeMeasurement}`
   const requestParams: EmissionRangesRequest = useMemo(
     () =>
       ({
@@ -42,7 +42,7 @@ const NetworkIndicator = (props: SxProps) => {
           },
         ],
       }) as EmissionRangesRequest,
-    [protocol, timeRangeOfInterest],
+    [protocol, timeRangeOfInterest, timeMeasurement],
   )
   useGetEmissionRangesQuery(requestParams, {
     pollingInterval: 10000,
