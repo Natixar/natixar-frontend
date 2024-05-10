@@ -1,0 +1,98 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Emission Ranges API",
+        "version": "1.0.0",
+        "description": "API for querying emission ranges data."
+    },
+    "servers": [
+        {
+            "url": "https://api.natixar.pro/api/v0"
+        }
+    ],
+    "paths": {
+        "/data/ranges": {
+            "get": {
+                "summary": "Get emission ranges",
+                "description": "Retrieve emission ranges based on scale, protocol, and time ranges.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "scale",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "description": "The scale of time for the data (e.g., 'hourly', 'daily')."
+                    },
+                    {
+                        "in": "query",
+                        "name": "protocol",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "description": "The protocol for data retrieval."
+                    },
+                    {
+                        "in": "query",
+                        "name": "time_ranges",
+                        "schema": {
+                            "type": "string",
+                            "format": "json"
+                        },
+                        "required": true,
+                        "description": "JSON string of time ranges."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response with emission ranges data.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/EmissionRangesPayload"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request due to invalid input parameters."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "EmissionRangesPayload": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "range": {
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            }
+        }
+    }
+}
