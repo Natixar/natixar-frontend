@@ -123,7 +123,7 @@ const EmissionByCategorySection = ({
     () =>
       getScopesOfProtocol(protocol, alignedIndexes.categories).map((item) => ({
         ...item,
-        active: false,
+        active: false, // Closed row
       })),
     [protocol, alignedIndexes.categories],
   )
@@ -204,7 +204,13 @@ const EmissionByCategorySection = ({
         />
       </Stack>
 
-      <Stack minWidth={500} flex="2 1 0" flexDirection="column" gap={2}>
+      <Stack
+        minWidth={500}
+        width="100%"
+        flex="2 1 0"
+        flexDirection="column"
+        gap={2}
+      >
         {pieChartData.map((scope, index) => (
           <>
             <NatixarExpandableRow

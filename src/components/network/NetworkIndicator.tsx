@@ -21,6 +21,7 @@ const NetworkIndicator = (props: SxProps) => {
   const [getEmissionData] = useLazyGetEmissionRangesQuery()
   const { data, error } = useGetNetworkInformationQuery(undefined, {
     pollingInterval: 2000,
+    skipPollingIfUnfocused: true,
   })
 
   const { timeRangeOfInterest, protocol } = useSelector(
@@ -46,6 +47,7 @@ const NetworkIndicator = (props: SxProps) => {
   )
   useGetEmissionRangesQuery(requestParams, {
     pollingInterval: 10000,
+    skipPollingIfUnfocused: true,
   })
   useEffect(() => {
     getEmissionData(requestParams)
