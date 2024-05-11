@@ -84,7 +84,12 @@ const MobileSection = () => {
         role={undefined}
         transition
         disablePortal
-        sx={{ width: "100%" }}
+        sx={{
+          width: "100%",
+          backgroundColor: "#fff",
+          zIndex: 43,
+          position: "relative",
+        }}
         popperOptions={{
           modifiers: [
             {
