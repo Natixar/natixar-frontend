@@ -260,12 +260,14 @@ const CategoriesControlForm = memo(
     )
   },
 )
+
 interface Props {
   closeDialog?: Function
   sx?: SxProps
 }
 
 const GlobalFilterMenu = ({ closeDialog, ...sxProps }: Props) => {
+  const downLG = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"))
   const dispatch = useAppDispatch()
 
   const alignedIndexes = useSelector(indexesSelector)
@@ -370,8 +372,6 @@ const GlobalFilterMenu = ({ closeDialog, ...sxProps }: Props) => {
   if (!weHaveAnyData) {
     return null
   }
-
-  const downLG = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"))
 
   return (
     <>
