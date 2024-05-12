@@ -9,20 +9,11 @@ import { getFusionConfig } from "./FusionConfiguration"
 const AuthGuard = ({ children }: GuardProps) => {
   const { isAuthenticated } = useFusionAuth()
   const { enabled: fusionIsEnabled } = getFusionConfig()
-  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 500)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated && fusionIsEnabled === "true") {
+    if (!isAuthenticated && fusionIsEnabled === "true") {
       navigate("/authentication/login")
     }
   }, [fusionIsEnabled, isAuthenticated, navigate, location])
