@@ -139,7 +139,7 @@ const EmissionByCategorySection = ({
     () => {
       const categoryAggregators: Record<string, ByCategoryItem> = {}
 
-      scopes.forEach((scope, i) => {
+      scopes.forEach((scope) => {
         const allIdsOfInterest = expandId(
           [scope.id],
           alignedIndexes.categoryHierarchy,
@@ -153,16 +153,15 @@ const EmissionByCategorySection = ({
         const era = extractNameOfEra(scope.era)
 
         // Make scope data with extra data for display
-        if (scope.code) {
-          categoryAggregators[scope.code] = {
-            categoryId: scope.id,
-            count: total,
-            categoryName: scope.name,
-            categoryColor: getColorByCategory(era),
-            active: (scope.id === selectedScopeId && !scope.active
-              ? true
-              : false) as boolean,
-          }
+        const eraOrCodeKey = scope.code ? String(scope.code) : era
+        categoryAggregators[eraOrCodeKey] = {
+          categoryId: scope.id,
+          count: total,
+          categoryName: scope.name,
+          categoryColor: getColorByCategory(eraOrCodeKey),
+          active: (scope.id === selectedScopeId && !scope.active
+            ? true
+            : false) as boolean,
         }
       })
       return Object.values(categoryAggregators)
