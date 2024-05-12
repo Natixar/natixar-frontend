@@ -188,16 +188,17 @@ const AreaControlForm = memo(
     areaHierarchy: IdTreeNode[] | undefined
     checkCallback: (id: number, selected: boolean) => void
   }) => {
+    const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
+    const theme = useTheme()
     const areaCheckboxes = areasToCheckboxes(
       allAreas,
       selectedAreas,
       areaHierarchy,
       checkCallback,
     )
-    const theme = useTheme()
 
     return (
-      <FormControl sx={{ mt: -3, width: 190 }}>
+      <FormControl sx={{ mt: downSM ? -2 : -3, width: downSM ? "100%" : 190 }}>
         <Typography sx={StyleLabel}>
           <PinIcon
             sx={{ position: "relative", top: 3, marginRight: 1 }}
@@ -230,6 +231,8 @@ const CategoriesControlForm = memo(
       event: SelectChangeEvent<typeof selectedCategories>,
     ) => void
   }) => {
+    const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
+
     const categoryNodes = allCategories
       .map((category) => _.capitalize(category))
       .map((category) => (
@@ -239,7 +242,7 @@ const CategoriesControlForm = memo(
       ))
 
     return (
-      <FormControl sx={{ mt: -3, width: 120 }}>
+      <FormControl sx={{ mt: -3, width: downSM ? "100%" : 120 }}>
         <Typography sx={StyleLabel}>
           <BarChartIcon
             sx={{ position: "relative", top: 3, marginRight: 1 }}
@@ -268,6 +271,7 @@ interface Props {
 
 const GlobalFilterMenu = ({ closeDialog, ...sxProps }: Props) => {
   const downLG = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"))
+  const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
   const dispatch = useAppDispatch()
 
   const alignedIndexes = useSelector(indexesSelector)
@@ -438,7 +442,11 @@ const GlobalFilterMenu = ({ closeDialog, ...sxProps }: Props) => {
             ...sxProps,
           }}
         >
-          <Stack display="flex" gap={2} flexDirection={"row"}>
+          <Stack
+            display="flex"
+            gap={2}
+            flexDirection={downSM ? "column" : "row"}
+          >
             <EntityControlForm
               allEntities={availableEntities}
               selectedEntities={selectedBusinessEntities}
@@ -459,7 +467,7 @@ const GlobalFilterMenu = ({ closeDialog, ...sxProps }: Props) => {
           <Stack
             display="flex"
             gap={2}
-            flexDirection={"row"}
+            flexDirection={downSM ? "column" : "row"}
             alignItems="center"
           >
             <CategoriesControlForm
