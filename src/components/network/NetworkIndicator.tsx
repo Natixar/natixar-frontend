@@ -6,7 +6,7 @@ import { memo, useCallback, useEffect, useMemo, useState } from "react"
 import { useSelector } from "react-redux"
 import { TimeMeasurement } from "data/domain/types/time/TimeRelatedTypes"
 import { selectEmissionRangeRequestParameters } from "data/store/api/EmissionSelectors"
-import formatISO from "date-fns/formatISO"
+import { formatISO, startOfMinute, startOfHour, startOfDay, startOfWeek, startOfMonth, startOfQuarter, startOfYear }  from "date-fns"
 import {
   EmissionRangesRequest,
   formatProtocolForRangesEndpoint,
@@ -34,16 +34,44 @@ const NetworkIndicator = (props: SxProps) => {
         scale,
         timeRanges: [
           {
-            start: formatISO(timeRangeOfInterest.start, {
-              representation: "date",
-            }),
-            end: formatISO(timeRangeOfInterest.end, { representation: "date" }),
+            start: formatISOByScale(timeRangeOfInterest.start, scale),
+            end: formatISOByScale(timeRangeOfInterest.end, scale),
             scale,
           },
         ],
       }) as EmissionRangesRequest,
     [protocol, timeRangeOfInterest],
   )
+  function formatISOByScale(timestamp: number, fullscale: string): string {
+    let scale = fullscale[fullscale.length - 1];
+    let date = new Date(timestamp);  
+    switch (scale) {
+      case 'm':
+        date = startOfMinute(date);
+        break;
+      case 'h':
+        date = startOfHour(date);
+        break;
+      case 'd':
+        date = startOfDay(date);
+        break;
+      case 'w':
+        date = startOfWeek(date);
+        break;
+      case 'M':
+        date = startOfMonth(date);
+        break;
+      case 'Q':
+        date = startOfQuarter(date);
+        break;
+      case 'y':
+        date = startOfYear(date);
+        break;
+      default:
+        break;
+    }
+    return formatISO(date, { representation: 'complete' });
+  }
   useGetEmissionRangesQuery(requestParams, {
     pollingInterval: 10000,
   })
