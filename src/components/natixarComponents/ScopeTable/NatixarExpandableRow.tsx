@@ -177,9 +177,9 @@ export const NatixarExpandableRow = ({
         >
           <Box>{title}</Box>
           <Box>Total : {total}</Box>
+          {active && <UpArrowIcon customColor={textColor} />}
+          {!active && <DownArrowIcon customColor={textColor} />}
         </Stack>
-        {active && <UpArrowIcon customColor={textColor} />}
-        {!active && <DownArrowIcon customColor={textColor} />}
       </Stack>
 
       <Collapse in={active}>

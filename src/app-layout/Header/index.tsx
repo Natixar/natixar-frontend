@@ -41,9 +41,6 @@ const Header = () => {
   const subHeaderContent = useMemo(() => <SubHeaderContent />, [])
   const extraHeaderContent = useMemo(() => <ExtraHeaderContent />, [])
 
-  const iconBackColor =
-    theme.palette.mode === ThemeMode.DARK ? "background.default" : "grey.100"
-
   // common header
   const mainHeader: ReactNode = (
     <Toolbar sx={{ bgcolor: "primary.main" }}>
@@ -89,11 +86,11 @@ const Header = () => {
       width: isHorizontal
         ? "100%"
         : {
-          xs: "100%",
-          lg: drawerOpen
-            ? `calc(100% - ${DRAWER_WIDTH}px)`
-            : `calc(100% - ${MINI_DRAWER_WIDTH}px)`,
-        },
+            xs: "100%",
+            lg: drawerOpen
+              ? `calc(100% - ${DRAWER_WIDTH}px)`
+              : `calc(100% - ${MINI_DRAWER_WIDTH}px)`,
+          },
     },
   }
 
@@ -106,7 +103,11 @@ const Header = () => {
           {isShowExtraHeader && extraHeader}
         </AppBarStyled>
       ) : (
-        <AppBar {...appBar}>{mainHeader}</AppBar>
+        <AppBar {...appBar}>
+          {mainHeader}
+          {!pathnamesOfInterest.includes(pathname) ? null : subHeader}
+          {isShowExtraHeader && extraHeader}
+        </AppBar>
       )}
     </div>
   )
