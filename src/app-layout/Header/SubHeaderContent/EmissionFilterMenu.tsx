@@ -3,14 +3,16 @@ import {
   Button,
   ButtonGroup,
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
   Stack,
   SxProps,
   Typography,
+  useMediaQuery,
+  Theme,
   useTheme,
+  Box,
 } from "@mui/material"
 import BarChartIcon from "@mui/icons-material/BarChart"
 import { FactoryIcon } from "assets/icons/FactoryIcon"
@@ -186,16 +188,17 @@ const AreaControlForm = memo(
     areaHierarchy: IdTreeNode[] | undefined
     checkCallback: (id: number, selected: boolean) => void
   }) => {
+    const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
+    const theme = useTheme()
     const areaCheckboxes = areasToCheckboxes(
       allAreas,
       selectedAreas,
       areaHierarchy,
       checkCallback,
     )
-    const theme = useTheme()
 
     return (
-      <FormControl sx={{ mt: -3, width: 190 }}>
+      <FormControl sx={{ mt: downSM ? -2 : -3, width: downSM ? "100%" : 190 }}>
         <Typography sx={StyleLabel}>
           <PinIcon
             sx={{ position: "relative", top: 3, marginRight: 1 }}
@@ -228,6 +231,8 @@ const CategoriesControlForm = memo(
       event: SelectChangeEvent<typeof selectedCategories>,
     ) => void
   }) => {
+    const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
+
     const categoryNodes = allCategories
       .map((category) => _.capitalize(category))
       .map((category) => (
@@ -237,7 +242,7 @@ const CategoriesControlForm = memo(
       ))
 
     return (
-      <FormControl sx={{ mt: -3, width: 120 }}>
+      <FormControl sx={{ mt: -3, width: downSM ? "100%" : 120 }}>
         <Typography sx={StyleLabel}>
           <BarChartIcon
             sx={{ position: "relative", top: 3, marginRight: 1 }}
@@ -259,7 +264,14 @@ const CategoriesControlForm = memo(
   },
 )
 
-const GlobalFilterMenu = ({ ...sxProps }: SxProps) => {
+interface Props {
+  closeDialog?: Function
+  sx?: SxProps
+}
+
+const GlobalFilterMenu = ({ closeDialog, ...sxProps }: Props) => {
+  const downLG = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"))
+  const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
   const dispatch = useAppDispatch()
 
   const alignedIndexes = useSelector(indexesSelector)
@@ -307,6 +319,7 @@ const GlobalFilterMenu = ({ ...sxProps }: SxProps) => {
       selectedCategories: [...selectedCategories],
     }
     dispatch(updateFilterAction(newFilter))
+    if (closeDialog) closeDialog()
   }, [
     dispatch,
     updateFilterAction,
@@ -365,56 +378,125 @@ const GlobalFilterMenu = ({ ...sxProps }: SxProps) => {
   }
 
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      gap={2.5}
-      sx={{
-        width: "100%",
-        ml: { xs: 0, md: 1, lg: -1 },
-        p: 1,
-        ...sxProps,
-      }}
-    >
-      <Typography>Filter</Typography>
-      <EntityControlForm
-        allEntities={availableEntities}
-        selectedEntities={selectedBusinessEntities}
-        selectedLabels={entityLabel}
-        entityHierarchy={alignedIndexes.entityHierarchy}
-        checkCallback={onEntitySelectionChange}
-      />
-
-      <AreaControlForm
-        selectedAreaLabels={areaLabel}
-        allAreas={availableAreas}
-        areaHierarchy={alignedIndexes.areaHierarchy}
-        selectedAreas={selectedAreas}
-        checkCallback={onAreaSelectionChange}
-      />
-
-      <CategoriesControlForm
-        allCategories={allCategories}
-        selectedCategories={selectedCategories}
-        onSelectionChange={onCategoriesSelectionChange}
-      />
-
-      <DateRangePicker timeRange={timeRangeOfInterest} />
-
-      <ButtonGroup disableElevation variant="contained">
-        <Button
+    <>
+      {!downLG && (
+        <Stack
+          direction="row"
+          alignItems="center"
+          gap={2.5}
           sx={{
-            color: "primary.contrastText",
+            width: "100%",
+            ml: { xs: 0, md: 1, lg: -1 },
+            p: 1,
+            ...sxProps,
           }}
-          onClick={onApplyClick}
         >
-          Apply
-        </Button>
-        <Button onClick={onClearClick} variant="outlined">
-          Clear
-        </Button>
-      </ButtonGroup>
-    </Stack>
+          <EntityControlForm
+            allEntities={availableEntities}
+            selectedEntities={selectedBusinessEntities}
+            selectedLabels={entityLabel}
+            entityHierarchy={alignedIndexes.entityHierarchy}
+            checkCallback={onEntitySelectionChange}
+          />
+
+          <AreaControlForm
+            selectedAreaLabels={areaLabel}
+            allAreas={availableAreas}
+            areaHierarchy={alignedIndexes.areaHierarchy}
+            selectedAreas={selectedAreas}
+            checkCallback={onAreaSelectionChange}
+          />
+
+          <CategoriesControlForm
+            allCategories={allCategories}
+            selectedCategories={selectedCategories}
+            onSelectionChange={onCategoriesSelectionChange}
+          />
+
+          <DateRangePicker timeRange={timeRangeOfInterest} />
+
+          <ButtonGroup disableElevation variant="contained">
+            <Button
+              sx={{
+                color: "primary.contrastText",
+              }}
+              onClick={onApplyClick}
+            >
+              Apply
+            </Button>
+            <Button onClick={onClearClick} variant="outlined">
+              Clear
+            </Button>
+          </ButtonGroup>
+        </Stack>
+      )}
+      {downLG && (
+        <Stack
+          direction="column"
+          alignItems="center"
+          gap={2.5}
+          sx={{
+            width: "100%",
+            ml: { xs: 0, md: 1, lg: -1 },
+            p: 1,
+            ...sxProps,
+          }}
+        >
+          <Stack
+            display="flex"
+            gap={2}
+            flexDirection={downSM ? "column" : "row"}
+          >
+            <EntityControlForm
+              allEntities={availableEntities}
+              selectedEntities={selectedBusinessEntities}
+              selectedLabels={entityLabel}
+              entityHierarchy={alignedIndexes.entityHierarchy}
+              checkCallback={onEntitySelectionChange}
+            />
+
+            <AreaControlForm
+              selectedAreaLabels={areaLabel}
+              allAreas={availableAreas}
+              areaHierarchy={alignedIndexes.areaHierarchy}
+              selectedAreas={selectedAreas}
+              checkCallback={onAreaSelectionChange}
+            />
+          </Stack>
+
+          <Stack
+            display="flex"
+            gap={2}
+            flexDirection={downSM ? "column" : "row"}
+            alignItems="center"
+          >
+            <CategoriesControlForm
+              allCategories={allCategories}
+              selectedCategories={selectedCategories}
+              onSelectionChange={onCategoriesSelectionChange}
+            />
+
+            <Box sx={{ marginTop: 2 }}>
+              <DateRangePicker timeRange={timeRangeOfInterest} />
+            </Box>
+          </Stack>
+
+          <ButtonGroup disableElevation variant="contained">
+            <Button
+              sx={{
+                color: "primary.contrastText",
+              }}
+              onClick={onApplyClick}
+            >
+              Apply
+            </Button>
+            <Button onClick={onClearClick} variant="outlined">
+              Clear
+            </Button>
+          </ButtonGroup>
+        </Stack>
+      )}
+    </>
   )
 }
 
