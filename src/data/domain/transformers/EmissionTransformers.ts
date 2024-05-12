@@ -41,7 +41,7 @@ export const formatEmissionAmount = (kgCO2eqAmount: number): string => {
 
   let measureUnitIndex = 0
   let amount = kgCO2eqAmount
-  if (!amount) return ""
+  if (!amount) return `0.0 ${AirEmissionMeasureUnits.KG_CO2eq}`
   const measureUnits = Object.values(AirEmissionMeasureUnits)
   while (
     measureUnitIndex < measureUnits.length - 1 && // while we are in the array
