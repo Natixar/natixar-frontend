@@ -17,11 +17,15 @@ const AuthGuard = ({ children }: GuardProps) => {
       navigate("/authentication/login")
     }
   }, [fusionIsEnabled, isAuthenticated, navigate, location])
-  return fusionIsEnabled === "true"
-    ? isAuthenticated
-      ? children
-      : navigate("/authentication/login")
-    : children
+  return fusionIsEnabled === "true" ? (
+    isAuthenticated ? (
+      children
+    ) : (
+      <div>Loading...</div>
+    )
+  ) : (
+    children
+  )
 }
 
 export default AuthGuard
