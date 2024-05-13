@@ -183,6 +183,7 @@ export const emissionsGroupByTime = (
 ): Record<string, Record<string, number>> => {
   const result: Record<string, Record<string, number>> = {}
 
+
   const minTime =
     _.minBy(points, (point) => point.startTimeSlot)?.startTimeSlot ?? 0
   const maxTime =
@@ -190,11 +191,14 @@ export const emissionsGroupByTime = (
 
   const showYear = !slotsAreInSameYear(minTime, maxTime, timeWindow)
 
+  // Loop over all emission points defined in data/domain/types/emissions/EmissionTypes.ts#L9
   points.forEach((emissionPoint) => {
     const categoryEra = emissionPoint.categoryEraName
+    // Initialize result for era if needed TODO: swap for category code
     if (typeof result[categoryEra] === "undefined") {
       result[categoryEra] = {}
     }
+    // Define short name
     const byCategory = result[categoryEra]
 
     let currentTimeSlot = emissionPoint.startTimeSlot
