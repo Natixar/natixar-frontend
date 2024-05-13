@@ -110,7 +110,11 @@ export const ScopeTable = ({ data, ...sxProps }: ScopeTableProps & SxProps) => {
               },
             }}
             variant="determinate"
-            value={(100.0 * params.value[0]) / params.value[1]}
+            value={
+              params.value[1] === 0
+                ? 0
+                : (100.0 * params.value[0]) / params.value[1]
+            }
           />
         </Stack>
       ),

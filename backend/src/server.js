@@ -62,11 +62,25 @@ app.post("/mappings", express.json(), (req, res) => {
 });
 
 app.get("/api/v0/data/ranges", express.json(), function (req, res) {
-  const { start, end } = JSON.parse(req.query.time_ranges)[0];
-  res
-    .contentType("application/json")
-    .send(sampleEmissionData);
-    //.send(appendSomeData(new Date(start), new Date(end)));
+  //const { start, end } = JSON.parse(req.query.time_ranges)[0];
+  const protocol = req.query.protocol; // Get the protocol parameter from the query string
+
+  // Check if the protocol exists in the sampleEmissionData dictionary
+  if (sampleEmissionData.hasOwnProperty(protocol)) {
+    // Send the data for the requested protocol
+    res
+      .contentType("application/json")
+      .send(sampleEmissionData[protocol]);
+  } else {
+    // If the protocol is not found, send a 404 error with a message
+    res
+      .status(404)
+      .contentType("application/json")
+      .send({
+        code: "0000-0001", // Custom error code
+        message: `The requested protocol '${protocol}' is not supported or not found.`
+      });
+  }
 });
 
 app.post("/files", upload.array("files", 12), async (req, res) => {
