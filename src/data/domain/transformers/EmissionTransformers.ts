@@ -10,7 +10,6 @@ import {
   EmissionCategory,
   EmissionDataPoint,
   EmissionProtocol,
-  IndexesContainer
 } from "../types/emissions/EmissionTypes"
 import { detectCompany, detectCountry, detectScope } from "./DataDetectors"
 import {
@@ -19,6 +18,7 @@ import {
   slotsAreInSameYear,
 } from "./TimeTransformers"
 import { IndexOf } from "../types/structures/StructuralTypes"
+import { IndexesContainer } from "data/store/features/emissions/ranges/EndpointTypes"
 
 const emptyDecimal = ".0"
 

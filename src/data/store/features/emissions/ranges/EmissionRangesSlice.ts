@@ -56,6 +56,7 @@ const initialState: EmissionRangeState = {
     startTimestamp: 0,
     endTimestamp: 0,
     timeStepInSecondsPattern: [],
+    timeOffsets: [],
   },
   emissionFilterState: { ...initialFilterState },
   dataRetrievalParameters: {
