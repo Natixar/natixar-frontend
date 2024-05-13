@@ -8,10 +8,12 @@ export enum TimeMeasurement {
   YEARS = "y",
 }
 
+/* Such objects are prepared by extractTimeWindow() in EmissionRangesSlice.ts */
 export interface TimeWindow {
-  startTimestamp: number
+  startTimestamp: number   // start of the window in milliseconds
   endTimestamp: number
-  timeStepInSecondsPattern: number[]
+  timeStepInSecondsPattern: number[]   // pattern of time steps in seconds
+  timeOffsets: number[]    // offsets from the start of the window in milliseconds
 }
 
 export interface TimeRange {

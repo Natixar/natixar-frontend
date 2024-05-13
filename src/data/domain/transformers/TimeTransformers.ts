@@ -62,29 +62,19 @@ export const fillTimeSections = (
   return result
 }
 
+/* Computes step[slot mod n] from the API Specification-Data Endpoint
+   using the expanded offsets array, which is 1 position longer than
+   the number of slots. */
 export const getTimeDeltaForSlot = (
   slotNumber: number,
   timeWindow: TimeWindow,
-): number => {
-  const n = timeWindow.timeStepInSecondsPattern.length
-  if (n === 0) {
-    return 0
-  }
-  return timeWindow.timeStepInSecondsPattern[slotNumber % n] * 1000
-}
+): number => timeWindow.timeOffsets[slotNumber + 1] - timeWindow.timeOffsets[slotNumber]
 
+// Computes offset[slot] from the API Specification-Data Endpoint
 export const getTimeOffsetForSlot = (
   slotNumber: number,
   timeWindow: TimeWindow,
-): number => {
-  let offset = 0
-  let curSlot = 0
-  while (curSlot < slotNumber) {
-    offset += getTimeDeltaForSlot(curSlot, timeWindow)
-    curSlot += 1
-  }
-  return offset
-}
+): number => timeWindow.timeOffsets[slotNumber]
 
 export const getTimeRangeFor = (scale: number): TimeRange => {
   const now = new Date().getTime()
