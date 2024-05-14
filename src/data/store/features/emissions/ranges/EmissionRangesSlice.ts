@@ -13,6 +13,7 @@ import {
   VisibleData,
   EmissionCategory,
   EmissionProtocol,
+  ChartState,
 } from "data/domain/types/emissions/EmissionTypes"
 import {
   IdTreeNode,
@@ -62,6 +63,28 @@ const initialState: EmissionRangeState = {
     timeRangeOfInterest: getTimeRangeFor(12),
     protocol: EmissionProtocol.BEGES,
   },
+  barChartState: {
+    timeWindow: "",
+    startDate: "",
+    endDate: "",
+    slots: "",
+    selectedSlot: "",
+    keys: "",
+    xaxis: null,
+    yaxis: null,
+  },
+  areaChartState: {
+    options: {},
+    timeWindow: "",
+    startDate: "",
+    endDate: "",
+    slots: "",
+    selectedSlot: "",
+    keys: "",
+    xaxis: null,
+    yaxis: null,
+  },
+  donutChartState: {},
 }
 
 const extractAreaHierarchy = (areas: IndexOf<GeographicalArea>): IdTreeNode[] =>
@@ -196,6 +219,27 @@ const setSelectedBusinessEntitiesReducer: CaseReducer<
   state.visibleData = { ...newVisibleData }
 }
 
+const setAreaChartReducer: CaseReducer<
+  EmissionRangeState,
+  PayloadAction<ChartState>
+> = (state, action) => {
+  state.areaChartState = action.payload
+}
+
+const setBarChartReducer: CaseReducer<
+  EmissionRangeState,
+  PayloadAction<ChartState>
+> = (state, action) => {
+  state.barChartState = action.payload
+}
+
+const setDonutChartReducer: CaseReducer<
+  EmissionRangeState,
+  PayloadAction<ChartState>
+> = (state, action) => {
+  state.donutChartState = action.payload
+}
+
 const setSelectedGeoAreasReducer: CaseReducer<
   EmissionRangeState,
   PayloadAction<number[]>
@@ -279,6 +323,9 @@ export const emissionsRangeSlice = createSlice({
     selectTimeRange: selectTimeRangeReducer,
     selectProtocol: selectProtocolReducer,
     clearFilterSelection: clearFilterSelectionsReducer,
+    setAreaChartState: setAreaChartReducer,
+    setBarChartState: setBarChartReducer,
+    setDonutChartState: setDonutChartReducer,
   },
   extraReducers: (builder) => {
     builder.addMatcher(
@@ -314,5 +361,8 @@ export const {
   clearFilterSelection,
   selectTimeRange,
   selectProtocol,
+  setAreaChartState,
+  setBarChartState,
+  setDonutChartState,
 } = emissionsRangeSlice.actions
 export default emissionsRangeSlice.reducer

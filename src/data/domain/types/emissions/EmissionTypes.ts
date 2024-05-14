@@ -1,3 +1,4 @@
+import { ApexOptions } from "apexcharts"
 import {
   BusinessEntity,
   CountryLocation,
@@ -91,6 +92,19 @@ export interface EmissionRetrievalParametersState {
   protocol: EmissionProtocol
 }
 
+export interface ChartState {
+  selectedStep?: string
+  options?: ApexOptions
+  timeWindow?: string
+  startDate?: string
+  endDate?: string
+  slots?: string
+  selectedSlot?: string
+  keys?: string
+  xaxis?: any[] | number[] | null
+  yaxis?: any[] | number[] | null
+}
+
 export interface EmissionRangeState {
   alignedIndexes: AlignedIndexes
   allPoints: EmissionDataPoint[]
@@ -98,4 +112,7 @@ export interface EmissionRangeState {
   overallTimeWindow: TimeWindow
   emissionFilterState: EmissionFilterState
   dataRetrievalParameters: EmissionRetrievalParametersState
+  barChartState: ChartState
+  areaChartState: ChartState
+  donutChartState: ChartState
 }

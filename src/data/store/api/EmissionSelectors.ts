@@ -54,3 +54,12 @@ export const selectVisibleEmissionsByCompany = (state: RootState) =>
 
 export const selectCoordinatesByCountry = (state: RootState) =>
   state.emissionRanges.visibleData.emissionsByCountry
+
+export const areaChartSelector = (state: RootState) =>
+  state.emissionRanges.areaChartState
+
+export const barChartSelector = (state: RootState) =>
+  state.emissionRanges.barChartState
+
+export const donutChartSelector = (state: RootState) =>
+  state.emissionRanges.donutChartState

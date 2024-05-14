@@ -5,7 +5,6 @@ import authImage from "assets/images/auth/auth_img.png"
 
 // project import
 import AuthLogin from "sections/auth/auth-forms/AuthLogin"
-import { width } from "@mui/system"
 
 // ================================|| LOGIN ||================================ //
 

@@ -1,14 +1,18 @@
 import EmissionByKeyStacked from "components/charts/emissions/EmissionByKeyStacked"
 import { ChartCard } from "components/natixarComponents/ChartCard/ChartCard"
-import { selectTimeWindow as timeWindowSelector } from "data/store/api/EmissionSelectors"
+import {
+  areaChartSelector,
+  selectTimeWindow as timeWindowSelector,
+} from "data/store/api/EmissionSelectors"
 import {
   emissionsGroupByTime,
   formatEmissionAmount,
 } from "data/domain/transformers/EmissionTransformers"
 import { EmissionDataPoint } from "data/domain/types/emissions/EmissionTypes"
 import { useMemo, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import useAsyncWork from "hooks/useAsyncWork"
+import { setAreaChartState } from "data/store/features/emissions/ranges/EmissionRangesSlice"
 
 export interface TotalEmissionByTimeProps {
   emissionPoints: EmissionDataPoint[]
@@ -33,6 +37,13 @@ const TotalEmissionByTimeSection = ({
   timeDetailUnit,
   setTimeDetailUnit,
 }: TotalEmissionByTimeProps) => {
+  const dispatch = useDispatch()
+  const payload = useSelector(areaChartSelector)
+  const setTimeUnit = (timeUnit: string | undefined) => {
+    payload.selectedSlot = timeUnit
+    dispatch(setAreaChartState(payload))
+  }
+
   const timeDetailSlots = useMemo(() => Object.keys(unitLayout), [unitLayout])
   const timeWindow = useSelector(timeWindowSelector)
 
@@ -74,7 +85,7 @@ const TotalEmissionByTimeSection = ({
       endDate={endDate}
       slots={timeDetailSlots}
       selectedSlot={timeDetailUnit}
-      setSelectedSlot={setTimeDetailUnit}
+      setSelectedSlot={setTimeUnit}
     >
       <EmissionByKeyStacked groupedData={groupedByTime} keys={allKeys} />
     </ChartCard>

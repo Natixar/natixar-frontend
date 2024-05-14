@@ -5,6 +5,9 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import { NatixarSectionTitle } from "./NatixarSectionTitle"
 import { CompareIcon } from "assets/icons/CompareIcon"
 import MainCard from "components/MainCard"
+import { setAreaChartState } from "data/store/features/emissions/ranges/EmissionRangesSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { areaChartSelector } from "data/store/api/EmissionSelectors"
 
 type ChartCardProps = {
   children: ReactNode
