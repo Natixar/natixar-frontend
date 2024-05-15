@@ -24,7 +24,7 @@ export const emissionRangesApi = createApi({
       }),
       transformResponse: (
         payload: EmissionRangesPayload[],
-      ): EmissionRangesPayload => payload[0],
+      ): EmissionRangesPayload => payload[0],  // Uses only the first response object
     }),
   }),
 })

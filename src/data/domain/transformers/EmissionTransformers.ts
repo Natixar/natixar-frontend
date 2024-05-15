@@ -18,6 +18,7 @@ import {
   slotsAreInSameYear,
 } from "./TimeTransformers"
 import { IndexOf } from "../types/structures/StructuralTypes"
+import { IndexesContainer } from "data/store/features/emissions/ranges/EndpointTypes"
 
 const emptyDecimal = ".0"
 
@@ -77,6 +78,8 @@ export const extractNameOfEra = (era: string | undefined) => {
   }
 }
 
+/* Calculate the total emission amount for a compressed data point
+ * using the formula on page 10 of API Specification-Data Endpoint Rev. D */
 const calculateTotalAmount = (
   dataPoint: CompressedDataPoint,
   timeWindow: TimeWindow,
@@ -84,46 +87,35 @@ const calculateTotalAmount = (
   const startTimeSlot = dataPoint[CdpLayoutItem.CDP_LAYOUT_START]
   const endTimeSlot = dataPoint[CdpLayoutItem.CDP_LAYOUT_END]
 
-  let currentTimeSlot = startTimeSlot
-  let totalAmount = 0
-  do {
-    const currentSlotDuration = getTimeDeltaForSlot(currentTimeSlot, timeWindow)
+  const duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE] * getTimeDeltaForSlot(startTimeSlot, timeWindow) +
+    dataPoint[CdpLayoutItem.CDP_LAYOUT_END_PERCENTAGE] * getTimeDeltaForSlot(endTimeSlot - 1, timeWindow) +
+    (getTimeOffsetForSlot(endTimeSlot - 1, timeWindow) - getTimeOffsetForSlot(startTimeSlot + 1, timeWindow))
 
-    let amount =
-      dataPoint[CdpLayoutItem.CDP_LAYOUT_INTENSITY] * currentSlotDuration
-    switch (currentTimeSlot) {
-      case startTimeSlot:
-        amount *= dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE]
-        break
-      case endTimeSlot:
-        amount *= dataPoint[CdpLayoutItem.CDP_LAYOUT_END_PERCENTAGE]
-        break
-      default:
-        break
-    }
-
-    totalAmount += amount
-    currentTimeSlot += 1
-  } while (currentTimeSlot <= endTimeSlot)
-
-  return totalAmount
+  // The data point is in kgCO2eq/s so duration in ms must be divided by 1000
+  return dataPoint[CdpLayoutItem.CDP_LAYOUT_INTENSITY] * duration / 1000
 }
 
 export const cdpToEdp = (
   cdp: CompressedDataPoint,
-  indexes: AlignedIndexes,
+  indexes: IndexesContainer,
+  alignedIndexes: AlignedIndexes,
   timeWindow: TimeWindow,
 ): EmissionDataPoint => {
-  const categoryId = cdp[CdpLayoutItem.CDP_LAYOUT_CATEGORY]
-  const category = indexes.categories[categoryId]
-  const scope = detectScope(category, indexes)
-  const origEra = category?.era ?? scope?.era ?? ""
-  const entityId = cdp[CdpLayoutItem.CDP_LAYOUT_ENTITY]
-  const company = detectCompany(entityId, indexes)
+  // The compressed data point indexes the arrays by position
+  const categoryIndex = cdp[CdpLayoutItem.CDP_LAYOUT_CATEGORY]
+  const category = indexes.category[categoryIndex]
+  const categoryId = category.id
+  const scope = detectScope(category, alignedIndexes)
+  const origEra = category?.era ?? scope?.era ?? ""  // This fallback can only work with incorrect hierarchies
+  const entityIndex = cdp[CdpLayoutItem.CDP_LAYOUT_ENTITY]
+  const entityId = indexes.entity[entityIndex].id
+  const company = detectCompany(entityId, alignedIndexes)
 
-  const geoAreaId = cdp[CdpLayoutItem.CDP_LAYOUT_AREA]
-  const geoArea = indexes.areas[geoAreaId]
-  const country = detectCountry(geoAreaId, indexes)
+  const geoAreaIndex = cdp[CdpLayoutItem.CDP_LAYOUT_AREA]
+  const geoAreaId = indexes.area[geoAreaIndex].id
+  const geoArea = alignedIndexes.areas[geoAreaId]
+  const country = detectCountry(geoAreaId, alignedIndexes)
+  // BUG: Only Unit and Location have details with lat/long. Country does not.
   const countryLocation: CountryLocation = {
     lat: country.details?.lat ?? geoArea.details?.lat ?? 0,
     lon: country.details?.long ?? geoArea.details?.long ?? 0,
@@ -191,6 +183,7 @@ export const emissionsGroupByTime = (
 ): Record<string, Record<string, number>> => {
   const result: Record<string, Record<string, number>> = {}
 
+
   const minTime =
     _.minBy(points, (point) => point.startTimeSlot)?.startTimeSlot ?? 0
   const maxTime =
@@ -198,11 +191,14 @@ export const emissionsGroupByTime = (
 
   const showYear = !slotsAreInSameYear(minTime, maxTime, timeWindow)
 
+  // Loop over all emission points defined in data/domain/types/emissions/EmissionTypes.ts#L9
   points.forEach((emissionPoint) => {
     const categoryEra = emissionPoint.categoryEraName
+    // Initialize result for era if needed TODO: swap for category code
     if (typeof result[categoryEra] === "undefined") {
       result[categoryEra] = {}
     }
+    // Define short name
     const byCategory = result[categoryEra]
 
     let currentTimeSlot = emissionPoint.startTimeSlot

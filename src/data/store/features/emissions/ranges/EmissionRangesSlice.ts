@@ -56,6 +56,7 @@ const initialState: EmissionRangeState = {
     startTimestamp: 0,
     endTimestamp: 0,
     timeStepInSecondsPattern: [],
+    timeOffsets: [],
   },
   emissionFilterState: { ...initialFilterState },
   dataRetrievalParameters: {
@@ -173,12 +174,39 @@ const extractVisibleData = (
   }
 }
 
-const extractTimeWindow = (endpointTW: EndpointTimeWindow): TimeWindow => ({
-  startTimestamp: new Date(endpointTW.start).getTime(),
-  endTimestamp: new Date(endpointTW.end).getTime(),
-  timeStepInSecondsPattern:
-    typeof endpointTW.step === "number" ? [endpointTW.step] : endpointTW.step,
-})
+/* Compute the timestamps at the beginning of each time slot, plus the endTimestamp to finish the last slot. */
+const computeTimeOffset = (startTimestamp: number, endTimestamp: number, timeStepInSecondsPattern: number[]): number[] => {
+  const timeOffsets: number[] = [];
+  const n: number = timeStepInSecondsPattern.length;
+
+  // Compute time offsets for each pattern step in milliseconds
+  let sum = 0   // first value pushed
+  let index = 0
+
+  do {
+    timeOffsets.push(sum)
+    sum += timeStepInSecondsPattern[index % n] * 1000
+    index++
+  } while (sum < endTimestamp)
+
+  timeOffsets.push(endTimestamp - startTimestamp) // last value pushed
+
+  return timeOffsets
+}
+
+/* Fills the TimeWindow structure based on API endpoint response. */
+const extractTimeWindow = (endpointTW: EndpointTimeWindow): TimeWindow => {
+  const startTimestamp = new Date(endpointTW.start).getTime(); // Convert start time once
+  const endTimestamp = new Date(endpointTW.end).getTime();     // Convert end time once
+  const pattern = Array.isArray(endpointTW.step) ? endpointTW.step : [endpointTW.step]
+
+  return {
+    startTimestamp: startTimestamp,
+    endTimestamp: endTimestamp,
+    timeStepInSecondsPattern: pattern,
+    timeOffsets: computeTimeOffset(startTimestamp, endTimestamp, pattern)
+  }
+}
 
 const setSelectedBusinessEntitiesReducer: CaseReducer<
   EmissionRangeState,
@@ -287,7 +315,7 @@ export const emissionsRangeSlice = createSlice({
         const alignedIndexes = alignIndexes(action.payload.indexes)
         const timeWindow = extractTimeWindow(action.payload.time_range)
         const allPoints = action.payload.data.map((cdp) =>
-          cdpToEdp(cdp, alignedIndexes, timeWindow),
+          cdpToEdp(cdp, action.payload.indexes, alignedIndexes, timeWindow),
         )
         // const availableFilters = extractFilters(alignedIndexes)
         const visibleData = extractVisibleData(
