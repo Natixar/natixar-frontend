@@ -69,6 +69,7 @@ const ReportGeneratorControl = ({
           indexes={indexes}
           onGenerateClick={onGenerateClick}
           requestParameters={requestParameters}
+          handleClose={handleClose}
         />
       </Modal>
     </Box>

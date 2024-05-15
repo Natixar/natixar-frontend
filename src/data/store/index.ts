@@ -10,12 +10,14 @@ import { unknownMappingsApi } from "./features/codemappings/UnknownCodeMappingsC
 import { networkCheckApi } from "./features/networkIndication/NetworkCheckClient"
 import { fileUploadApi } from "./features/fileupload/FileUploadClient"
 import { reportGenerationApi } from "./features/reports/ReportGenerationClient"
+import ChartFilterSlice from "./features/chartFilter/ChartFilterSlice"
 
 export const store = configureStore({
   reducer: {
     emissionRanges: EmissionRangesSlice,
     unknownCodeMappings: UnknownCodeMappingsSlice,
     mappingToEdit: MappingToEditSlice,
+    chartFilterState: ChartFilterSlice,
     [emissionRangesApi.reducerPath]: emissionRangesApi.reducer,
     [unknownMappingsApi.reducerPath]: unknownMappingsApi.reducer,
     [networkCheckApi.reducerPath]: networkCheckApi.reducer,

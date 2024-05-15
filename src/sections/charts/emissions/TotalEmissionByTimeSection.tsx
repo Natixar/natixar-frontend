@@ -9,6 +9,7 @@ import { EmissionDataPoint } from "data/domain/types/emissions/EmissionTypes"
 import { useMemo, useState } from "react"
 import { useSelector } from "react-redux"
 import useAsyncWork from "hooks/useAsyncWork"
+import TotalEmissions from "../../../assets/images/chart-filter-images/Total-Emissions.png"
 
 export interface TotalEmissionByTimeProps {
   emissionPoints: EmissionDataPoint[]
@@ -19,6 +20,7 @@ export interface TotalEmissionByTimeProps {
       (timeStrA: string, timeStrB: string) => number,
     ]
   >
+  thumbnail: string
   startDate: Date
   endDate: Date
   timeDetailUnit: string
@@ -75,6 +77,8 @@ const TotalEmissionByTimeSection = ({
       slots={timeDetailSlots}
       selectedSlot={timeDetailUnit}
       setSelectedSlot={setTimeDetailUnit}
+      thumbnail={TotalEmissions}
+      sectionId="section2"
     >
       <EmissionByKeyStacked groupedData={groupedByTime} keys={allKeys} />
     </ChartCard>

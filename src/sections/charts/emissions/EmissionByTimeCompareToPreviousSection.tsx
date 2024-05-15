@@ -10,6 +10,7 @@ import {
 import EmissionByKeyComparison from "components/charts/emissions/EmissionByKeyComparison"
 import useAsyncWork from "hooks/useAsyncWork"
 import { TotalEmissionByTimeProps } from "./TotalEmissionByTimeSection"
+import StackedBarsCO2 from "../../../assets/images/chart-filter-images/stackedBarsCO2.png"
 
 const EmissionByTimeCompareToPreviousSection = ({
   emissionPoints,
@@ -107,6 +108,8 @@ const EmissionByTimeCompareToPreviousSection = ({
       showCompareButton
       compare={showComparison}
       setCompare={setShowComparison}
+      thumbnail={StackedBarsCO2}
+      sectionId="section3"
     >
       <EmissionByKeyComparison
         dataSetA={datasetA}
