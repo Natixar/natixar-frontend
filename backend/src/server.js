@@ -61,7 +61,7 @@ app.post("/mappings", express.json(), (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/api/v0/data/ranges", express.json(), function (req, res) {
+app.get("/api/v0/data/ranges", function (req, res) {
   //const { start, end } = JSON.parse(req.query.time_ranges)[0];
   const protocol = req.query.protocol; // Get the protocol parameter from the query string
 
