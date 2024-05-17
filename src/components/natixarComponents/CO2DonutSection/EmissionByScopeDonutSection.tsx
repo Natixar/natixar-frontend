@@ -153,11 +153,12 @@ const EmissionByCategorySection = ({
         const era = extractNameOfEra(scope.era)
 
         // Make scope data with extra data for display
-        categoryAggregators[era] = {
+        const eraOrCodeKey = scope.code ? String(scope.code) : era
+        categoryAggregators[eraOrCodeKey] = {
           categoryId: scope.id,
           count: total,
           categoryName: scope.name,
-          categoryColor: getColorByCategory(era),
+          categoryColor: getColorByCategory(eraOrCodeKey),
           active: (scope.id === selectedScopeId && !scope.active
             ? true
             : false) as boolean,
