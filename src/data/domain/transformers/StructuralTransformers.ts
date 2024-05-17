@@ -85,6 +85,9 @@ export const expandId = (ids: number[], nodes: IdTreeNode[]): number[] => {
     return true
   }
 
+  // TODO This should never be necessary because the data points directly
+  //      reference categories, but was added because Upstream and Downstream
+  //      are mistakenly identified as categories.
   selectExpandedSubTree(foundNodes, addIdToResult)
   return result
 }
