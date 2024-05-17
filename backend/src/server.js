@@ -61,16 +61,38 @@ app.post("/mappings", express.json(), (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/api/v0/data/ranges", express.json(), function (req, res) {
-  //const { start, end } = JSON.parse(req.query.time_ranges)[0];
+app.get("/api/v0/data/ranges", function (req, res) {
+  const defaultRange = { start: "2022-01-01T00:00:00+01:00", end: "2024-01-01T00:00:00+01:00" };
+  let start, end;
+
+  if (req.query.time_ranges) {
+    try {
+      const ranges = JSON.parse(req.query.time_ranges)[0];
+      start = ranges.start;
+      end = ranges.end;
+    } catch (error) {
+      console.error("Error parsing time_ranges:", error);
+      res.status(400).send("Invalid JSON format frtime_rangs");
+    }
+  } else {
+    start = defaultRange.start;
+    end = defaultRange.end;
+  }
+
   const protocol = req.query.protocol; // Get the protocol parameter from the query string
 
   // Check if the protocol exists in the sampleEmissionData dictionary
   if (sampleEmissionData.hasOwnProperty(protocol)) {
-    // Send the data for the requested protocol
-    res
-      .contentType("application/json")
-      .send(sampleEmissionData[protocol]);
+    if (protocol === "begesv5") {
+      res
+        .contentType("application/json")
+        .send(appendSomeData(new Date(start), new Date(end)));
+    } else {
+      // Send the data for the requested protocol
+      res
+        .contentType("application/json")
+        .send(sampleEmissionData[protocol]);
+    }
   } else {
     // If the protocol is not found, send a 404 error with a message
     res

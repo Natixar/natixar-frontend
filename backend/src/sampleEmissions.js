@@ -1336,7 +1336,7 @@ const generateDataPoint = (start_time, end_time, time_scale, taxonomy) => {
       break;
   }
   let randomCategory = _.random(start, end)
-  
+
   // Compute final category, skipping scopes and other non-category 
   // members of the hierarchy.
   for (const ignored of categoriesToIgnore) {
@@ -1365,24 +1365,24 @@ const generateDataPoint = (start_time, end_time, time_scale, taxonomy) => {
     0.6,
     randomCompany,
     randomArea,
-    18,
+    randomThirdParty,
     randomCategory
   ]
 }
 
-const generateData = (start, end, scale, taxonomy) => {
+const generateData = (start_time, end_time, scale, taxonomy) => {
   let a = 0
   const newDataPoints = []
   while (a < 100) {
-    newDataPoints.push(generateDataPoint(start, end, scale, taxonomy))
+    newDataPoints.push(generateDataPoint(start_time, end_time, scale, taxonomy))
     a++
   }
   const resultDataCube = {...emissions_beges[0], data: newDataPoints}
-  if (start && start instanceof Date && !isNaN(start)) {
-    resultDataCube.time_range.start = start
+  if (start_time && start_time instanceof Date && !isNaN(start_time)) {
+    resultDataCube.time_range.start = start_time
   }
-  if (end && end instanceof Date && !isNaN(end)) {
-    resultDataCube.time_range.end = end
+  if (end_time && end_time instanceof Date && !isNaN(end_time)) {
+    resultDataCube.time_range.end = end_time
   }
   return [resultDataCube]
 }
