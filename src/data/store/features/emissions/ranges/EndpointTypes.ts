@@ -27,7 +27,11 @@ export interface EmissionRangesPayload {
 }
 
 export type TimeRangeScale = "m" | "h" | "d" | "w" | "M" | "Q" | "y"
-export type EndpointEmissionProtocol = "ghgprotocol" | "beges" | "begesv5"
+// TODO: remove commented out code. The specification does not define a limitative
+//       list of category taxonomies. The type is simply "string".
+//       Ensure formatProtocolForRangesEndpoint() is called to generate properly
+//       formatted query parameters.
+//export type EndpointEmissionProtocol = "ghgprotocol" | "beges" | "begesv5"
 
 export interface TimeRangeRequest {
   start: string
@@ -37,7 +41,7 @@ export interface TimeRangeRequest {
 
 export interface EmissionRangesRequest {
   timeRanges: TimeRangeRequest[]
-  protocol: EndpointEmissionProtocol
+  protocol: string  // TODO: Remove wrong type: EndpointEmissionProtocol
   scale: TimeRangeScale
 }
 
@@ -48,21 +52,18 @@ export type EmissionResponse = {
 
 export const formatProtocolForRangesEndpoint = (
   protocol: DomainEmissionProtocol,
-): EndpointEmissionProtocol => {
-  let result: EndpointEmissionProtocol
-  switch (protocol) {
-    case DomainEmissionProtocol.GHG:
-      result = "ghgprotocol"
-      break
-    case DomainEmissionProtocol.BEGES:
-      result = "beges"
-      break
-    case DomainEmissionProtocol.BEGESV5:
-      result = "begesv5"
-      break
-    default:
-      result = "ghgprotocol"
-      break
-  }
+): string => {
+  let result: string
+  // The specified algorithm from the human-readable taxonomy name to
+  // the 'protocol' query parameter is :
+  // - Remove all white space
+  // - Convert to lower case
+  // - Convert accented letters to their ASCII equivalent (no URL encoding)
+  // NFD is a form of normalization that converts all characters to their
+  // canonical decomposition into their base character and the combining
+  // diacritical mark.
+  result = protocol.replace(/\s/g, "").toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
   return result
 }
