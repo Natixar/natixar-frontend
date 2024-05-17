@@ -312,7 +312,9 @@ export const emissionsRangeSlice = createSlice({
     builder.addMatcher(
       emissionRangesApi.endpoints.getEmissionRanges.matchFulfilled,
       (state, action) => {
-        if (action.payload.status >= 200 && action.payload.status < 300) {
+        if (typeof action.payload.status === 'undefined') {
+          console.log(`The /ranges endpoint closed the connection without returning data.`)
+        } else if (action.payload.status >= 200 && action.payload.status < 300) {
           const emissions = action.payload.data[0]
           const alignedIndexes = alignIndexes(emissions.indexes)
           const timeWindow = extractTimeWindow(emissions.time_range)
@@ -332,7 +334,7 @@ export const emissionsRangeSlice = createSlice({
           state.overallTimeWindow = timeWindow
           // state.emissionFilterState = availableFilters
         } else {
-          console.log(`The /ranges endpoint returned HTTP ${action.payload.status}`)
+          console.log(`The /ranges endpoint returned the code HTTP ${action.payload.status}`)
         }
       }
     )

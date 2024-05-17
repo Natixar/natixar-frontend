@@ -43,7 +43,7 @@ export interface EmissionRangesRequest {
 
 export type EmissionResponse = {
   data: EmissionRangesPayload[];
-  status: number;
+  status: number | undefined;
 }
 
 export const formatProtocolForRangesEndpoint = (
