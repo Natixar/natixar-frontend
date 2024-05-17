@@ -83,10 +83,16 @@ app.get("/api/v0/data/ranges", function (req, res) {
 
   // Check if the protocol exists in the sampleEmissionData dictionary
   if (sampleEmissionData.hasOwnProperty(protocol)) {
-    // Send the data for the requested protocol
-    res
-      .contentType("application/json")
-      .send(sampleEmissionData[protocol]);
+    if (protocol === "begesv5") {
+      res
+        .contentType("application/json")
+        .send(appendSomeData(new Date(start), new Date(end)));
+    } else {
+      // Send the data for the requested protocol
+      res
+        .contentType("application/json")
+        .send(sampleEmissionData[protocol]);
+    }
   } else {
     // If the protocol is not found, send a 404 error with a message
     res
