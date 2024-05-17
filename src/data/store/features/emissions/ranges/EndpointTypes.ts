@@ -41,6 +41,11 @@ export interface EmissionRangesRequest {
   scale: TimeRangeScale
 }
 
+export type EmissionResponse = {
+  data: EmissionRangesPayload[];
+  status: number;
+}
+
 export const formatProtocolForRangesEndpoint = (
   protocol: DomainEmissionProtocol,
 ): EndpointEmissionProtocol => {

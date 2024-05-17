@@ -62,7 +62,23 @@ app.post("/mappings", express.json(), (req, res) => {
 });
 
 app.get("/api/v0/data/ranges", function (req, res) {
-  //const { start, end } = JSON.parse(req.query.time_ranges)[0];
+  const defaultRange = { start: "2022-01-01T00:00:00+01:00", end: "2024-01-01T00:00:00+01:00" };
+  let start, end;
+
+  if (req.query.time_ranges) {
+    try {
+      const ranges = JSON.parse(req.query.time_ranges)[0];
+      start = ranges.start;
+      end = ranges.end;
+    } catch (error) {
+      console.error("Error parsing time_ranges:", error);
+      res.status(400).send("Invalid JSON format frtime_rangs");
+    }
+  } else {
+    start = defaultRange.start;
+    end = defaultRange.end;
+  }
+
   const protocol = req.query.protocol; // Get the protocol parameter from the query string
 
   // Check if the protocol exists in the sampleEmissionData dictionary

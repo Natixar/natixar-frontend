@@ -12,7 +12,7 @@ import {
   EmissionDataPoint,
   VisibleData,
   EmissionCategory,
-  EmissionProtocol,
+  EmissionProtocol, CompressedDataPoint
 } from "data/domain/types/emissions/EmissionTypes"
 import {
   IdTreeNode,
@@ -312,26 +312,31 @@ export const emissionsRangeSlice = createSlice({
     builder.addMatcher(
       emissionRangesApi.endpoints.getEmissionRanges.matchFulfilled,
       (state, action) => {
-        const alignedIndexes = alignIndexes(action.payload.indexes)
-        const timeWindow = extractTimeWindow(action.payload.time_range)
-        const allPoints = action.payload.data.map((cdp) =>
-          cdpToEdp(cdp, action.payload.indexes, alignedIndexes, timeWindow),
-        )
-        // const availableFilters = extractFilters(alignedIndexes)
-        const visibleData = extractVisibleData(
-          allPoints,
-          alignedIndexes,
-          state.emissionFilterState,
-        )
+        if (action.payload.status >= 200 && action.payload.status < 300) {
+          const emissions = action.payload.data[0]
+          const alignedIndexes = alignIndexes(emissions.indexes)
+          const timeWindow = extractTimeWindow(emissions.time_range)
+          const allPoints = emissions.data.map((cdp: CompressedDataPoint) =>
+            cdpToEdp(cdp, emissions.indexes, alignedIndexes, timeWindow),
+          )
+          // const availableFilters = extractFilters(alignedIndexes)
+          const visibleData = extractVisibleData(
+            allPoints,
+            alignedIndexes,
+            state.emissionFilterState,
+          )
 
-        state.alignedIndexes = alignedIndexes
-        state.allPoints = allPoints
-        state.visibleData = visibleData
-        state.overallTimeWindow = timeWindow
-        // state.emissionFilterState = availableFilters
-      },
+          state.alignedIndexes = alignedIndexes
+          state.allPoints = allPoints
+          state.visibleData = visibleData
+          state.overallTimeWindow = timeWindow
+          // state.emissionFilterState = availableFilters
+        } else {
+          console.log(`The /ranges endpoint returned HTTP ${action.payload.status}`)
+        }
+      }
     )
-  },
+  }
 })
 
 export const {
