@@ -1,0 +1,563 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Natixar API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v0/data/ranges": {
+      "get": {
+        "summary": "Retrieve emission ranges data",
+        "parameters": [
+          {
+            "name": "scale",
+            "in": "query",
+            "description": "The scale of the emission ranges",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "m",
+                "h",
+                "d",
+                "w",
+                "M",
+                "Q",
+                "y"
+              ]
+            }
+          },
+          {
+            "name": "protocol",
+            "in": "query",
+            "description": "The protocol used for the emission ranges",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ghgprotocol",
+                "beges",
+                "begesv5"
+              ]
+            }
+          },
+          {
+            "name": "time_ranges",
+            "in": "query",
+            "description": "JSON string representing time ranges",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/TimeRangeRequest"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmissionRangesPayload"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/files": {
+      "post": {
+        "summary": "Upload files",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/files_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/network-information": {
+      "get": {
+        "summary": "Get network information",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "description": "Natixar health URL",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports": {
+      "post": {
+        "summary": "Generate a report",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmissionFilterState"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/unknownMappings": {
+      "get": {
+        "summary": "Retrieve current unknown mappings",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncompleteCodeMappingStorage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/unknownMappingIds": {
+      "get": {
+        "summary": "Retrieve current unknown mapping IDs",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mappings": {
+      "post": {
+        "summary": "Save filled mappings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CodeMapping"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TimeRangeRequest": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "scale": {
+            "type": "string",
+            "enum": [
+              "m",
+              "h",
+              "d",
+              "w",
+              "M",
+              "Q",
+              "y"
+            ]
+          }
+        }
+      },
+      "EndpointEmissionProtocol": {
+        "type": "string",
+        "enum": [
+          "ghgprotocol",
+          "beges",
+          "begesv5"
+        ]
+      },
+      "TimeRangeScale": {
+        "type": "string",
+        "enum": [
+          "m",
+          "h",
+          "d",
+          "w",
+          "M",
+          "Q",
+          "y"
+        ]
+      },
+      "BusinessEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "parent": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Company",
+              "Division",
+              "Step"
+            ]
+          },
+          "details": {
+            "$ref": "#/components/schemas/BusinessEntityDetails"
+          },
+          "image": {
+            "type": "string"
+          }
+        }
+      },
+      "BusinessEntityDetails": {
+        "type": "object",
+        "properties": {
+          "supplier": {
+            "type": "boolean"
+          },
+          "customer": {
+            "type": "boolean"
+          },
+          "ownOperation": {
+            "type": "boolean"
+          },
+          "financialControl": {
+            "type": "boolean"
+          },
+          "operationalControl": {
+            "type": "boolean"
+          },
+          "capital": {
+            "type": "boolean"
+          },
+          "registration": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          }
+        }
+      },
+      "GeographicalArea": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "parent": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "World region",
+              "Continent",
+              "Country",
+              "State",
+              "Region",
+              "County",
+              "City",
+              "Location",
+              "Unit"
+            ]
+          },
+          "details": {
+            "$ref": "#/components/schemas/GeographicalAreaDetails"
+          }
+        }
+      },
+      "GeographicalAreaDetails": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number"
+          },
+          "long": {
+            "type": "number"
+          },
+          "operatorId": {
+            "type": "number"
+          },
+          "ownerId": {
+            "type": "number"
+          }
+        }
+      },
+      "EmissionCategory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "parent": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "era": {
+            "type": "string"
+          }
+        }
+      },
+      "CompressedDataPoint": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      },
+      "EndpointTimeWindow": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "step": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "IndexesContainer": {
+        "type": "object",
+        "properties": {
+          "entity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusinessEntity"
+            }
+          },
+          "area": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GeographicalArea"
+            }
+          },
+          "category": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmissionCategory"
+            }
+          }
+        }
+      },
+      "EmissionRangesPayload": {
+        "type": "object",
+        "properties": {
+          "time_range": {
+            "$ref": "#/components/schemas/EndpointTimeWindow"
+          },
+          "indexes": {
+            "$ref": "#/components/schemas/IndexesContainer"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompressedDataPoint"
+            }
+          }
+        }
+      },
+      "File": {
+        "type": "string",
+        "format": "binary"
+      },
+      "NetworkInformation": {
+        "type": "string",
+        "format": "binary"
+      },
+      "EmissionFilterState": {
+        "type": "object",
+        "properties": {
+          "selectedBusinessEntities": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "selectedGeographicalAreas": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "selectedCategories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CodeMapping": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "tool": {
+            "type": "string"
+          },
+          "codeFromTool": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "goodsCode": {
+            "type": "string"
+          },
+          "precision": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timestamp": {
+            "type": "number"
+          }
+        }
+      },
+      "IncompleteCodeMappingStorage": {
+        "type": "object",
+        "properties": {
+          "mappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CodeMapping"
+            }
+          },
+          "currentIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recentKnownIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mostRecentTimestamp": {
+            "type": "number"
+          }
+        }
+      },
+      "files_body": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        }
+      }
+    }
+  }
+}
