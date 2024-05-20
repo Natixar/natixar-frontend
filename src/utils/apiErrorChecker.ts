@@ -9,7 +9,7 @@ const checkHTTPError = (state: any, action: any, callback: () => void) => {
     ).request.url,
   )
   console.log(
-    `The /${url.pathname.split("/").findLast((x) => x)} endpoint ${!action.payload.status ? "closed the connection without returning data." : `returned the code HTTP ${action.payload.status}`}`,
+    `The /${url.pathname.split("/").find((x: string, i: number, arr: string[]) => i === arr.length - 1)} endpoint ${!action.payload.status ? "closed the connection without returning data." : `returned the code HTTP ${action.payload.status}`}`,
   )
 }
 
