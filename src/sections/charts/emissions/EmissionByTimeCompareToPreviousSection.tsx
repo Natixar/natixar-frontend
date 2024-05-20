@@ -26,51 +26,13 @@ const EmissionByTimeCompareToPreviousSection = ({
     undefined,
   ])
   const [showComparison, setShowComparison] = useState(false)
-  const emissionPointsB = useMemo(
-    () =>
-      emissionPoints.map((ep) => {
-        const coef = Math.random()
-        return {
-          ...ep,
-          emissionIntensity: coef * ep.emissionIntensity,
-          totalEmissionAmount: coef * ep.totalEmissionAmount,
-        }
-      }),
-    [emissionPoints],
-  )
-
-  useAsyncWork(
-    () => {
-      const sumEmission = emissionPoints.reduce(
-        (acc, cur) => acc + cur.totalEmissionAmount,
-        0,
-      )
-
-      const sumEmissionB =
-        emissionPointsB?.reduce(
-          (acc, cur) => acc + cur.totalEmissionAmount,
-          0,
-        ) ?? 0
-
-      const percentage = emissionPointsB
-        ? (100.0 * (1.0 * sumEmission - sumEmissionB)) / sumEmissionB
-        : undefined
-      const result: [string, number?] = [
-        formatEmissionAmount(sumEmission),
-        percentage,
-      ]
-      return result
-    },
-    setEmissionData,
-    [emissionPoints, emissionPointsB],
-  )
 
   const [timeFormatter, timeSorter] = unitLayout[timeDetailUnit]
   const [datasetA, setDatasetA] = useState<
     Record<string, Record<string, number>>
   >({})
   const [datasetB, setDatasetB] = useState<
-    Record<string, Record<string, number>>
+    Record<string, Record<string, number | undefined>>
   >({})
 
   useAsyncWork(
@@ -78,10 +40,61 @@ const EmissionByTimeCompareToPreviousSection = ({
     setDatasetA,
     [emissionPoints, timeWindow, timeFormatter],
   )
+
   useAsyncWork(
-    () => emissionsGroupByTime(emissionPointsB, timeWindow, timeFormatter),
+    () => {
+      const emissionsDateTranslated: Record<
+        string,
+        Record<string, number | undefined>
+      > = { Operation: {} }
+      if (datasetA.Operation) {
+        Object.entries(datasetA.Operation).map(
+          ([key, _value], index, array) => {
+            const date = new Date(key)
+            date.setFullYear(date.getFullYear() - 1)
+            const dateF = new Intl.DateTimeFormat("en-US", {
+              month: "short",
+              year: "numeric",
+            }).format(date)
+            emissionsDateTranslated.Operation[key] = array.find(
+              ([keyFinder, _valueFinder]) => keyFinder === dateF,
+            )?.[1]
+            return { [key]: _value }
+          },
+        )
+      }
+      return emissionsDateTranslated
+    },
     setDatasetB,
-    [emissionPointsB, timeWindow, timeFormatter],
+    [emissionPoints, timeWindow, timeFormatter, datasetA],
+  )
+
+  useAsyncWork(
+    () => {
+      if (datasetA.Operation && datasetB.Operation) {
+        const sumEmission = Object.entries(datasetA.Operation).reduce<number>(
+          (a, [, c]) => a + c,
+          0,
+        )
+
+        const sumEmissionB = Object.entries(datasetB.Operation).reduce<number>(
+          (a, [, c]) => a + (c ?? 0),
+          0,
+        )
+
+        const percentage = datasetB.Operation
+          ? (100.0 * (1.0 * sumEmission - sumEmissionB)) / sumEmissionB
+          : undefined
+        const result: [string, number?] = [
+          formatEmissionAmount(sumEmission),
+          percentage,
+        ]
+        return result
+      }
+      return ["", 0] as [string, number?]
+    },
+    setEmissionData,
+    [datasetA, datasetB],
   )
 
   const allKeys = useMemo(() => {
