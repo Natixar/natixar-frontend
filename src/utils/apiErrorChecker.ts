@@ -1,5 +1,5 @@
 const checkHTTPError = (state: any, action: any, callback: () => void) => {
-  if (action.payload?.status === 200 && action.payload?.status === 206) {
+  if (action.payload?.status === 200 || action.payload?.status === 206) {
     callback()
     return
   }
