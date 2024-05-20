@@ -46,22 +46,26 @@ const EmissionByTimeCompareToPreviousSection = ({
       const emissionsDateTranslated: Record<
         string,
         Record<string, number | undefined>
-      > = { Operation: {} }
+      > = {}
       if (datasetA.Operation) {
-        Object.entries(datasetA.Operation).map(
-          ([key, _value], index, array) => {
-            const date = new Date(key)
-            date.setFullYear(date.getFullYear() - 1)
-            const dateF = new Intl.DateTimeFormat("en-US", {
-              month: "short",
-              year: "numeric",
-            }).format(date)
-            emissionsDateTranslated.Operation[key] = array.find(
-              ([keyFinder, _valueFinder]) => keyFinder === dateF,
-            )?.[1]
-            return { [key]: _value }
-          },
-        )
+        Object.keys(datasetA).map((key) => {
+          emissionsDateTranslated[key] = {}
+          Object.entries(datasetA[key]).map(
+            ([depthKey, _value], index, array) => {
+              const date = new Date(depthKey)
+              date.setFullYear(date.getFullYear() - 1)
+              const dateF = new Intl.DateTimeFormat("en-US", {
+                month: "short",
+                year: "numeric",
+              }).format(date)
+              emissionsDateTranslated[key][depthKey] = array.find(
+                ([keyFinder, _valueFinder]) => keyFinder === dateF,
+              )?.[1]
+              return { [depthKey]: _value }
+            },
+          )
+          return key
+        })
       }
       return emissionsDateTranslated
     },
