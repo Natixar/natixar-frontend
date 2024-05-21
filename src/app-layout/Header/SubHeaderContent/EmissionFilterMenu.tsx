@@ -143,6 +143,11 @@ const StyleLabel = () => ({
   marginBottom: 0.3,
 })
 
+/**
+ * hook to change style for selector value when needed
+ * @param labels string[]
+ * @returns
+ */
 const useConditionnalStyleToSelectorValue = (labels: string[]) => {
   const [conditionnalStyleToSelectValue, setConditionnalStyleToSelectValue] =
     useState({})
