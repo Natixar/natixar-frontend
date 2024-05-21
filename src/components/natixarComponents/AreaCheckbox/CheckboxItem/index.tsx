@@ -16,7 +16,7 @@ export const CheckboxItem = ({
   onCheckedListener,
   isSelected,
   children,
-  indeterminate = true,
+  indeterminate = false,
 }: CheckboxItemProps) => {
   const [expanded, setExpanded] = useState(isSelected)
 
