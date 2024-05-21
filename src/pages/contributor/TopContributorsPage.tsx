@@ -59,7 +59,7 @@ const TopContributorsPage = () => {
           position="relative"
         >
           <Button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(1)}
             sx={{ color: "primary.contrastText" }}
             variant="contained"
             startIcon={<ArrowLeftOutlined color="primary.contrastText" />}
