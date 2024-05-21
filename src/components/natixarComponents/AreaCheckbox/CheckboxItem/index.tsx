@@ -5,6 +5,7 @@ import IconButton from "../../../@extended/IconButton"
 
 type CheckboxItemProps = {
   label: string
+  indeterminate: boolean
   onCheckedListener?: (event: ChangeEvent<HTMLInputElement>) => void
   isSelected?: boolean
   children?: ReactNode
@@ -15,6 +16,7 @@ export const CheckboxItem = ({
   onCheckedListener,
   isSelected,
   children,
+  indeterminate = true,
 }: CheckboxItemProps) => {
   const [expanded, setExpanded] = useState(isSelected)
 
@@ -46,7 +48,11 @@ export const CheckboxItem = ({
         <FormControlLabel
           label={label}
           control={
-            <Checkbox checked={isSelected} onChange={onCheckedListener} />
+            <Checkbox
+              checked={isSelected}
+              onChange={onCheckedListener}
+              indeterminate={indeterminate}
+            />
           }
         />
       </Box>
