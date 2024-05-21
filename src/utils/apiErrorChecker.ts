@@ -1,3 +1,10 @@
+/**
+ * Check http code status in response and execute callback function when the status code are 200 or 206
+ * @param state
+ * @param action
+ * @param callback
+ * @returns
+ */
 const checkHTTPError = (state: any, action: any, callback: () => void) => {
   if (action.payload?.status === 200 || action.payload?.status === 206) {
     callback()
