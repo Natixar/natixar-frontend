@@ -1,14 +1,14 @@
 import { Box, Checkbox, FormControlLabel } from "@mui/material"
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons"
-import { ChangeEvent, ReactNode, useState } from "react"
+import { ChangeEvent, ReactElement, useState } from "react"
 import IconButton from "../../../@extended/IconButton"
 
 type CheckboxItemProps = {
   label: string
-  indeterminate: boolean
+  indeterminate?: boolean
   onCheckedListener?: (event: ChangeEvent<HTMLInputElement>) => void
   isSelected?: boolean
-  children?: ReactNode
+  children?: ReactElement
 }
 
 export const CheckboxItem = ({
@@ -41,6 +41,8 @@ export const CheckboxItem = ({
             color: "#000",
             borderRadius: "2px",
             borderColor: "#D9D9D9",
+            visibility: () =>
+              children?.props.children.length ? "visible" : "hidden",
           }}
         >
           {expanded ? <MinusOutlined /> : <PlusOutlined />}
