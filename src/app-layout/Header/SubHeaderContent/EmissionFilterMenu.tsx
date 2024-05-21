@@ -142,6 +142,24 @@ const StyleLabel = () => ({
   lineHeight: "24px",
   marginBottom: 0.3,
 })
+
+const useConditionnalStyleToSelectorValue = (labels: string[]) => {
+  const [conditionnalStyleToSelectValue, setConditionnalStyleToSelectValue] =
+    useState({})
+
+  useEffect(() => {
+    if (
+      labels.includes("All") ||
+      labels.filter((label) => label.endsWith("elements selected")).length > 0
+    ) {
+      setConditionnalStyleToSelectValue({ "font-style": "italic" })
+    } else {
+      setConditionnalStyleToSelectValue({})
+    }
+  }, [labels])
+  return conditionnalStyleToSelectValue
+}
+
 const EntityControlForm = memo(
   ({
     allEntities,
@@ -163,24 +181,8 @@ const EntityControlForm = memo(
       checkCallback,
     )
     const theme = useTheme()
-    const [conditionnalStyleToSelectValue, setConditionnalStyleToSelectValue] =
-      useState({})
-
-    const updateSelectStyleToItalicWhenHisValueIsACustomValue = () => {
-      if (
-        selectedLabels.includes("All") ||
-        selectedLabels.filter((label) => label.endsWith("elements selected"))
-          .length > 0
-      ) {
-        setConditionnalStyleToSelectValue({ "font-style": "italic" })
-      } else {
-        setConditionnalStyleToSelectValue({})
-      }
-    }
-
-    useEffect(() => {
-      updateSelectStyleToItalicWhenHisValueIsACustomValue()
-    }, [conditionnalStyleToSelectValue])
+    const conditionnalStyleToSelectValue =
+      useConditionnalStyleToSelectorValue(selectedLabels)
 
     return (
       <FormControl sx={{ mt: -3, width: 220 }}>
@@ -221,6 +223,7 @@ const AreaControlForm = memo(
   }) => {
     const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
     const theme = useTheme()
+    const conditionnalStyleToSelectValue = useConditionnalStyleToSelectorValue(selectedAreaLabels)
     const areaCheckboxes = areasToCheckboxes(
       allAreas,
       selectedAreas,
@@ -241,6 +244,7 @@ const AreaControlForm = memo(
         <Select
           value={selectedAreaLabels}
           renderValue={multiSelectJoiner}
+          sx={conditionnalStyleToSelectValue}
           multiple
         >
           {areaCheckboxes}
@@ -341,7 +345,17 @@ const GlobalFilterMenu = ({ closeDialog, ...sxProps }: Props) => {
   }, [selectedBusinessEntities])
 
   const areaLabel = useMemo(() => {
-    const areasNames = selectedAreas.map((id) => alignedIndexes.areas[id].name)
+    const areasNames: string[] = []
+    if (selectedAreas.length > 2) {
+      areasNames.push(`${selectedAreas.length} elements selected`)
+    } else if (!selectedAreas.length) {
+      // TODO Add All if all element are checked
+      areasNames.push("All")
+    } else {
+      areasNames.push(
+        ...(selectedAreas?.map((id) => alignedIndexes.areas[id].name) ?? []),
+      )
+    }
     areasNames.sort()
     return areasNames
   }, [selectedAreas])
