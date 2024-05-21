@@ -223,7 +223,8 @@ const AreaControlForm = memo(
   }) => {
     const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
     const theme = useTheme()
-    const conditionnalStyleToSelectValue = useConditionnalStyleToSelectorValue(selectedAreaLabels)
+    const conditionnalStyleToSelectValue =
+      useConditionnalStyleToSelectorValue(selectedAreaLabels)
     const areaCheckboxes = areasToCheckboxes(
       allAreas,
       selectedAreas,
