@@ -6,8 +6,8 @@ import MainCard from "components/MainCard"
 import { useNavigate, useParams } from "react-router-dom"
 import { ArrowLeftOutlined, RightOutlined } from "@ant-design/icons"
 import { selectAlignedIndexes } from "data/store/api/EmissionSelectors"
-import Breadcrumb from "../../components/@extended/Breadcrumbs"
 import { useSelector } from "react-redux"
+import Breadcrumb from "../../components/@extended/Breadcrumbs"
 
 // table data
 const createData = (year: number, methodology: string, amount: number) => ({
@@ -20,8 +20,6 @@ const createData = (year: number, methodology: string, amount: number) => ({
 const calculationMethods: any[] = [
   // createData(2024, "Emission Factors", 63.5),
 ]
-
-
 
 const CategoryAnalysis = () => {
   const { id: idStr } = useParams()
