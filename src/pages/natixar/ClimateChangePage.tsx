@@ -25,10 +25,9 @@ import {
   timestampToYear,
 } from "data/domain/transformers/TimeTransformers"
 import _ from "lodash"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import EmissionByCategorySection from "../../components/natixarComponents/CO2DonutSection/EmissionByScopeDonutSection"
 import { NatixarSectionTitle } from "components/natixarComponents/ChartCard/NatixarSectionTitle"
-import useConfig from "hooks/useConfig"
 
 // ==============================|| WIDGET - CHARTS ||============================== //
 
@@ -65,12 +64,6 @@ const NatixarChart = () => {
 
   const minDate = new Date(minTime)
   const maxDate = new Date(maxTime)
-
-  const { setIsShowExtraHeader } = useConfig()
-
-  useEffect(() => {
-    setIsShowExtraHeader(false)
-  }, [])
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={3}>
