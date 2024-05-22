@@ -159,16 +159,14 @@ const Breadcrumbs = ({
         {main.title}
       </Typography>
     )
-    const mainCardStyle = {
-      mb: 3,
-      borderRadius: 0,
-      ...(!card && { bgcolor: "transparent" }),
-      ...sx,
-    }
     breadcrumbContent = (
       <MainCard
         border={card}
-        sx={mainCardStyle}
+        sx={
+          card === false
+            ? { mb: 3, bgcolor: "transparent", ...sx }
+            : { mb: 3, ...sx }
+        }
         {...others}
         content={card}
         shadow="none"
@@ -282,16 +280,14 @@ const Breadcrumbs = ({
 
     // main
     if (item?.breadcrumbs !== false || custom) {
-      const mainCardStyle = {
-        mb: 3,
-        borderRadius: 0,
-        ...(!card && { bgcolor: "transparent" }),
-        ...sx,
-      }
       breadcrumbContent = (
         <MainCard
           border={card}
-          sx={mainCardStyle}
+          sx={
+            card === false
+              ? { mb: 3, bgcolor: "transparent", ...sx }
+              : { mb: 3, ...sx }
+          }
           {...others}
           content={card}
           shadow="none"
