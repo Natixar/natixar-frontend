@@ -126,7 +126,7 @@ const ScopePage = () => {
           <Stack
             direction="row"
             alignItems="center"
-            justifyContent="space-between"
+            justifyContent="center"
             width="100%"
             padding="10px 0px"
           >
