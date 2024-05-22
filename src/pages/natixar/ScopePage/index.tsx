@@ -1,8 +1,8 @@
-import { Button, Grid, Stack, Typography } from "@mui/material"
+import { Grid, Stack, Typography } from "@mui/material"
 import MainCard from "components/MainCard"
-import { ArrowLeftOutlined, RightOutlined } from "@ant-design/icons"
+import { RightOutlined } from "@ant-design/icons"
 
-import { NavLink, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { useSelector } from "react-redux"
 import {
   selectAlignedIndexes,
@@ -19,7 +19,7 @@ import {
   findNodeBy,
 } from "data/domain/transformers/StructuralTransformers"
 import { getColorByCategory } from "utils/CategoryColors"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { generalCategoryText } from "data/domain/types/emissions/CategoryDescriptions"
 import { getCategoryDescription } from "data/domain/transformers/DataDetectors"
 import {
@@ -27,10 +27,17 @@ import {
   ScopeTableItemProps,
 } from "../../../components/natixarComponents/ScopeTable"
 import Breadcrumb from "../../../components/@extended/Breadcrumbs"
+import useConfig from "hooks/useConfig"
 
 const ScopePage = () => {
   const { id: idStr } = useParams()
   const scopeId = parseInt(idStr!, 10)
+
+  const { setIsShowExtraHeader } = useConfig()
+
+  useEffect(() => {
+    setIsShowExtraHeader(true)
+  }, [])
 
   const { categories, categoryHierarchy } = useSelector(selectAlignedIndexes)
   const allPoints = useSelector(selectVisiblePoints)
@@ -123,15 +130,6 @@ const ScopePage = () => {
             width="100%"
             padding="10px 0px"
           >
-            <NavLink to="/">
-              <Button
-                sx={{ color: "primary.contrastText" }}
-                variant="contained"
-                startIcon={<ArrowLeftOutlined color="primary.contrastText" />}
-              >
-                Back
-              </Button>
-            </NavLink>
             <Breadcrumb
               custom
               title={false}
@@ -139,6 +137,7 @@ const ScopePage = () => {
               separator={RightOutlined}
               sx={{
                 mb: "0px !important",
+                marginInline: "auto",
               }}
             />
           </Stack>
