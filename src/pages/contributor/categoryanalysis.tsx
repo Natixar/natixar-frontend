@@ -1,13 +1,15 @@
 // material-ui
-import { Button, Grid, Typography, Stack } from "@mui/material"
+import { Grid, Typography, Stack } from "@mui/material"
 import { CategoryCard } from "sections/contributor/category-analysis/CategoryCard"
 import { CategoryCalcTable } from "components/natixarComponents/CategoryCalcTable"
 import MainCard from "components/MainCard"
-import { useNavigate, useParams } from "react-router-dom"
-import { ArrowLeftOutlined, RightOutlined } from "@ant-design/icons"
-import { selectAlignedIndexes } from "data/store/api/EmissionSelectors"
+import { useParams } from "react-router-dom"
+import useConfig from "hooks/useConfig"
+import { useEffect } from "react"
+import Breadcrumbs from "components/@extended/Breadcrumbs"
+import { RightOutlined } from "@ant-design/icons"
 import { useSelector } from "react-redux"
-import Breadcrumb from "../../components/@extended/Breadcrumbs"
+import { selectAlignedIndexes } from "data/store/api/EmissionSelectors"
 
 // table data
 const createData = (year: number, methodology: string, amount: number) => ({
@@ -24,7 +26,6 @@ const calculationMethods: any[] = [
 const CategoryAnalysis = () => {
   const { id: idStr } = useParams()
   const scopeId = parseInt(idStr!, 10)
-  const navigate = useNavigate()
 
   const alignedIndexes = useSelector(selectAlignedIndexes)
   const categoryName = alignedIndexes.categories[scopeId]?.name
@@ -40,24 +41,16 @@ const CategoryAnalysis = () => {
     },
   ]
 
+  const { setIsShowExtraHeader } = useConfig()
+
+  useEffect(() => {
+    setIsShowExtraHeader(true)
+  })
+
   return (
     <>
       <Stack>
-        <Button
-          onClick={() => {
-            navigate(-1)
-          }}
-          sx={{
-            color: "primary.contrastText",
-            width: "fit-content",
-            marginBottom: "1.9rem",
-          }}
-          variant="contained"
-          startIcon={<ArrowLeftOutlined color="primary.contrastText" />}
-        >
-          Back
-        </Button>
-        <Breadcrumb
+        <Breadcrumbs
           custom
           title={false}
           links={links}

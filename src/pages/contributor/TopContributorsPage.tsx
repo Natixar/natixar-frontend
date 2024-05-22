@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
-import { ArrowLeftOutlined, RightOutlined } from "@ant-design/icons"
+import { RightOutlined } from "@ant-design/icons"
 import { Button, Stack, Typography } from "@mui/material"
 import MainCard from "components/MainCard"
 import {
@@ -10,6 +10,8 @@ import {
 import TopContributorsSection from "sections/contributor/emissions-by-scope/TopContributorsSection"
 import { useAppDispatch } from "data/store"
 import { clearFilterSelection } from "data/store/features/emissions/ranges/EmissionRangesSlice"
+import useConfig from "hooks/useConfig"
+import { useEffect } from "react"
 import Breadcrumb from "../../components/@extended/Breadcrumbs"
 
 const TopContributorsPage = () => {
@@ -24,6 +26,12 @@ const TopContributorsPage = () => {
     dispatch(clearFilterSelection())
     navigate(`/contributors/dashboard`)
   }
+
+  const context = useConfig()
+
+  useEffect(() => {
+    context.setIsShowExtraHeader(true)
+  }, [])
 
   if (!Number.isFinite(categoryId)) {
     console.log(`Unable to parse category id ${idStr}`)
@@ -58,14 +66,6 @@ const TopContributorsPage = () => {
           width="100%"
           position="relative"
         >
-          <Button
-            onClick={() => navigate(1)}
-            sx={{ color: "primary.contrastText" }}
-            variant="contained"
-            startIcon={<ArrowLeftOutlined color="primary.contrastText" />}
-          >
-            Back
-          </Button>
           <Breadcrumb
             custom
             title={false}
