@@ -39,7 +39,7 @@ const TopContributorsPage = () => {
       to: "/",
     },
     {
-      title: `Category ${scopeId}`,
+      title: `Category ${alignedIndexes.categories[categoryId].code ?? alignedIndexes.categories[categoryId].name}`,
       to: `/contributors/scope/${scopeId}`,
     },
     {
