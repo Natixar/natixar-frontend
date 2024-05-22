@@ -259,6 +259,7 @@ const Breadcrumbs = ({
           aria-label="breadcrumb"
           maxItems={maxItems || 8}
           separator={separatorIcon}
+          sx={{ width: "50vw" }}
         >
           {links?.map((link: BreadcrumbLinkProps, index: number) => {
             CollapseIcon = link.icon ? link.icon : ApartmentOutlined
@@ -268,7 +269,14 @@ const Breadcrumbs = ({
                 key={index}
                 {...(link.to && { component: Link, to: link.to })}
                 variant={!link.to ? "subtitle1" : "h6"}
-                sx={{ textDecoration: "none" }}
+                sx={{
+                  textDecoration: "none",
+                  width: `${100 / links.length}%`,
+                  maxWidth: "fit-content",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
                 color={!link.to ? "text.primary" : "#1890FF"}
               >
                 {link.icon && <CollapseIcon style={iconSX} />}
