@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux"
-import { NavLink, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { ArrowLeftOutlined, RightOutlined } from "@ant-design/icons"
 import { Button, Stack, Typography } from "@mui/material"
 import MainCard from "components/MainCard"
@@ -39,11 +39,11 @@ const TopContributorsPage = () => {
       to: "/",
     },
     {
-      title: `${categoryName ?? "Total "} details`,
+      title: `Category ${alignedIndexes.categories[categoryId].code ?? alignedIndexes.categories[categoryId].name}`,
       to: `/contributors/scope/${scopeId}`,
     },
     {
-      title: `${categoryName ?? "Total "} top contributors`,
+      title: `${categoryName ?? "Total "} top contributors`, // For shorten name we can put top contributors to cat X
       to: "",
     },
   ]
