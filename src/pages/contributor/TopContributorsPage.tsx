@@ -39,11 +39,11 @@ const TopContributorsPage = () => {
       to: "/",
     },
     {
-      title: `${categoryName ?? "Total "} details`,
+      title: `Category ${scopeId}`,
       to: `/contributors/scope/${scopeId}`,
     },
     {
-      title: `${categoryName ?? "Total "} top contributors`,
+      title: `${categoryName ?? "Total "} top contributors`, // For shorten name we can put top contributors to cat X 
       to: "",
     },
   ]
