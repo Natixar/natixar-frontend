@@ -4,6 +4,8 @@ import { CategoryCard } from "sections/contributor/category-analysis/CategoryCar
 import { CategoryCalcTable } from "components/natixarComponents/CategoryCalcTable"
 import MainCard from "components/MainCard"
 import { useParams } from "react-router-dom"
+import useConfig from "hooks/useConfig"
+import { useEffect } from "react"
 
 // table data
 const createData = (year: number, methodology: string, amount: number) => ({
@@ -20,6 +22,12 @@ const calculationMethods: any[] = [
 const CategoryAnalysis = () => {
   const { id: idStr } = useParams()
   const scopeId = parseInt(idStr!, 10)
+
+  const { setIsShowExtraHeader } = useConfig()
+
+  useEffect(() => {
+    setIsShowExtraHeader(true)
+  })
 
   return (
     <>
