@@ -39,6 +39,16 @@ const CategoryAnalysis = () => {
             </Grid>
             <Grid item xs={12} md={12} xl={12}>
               <CategoryCalcTable data={calculationMethods} />
+              <p
+                style={{
+                  color: "#dc2626",
+                  margin: "0 auto",
+                  padding: "1rem 0",
+                  width: "fit-content",
+                }}
+              >
+                Fake data Displayed
+              </p>
             </Grid>
           </MainCard>
         </Grid>
