@@ -148,7 +148,14 @@ export const CategoryCard = ({
             {formattedEmissionAmount}
           </Typography>
         </Box>
-        <Box>
+        <Box
+          sx={{
+            border: "1px #dc2626 solid",
+            borderRadius: "28px",
+            padding: "20px",
+          }}
+          // remove above style when u remove fake data highlighter
+        >
           <Typography
             sx={{ fontWeight: 500, marginBottom: "20px" }}
             variant="h5"
@@ -190,6 +197,16 @@ export const CategoryCard = ({
               <ListItemText primary="Road transportation" />
             </ListItemButton>
           </List>
+          <p
+            style={{
+              color: "#dc2626",
+              margin: "0 auto",
+              padding: "1rem 0",
+              width: "fit-content",
+            }}
+          >
+            Fake data Displayed
+          </p>
         </Box>
       </Stack>
     </MainCard>
