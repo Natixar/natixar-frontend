@@ -5,7 +5,7 @@ import viteTsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   // depending on your application, base can also be "/"
   // base: process.env.VITE_APP_BASE_NAME,
-  base: './'
+  base: "./",
   plugins: [react(), viteTsconfigPaths()],
   define: {
     global: 'window'
