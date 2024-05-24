@@ -44,8 +44,6 @@ const AppLayout = () => {
   if (menuMasterLoading) return <Loader />
   const makeExtraPadding = pathnamesOfInterest.includes(pathname)
 
-  console.log("ttoto")
-
   return (
     <AuthGuard>
       <Box sx={{ display: "flex", width: "100%", minHeight: "100dvh" }}>

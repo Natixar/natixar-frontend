@@ -29,13 +29,13 @@ const App = () => {
           <Locales>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <ScrollTop>
-                <FusionAuthProvider
+                <RouterProvider router={router} />
+                {/* <FusionAuthProvider
                   clientID={authConfig.clientID}
                   serverUrl={authConfig.serverUrl}
                   redirectUri={authConfig.redirectUri}
                 >
-                  <RouterProvider router={router} />
-                </FusionAuthProvider>
+                </FusionAuthProvider> */}
               </ScrollTop>
             </LocalizationProvider>
           </Locales>
