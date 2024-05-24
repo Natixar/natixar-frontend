@@ -22,7 +22,6 @@ import { getFusionConfig } from "utils/route-guard/FusionConfiguration"
 
 const App = () => {
   const authConfig = getFusionConfig()
-  console.log("root")
   return (
     <ThemeCustomization>
       <Provider store={store}>
