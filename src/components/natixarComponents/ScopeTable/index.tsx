@@ -1,11 +1,9 @@
 // material-ui
 import {
-  Button,
   LinearProgress,
   linearProgressClasses,
   Link,
   Stack,
-  Box,
   SxProps,
   useTheme,
   Typography,
@@ -128,9 +126,9 @@ export const ScopeTable = ({ data, ...sxProps }: ScopeTableProps & SxProps) => {
       renderCell: (params) => (
         <NavLink to={`/contributors/top/scope/${params.row.category.id}`}>
           <Stack
-            direction={"row"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
             minWidth={50}
           >
             <Typography mr={2}>Details</Typography>
