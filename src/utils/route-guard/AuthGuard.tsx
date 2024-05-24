@@ -18,8 +18,6 @@ const AuthGuard = ({ children }: GuardProps) => {
     }
   }, [fusionIsEnabled, isAuthenticated, navigate, location])
 
-  console.log(isAuthenticated, fusionIsEnabled)
-
   return (
     <>
       {!fusionIsEnabled && children}
