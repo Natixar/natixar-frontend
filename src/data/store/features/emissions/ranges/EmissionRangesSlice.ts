@@ -12,7 +12,8 @@ import {
   EmissionDataPoint,
   VisibleData,
   EmissionCategory,
-  EmissionProtocol, CompressedDataPoint
+  EmissionProtocol,
+  CompressedDataPoint,
 } from "data/domain/types/emissions/EmissionTypes"
 import {
   IdTreeNode,
@@ -30,6 +31,7 @@ import {
 import { getTimeRangeFor } from "data/domain/transformers/TimeTransformers"
 import { EndpointTimeWindow, IndexesContainer } from "./EndpointTypes"
 import { emissionRangesApi } from "./EmissionRangesClient"
+import checkHTTPError from "utils/apiErrorChecker"
 
 const initialFilterState: EmissionFilterState = {
   selectedBusinessEntities: [],
@@ -312,9 +314,7 @@ export const emissionsRangeSlice = createSlice({
     builder.addMatcher(
       emissionRangesApi.endpoints.getEmissionRanges.matchFulfilled,
       (state, action) => {
-        if (typeof action.payload.status === 'undefined') {
-          console.log(`The /ranges endpoint closed the connection without returning data.`)
-        } else if (action.payload.status >= 200 && action.payload.status < 300) {
+        checkHTTPError(state, action, () => {
           const emissions = action.payload.data[0]
           const alignedIndexes = alignIndexes(emissions.indexes)
           const timeWindow = extractTimeWindow(emissions.time_range)
@@ -333,12 +333,10 @@ export const emissionsRangeSlice = createSlice({
           state.visibleData = visibleData
           state.overallTimeWindow = timeWindow
           // state.emissionFilterState = availableFilters
-        } else {
-          console.log(`The /ranges endpoint returned the code HTTP ${action.payload.status}`)
-        }
-      }
+        })
+      },
     )
-  }
+  },
 })
 
 export const {
