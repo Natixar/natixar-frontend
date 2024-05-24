@@ -16,10 +16,11 @@ import {
   desc,
   map,
 } from "@tidyjs/tidy"
-import { DataGrid, GridColDef, GridColTypeDef } from "@mui/x-data-grid"
+import { DataGrid, GridColDef, GridColTypeDef, GridRenderCellParams, GridTreeNodeWithRender } from "@mui/x-data-grid"
 import { Box, Link } from "@mui/material"
 import { formatEmissionAmount } from "data/domain/transformers/EmissionTransformers"
 import { LinkOutlined } from "@ant-design/icons"
+import { useNavigate } from "react-router"
 
 interface TopContributorsSectionParams {
   categoryId: number
@@ -32,6 +33,34 @@ const AWESOME_COLUMN: GridColTypeDef = {
   headerClassName: HEADER_CSS_CLASS,
 }
 
+const TableContributorLink = ({ params }: any) => {
+  const {
+    row: { company, country, companyId },
+  } = params
+  const navigate = useNavigate()
+
+  const handleLinkClick = () => {
+    navigate(`/contributors/analysis/${companyId}`)
+  }
+
+  return (
+    <Link
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        columnGap: "5px",
+        textDecoration: "underline",
+        cursor: "pointer",
+      }}
+      onClick={handleLinkClick}
+    >
+      {company} - {country}
+      <LinkOutlined />
+    </Link>
+  )
+}
+
+
 const columnDefinitions: GridColDef[] = [
   {
     ...AWESOME_COLUMN,
@@ -40,21 +69,7 @@ const columnDefinitions: GridColDef[] = [
     sortable: false,
     hideable: false,
     flex: 1,
-    renderCell: (params) => (
-      <Link
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          columnGap: "5px",
-          textDecoration: "underline",
-          cursor: "pointer",
-        }}
-        href={`/contributors/analysis/${params.row.companyId}`}
-      >
-        {params.row.company} - {params.row.country}
-        <LinkOutlined />
-      </Link>
-    ),
+    renderCell: (params) => <TableContributorLink params={params} />,
   },
   {
     ...AWESOME_COLUMN,
