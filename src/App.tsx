@@ -22,6 +22,7 @@ import { getFusionConfig } from "utils/route-guard/FusionConfiguration"
 
 const App = () => {
   const authConfig = getFusionConfig()
+  console.log("root")
   return (
     <ThemeCustomization>
       <Provider store={store}>
@@ -29,13 +30,13 @@ const App = () => {
           <Locales>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <ScrollTop>
-                <RouterProvider router={router} />
-                {/* <FusionAuthProvider
+                <FusionAuthProvider
                   clientID={authConfig.clientID}
                   serverUrl={authConfig.serverUrl}
                   redirectUri={authConfig.redirectUri}
                 >
-                </FusionAuthProvider> */}
+                  <RouterProvider router={router} />
+                </FusionAuthProvider>
               </ScrollTop>
             </LocalizationProvider>
           </Locales>
