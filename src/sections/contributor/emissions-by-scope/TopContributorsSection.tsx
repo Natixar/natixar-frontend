@@ -16,7 +16,7 @@ import {
   desc,
   map,
 } from "@tidyjs/tidy"
-import { DataGrid, GridColDef, GridColTypeDef, GridRenderCellParams, GridTreeNodeWithRender } from "@mui/x-data-grid"
+import { DataGrid, GridColDef, GridColTypeDef } from "@mui/x-data-grid"
 import { Box, Link } from "@mui/material"
 import { formatEmissionAmount } from "data/domain/transformers/EmissionTransformers"
 import { LinkOutlined } from "@ant-design/icons"
@@ -59,7 +59,6 @@ const TableContributorLink = ({ params }: any) => {
     </Link>
   )
 }
-
 
 const columnDefinitions: GridColDef[] = [
   {
