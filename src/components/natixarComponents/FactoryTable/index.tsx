@@ -1,9 +1,7 @@
 // material-ui
 import {
   Box,
-  Button,
   Grid,
-  LinearProgress,
   Link,
   Table,
   TableBody,
@@ -14,7 +12,7 @@ import {
   Typography,
 } from "@mui/material"
 import { LinkOutlined } from "@ant-design/icons"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import useConfig from "hooks/useConfig"
 
 // ===========================|| DATA WIDGET - PROJECT TABLE CARD ||=========================== //
@@ -30,7 +28,6 @@ type ScopeTableProps = {
 export const FactoryTable = ({ data }: ScopeTableProps) => {
   const { setIsShowExtraHeader } = useConfig()
   const navigate = useNavigate()
-  const location = useLocation()
 
   const handleOnSourceClick = () => {
     setIsShowExtraHeader(true)
