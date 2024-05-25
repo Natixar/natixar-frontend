@@ -37,7 +37,7 @@ const CategoryAnalysis = () => {
     },
     {
       title: `${categoryName ?? " Total "} top contributors`,
-      to: `/contributors/scope/top/${scopeId}`,
+      to: `/contributors/top/scope/${scopeId}`,
     },
   ]
 
