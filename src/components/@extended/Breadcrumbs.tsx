@@ -257,6 +257,10 @@ const Breadcrumbs = ({
           aria-label="breadcrumb"
           maxItems={maxItems || 8}
           separator={separatorIcon}
+          sx={{
+            width: "50vw",
+            "& .MuiBreadcrumbs-ol": { justifyContent: "center" },
+          }}
         >
           {links?.map((link: BreadcrumbLinkProps, index: number) => {
             CollapseIcon = link.icon ? link.icon : ApartmentOutlined

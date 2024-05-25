@@ -61,7 +61,7 @@ const UnknownMappingsHeader = memo(
           underline="always"
           target="_blank"
           rel="noopener noreferrer"
-          href={CODES_REGISTRY_URL}
+          href={CODES_REGISTRY_URL} // external link
         >
           Public code base
         </Link>
