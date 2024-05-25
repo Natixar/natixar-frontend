@@ -1,17 +1,15 @@
 // material-ui
 import {
-  Button,
   LinearProgress,
   linearProgressClasses,
   Link,
   Stack,
-  Box,
   SxProps,
   useTheme,
   Typography,
 } from "@mui/material"
 import { LinkOutlined } from "@ant-design/icons"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { formatEmissionAmount } from "data/domain/transformers/EmissionTransformers"
 import { EmissionCategory } from "data/domain/types/emissions/EmissionTypes"
 import { DataGrid, GridColDef, GridColTypeDef } from "@mui/x-data-grid"
@@ -38,6 +36,11 @@ const AWESOME_COLUMN: GridColTypeDef = {
 
 export const ScopeTable = ({ data, ...sxProps }: ScopeTableProps & SxProps) => {
   const theme = useTheme()
+  const navigate = useNavigate()
+
+  const handleLinkClick = (params: any) => {
+    navigate(`/contributors/category-analysis/${params.row.category.id}`)
+  }
 
   const columnDefinitions: GridColDef[] = [
     {
@@ -60,7 +63,7 @@ export const ScopeTable = ({ data, ...sxProps }: ScopeTableProps & SxProps) => {
             cursor: "pointer",
             textOverflow: "ellipsis",
           }}
-          href={`/contributors/category-analysis/${params.row.category.id}`}
+          onClick={() => handleLinkClick(params)}
         >
           <span
             style={{
@@ -127,9 +130,9 @@ export const ScopeTable = ({ data, ...sxProps }: ScopeTableProps & SxProps) => {
       renderCell: (params) => (
         <NavLink to={`/contributors/top/scope/${params.row.category.id}`}>
           <Stack
-            direction={"row"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
             minWidth={50}
           >
             <Typography mr={2}>Details</Typography>
