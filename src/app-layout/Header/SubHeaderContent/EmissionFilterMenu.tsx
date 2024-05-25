@@ -41,7 +41,14 @@ import {
   updateFilterSelection as updateFilterAction,
 } from "data/store/features/emissions/ranges/EmissionRangesSlice"
 import _ from "lodash"
-import { ChangeEvent, memo, useCallback, useMemo, useState } from "react"
+import {
+  ChangeEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
 import { useSelector } from "react-redux"
 
 // import { DateRangePicker, SingleInputDateRangeField } from '@mui/x-date-pickers-pro';
@@ -135,6 +142,29 @@ const StyleLabel = () => ({
   lineHeight: "24px",
   marginBottom: 0.3,
 })
+
+/**
+ * hook to change style for selector value when needed
+ * @param labels string[]
+ * @returns
+ */
+const useConditionnalStyleToSelectorValue = (labels: string[]) => {
+  const [conditionnalStyleToSelectValue, setConditionnalStyleToSelectValue] =
+    useState({})
+
+  useEffect(() => {
+    if (
+      labels.includes("All") ||
+      labels.filter((label) => label.endsWith("elements selected")).length > 0
+    ) {
+      setConditionnalStyleToSelectValue({ "font-style": "italic" })
+    } else {
+      setConditionnalStyleToSelectValue({})
+    }
+  }, [labels])
+  return conditionnalStyleToSelectValue
+}
+
 const EntityControlForm = memo(
   ({
     allEntities,
@@ -156,6 +186,9 @@ const EntityControlForm = memo(
       checkCallback,
     )
     const theme = useTheme()
+    const conditionnalStyleToSelectValue =
+      useConditionnalStyleToSelectorValue(selectedLabels)
+
     return (
       <FormControl sx={{ mt: -3, width: 220 }}>
         <Typography sx={StyleLabel}>
@@ -166,7 +199,12 @@ const EntityControlForm = memo(
           Business Entity / Facility
         </Typography>
         {/* <InputLabel>Business Entity / Facility</InputLabel> */}
-        <Select value={selectedLabels} renderValue={multiSelectJoiner} multiple>
+        <Select
+          value={selectedLabels}
+          renderValue={multiSelectJoiner}
+          sx={conditionnalStyleToSelectValue}
+          multiple
+        >
           {entityCheckboxes}
         </Select>
       </FormControl>
@@ -190,6 +228,8 @@ const AreaControlForm = memo(
   }) => {
     const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
     const theme = useTheme()
+    const conditionnalStyleToSelectValue =
+      useConditionnalStyleToSelectorValue(selectedAreaLabels)
     const areaCheckboxes = areasToCheckboxes(
       allAreas,
       selectedAreas,
@@ -210,6 +250,7 @@ const AreaControlForm = memo(
         <Select
           value={selectedAreaLabels}
           renderValue={multiSelectJoiner}
+          sx={conditionnalStyleToSelectValue}
           multiple
         >
           {areaCheckboxes}
@@ -292,15 +333,35 @@ const GlobalFilterMenu = ({ closeDialog, ...sxProps }: Props) => {
   )
 
   const entityLabel = useMemo(() => {
-    const entityNames = selectedBusinessEntities.map(
-      (id) => alignedIndexes.entities[id].name,
-    )
+    const entityNames: string[] = []
+    if (selectedBusinessEntities.length > 2) {
+      entityNames.push(`${selectedBusinessEntities.length} elements selected`)
+    } else if (!selectedBusinessEntities.length) {
+      // TODO Add All if all element are checked
+      entityNames.push("All")
+    } else {
+      entityNames.push(
+        ...(selectedBusinessEntities?.map(
+          (id) => alignedIndexes.entities[id].name,
+        ) ?? []),
+      )
+    }
     entityNames.sort()
     return entityNames
   }, [selectedBusinessEntities])
 
   const areaLabel = useMemo(() => {
-    const areasNames = selectedAreas.map((id) => alignedIndexes.areas[id].name)
+    const areasNames: string[] = []
+    if (selectedAreas.length > 2) {
+      areasNames.push(`${selectedAreas.length} elements selected`)
+    } else if (!selectedAreas.length) {
+      // TODO Add All if all element are checked
+      areasNames.push("All")
+    } else {
+      areasNames.push(
+        ...(selectedAreas?.map((id) => alignedIndexes.areas[id].name) ?? []),
+      )
+    }
     areasNames.sort()
     return areasNames
   }, [selectedAreas])
