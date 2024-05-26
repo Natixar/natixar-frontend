@@ -217,7 +217,7 @@ export const emissionsGroupByTime = (
         byCategory[timeKey] = 0
       }
 
-      let amount = emissionPoint.emissionIntensity * currentSlotDelta
+      let amount = emissionPoint.emissionIntensity * currentSlotDelta / 1000  # intensity in kg/s, slot delta in ms
       switch (currentTimeSlot) {
         case emissionPoint.startTimeSlot:
           amount *= emissionPoint.startEmissionPercentage
