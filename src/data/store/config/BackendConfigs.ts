@@ -9,7 +9,10 @@ That's why we have two basequeries here.
 */
 
 export const backendBaseQuery = () =>
-  fetchBaseQuery({ baseUrl: import.meta.env.VITE_NATIXAR_BACKEND_URL })
+  fetchBaseQuery({
+    baseUrl: import.meta.env.VITE_NATIXAR_BACKEND_URL,
+    credentials: "include",
+  })
 
 export const backupBackendBaseQuery = () =>
   fetchBaseQuery({ baseUrl: import.meta.env.VITE_COLLABRIUM_BACKEND_URL })

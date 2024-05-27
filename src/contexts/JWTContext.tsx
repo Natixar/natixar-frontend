@@ -6,13 +6,8 @@ import { IFusionAuthContext, useFusionAuth } from "@fusionauth/react-sdk"
 
 const JWTContext = createContext<IFusionAuthContext | null>(null)
 
-export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
-  console.log(useFusionAuth())
-  return (
-    <JWTContext.Provider value={useFusionAuth()}>
-      {children}
-    </JWTContext.Provider>
-  )
-}
+export const JWTProvider = ({ children }: { children: React.ReactElement }) => (
+  <JWTContext.Provider value={useFusionAuth()}>{children}</JWTContext.Provider>
+)
 
 export default JWTContext
