@@ -7,8 +7,8 @@ import { format, isSameYear, parse, subMonths } from "date-fns"
 import { DateTime } from "luxon"
 
 const FORMAT = {
-  hour: " p",
-  day: "PP",
+  hour: "H",
+  day: "dd",
   month: "MMM",
   month_with_year: "MMM yyyy",
   quarter: "Qq",
