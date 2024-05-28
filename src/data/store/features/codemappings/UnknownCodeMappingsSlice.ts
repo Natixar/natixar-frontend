@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import _ from "lodash"
+import checkHTTPError from "utils/apiErrorChecker"
 import { IncompleteCodeMappingStorage } from "./Types"
 import { unknownMappingsApi } from "./UnknownCodeMappingsClient"
 
@@ -19,14 +20,18 @@ export const unknownCodesSlice = createSlice({
       .addMatcher(
         unknownMappingsApi.endpoints.getCurrentUnknownMappings.matchFulfilled,
         (state, action) => {
-          Object.assign(state, action.payload)
-          state.mappings = _.sortBy(state.mappings, "timestamp").reverse()
+          checkHTTPError(state, action, () => {
+            Object.assign(state, action.payload)
+            state.mappings = _.sortBy(state.mappings, "timestamp").reverse()
+          })
         },
       )
       .addMatcher(
         unknownMappingsApi.endpoints.getCurrentUnknownMappingIds.matchFulfilled,
         (state, action) => {
-          state.recentKnownIds = action.payload
+          checkHTTPError(state, action, () => {
+            state.recentKnownIds = action.payload
+          })
         },
       )
   },

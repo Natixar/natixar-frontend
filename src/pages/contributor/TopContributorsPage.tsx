@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux"
+import { useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { RightOutlined } from "@ant-design/icons"
 import { Button, Stack, Typography } from "@mui/material"
@@ -11,7 +12,6 @@ import TopContributorsSection from "sections/contributor/emissions-by-scope/TopC
 import { useAppDispatch } from "data/store"
 import { clearFilterSelection } from "data/store/features/emissions/ranges/EmissionRangesSlice"
 import useConfig from "hooks/useConfig"
-import { useEffect } from "react"
 import Breadcrumb from "../../components/@extended/Breadcrumbs"
 
 const TopContributorsPage = () => {
@@ -27,11 +27,11 @@ const TopContributorsPage = () => {
     navigate(`/contributors/dashboard`)
   }
 
-  const context = useConfig()
+  const { setIsShowExtraHeader } = useConfig()
 
   useEffect(() => {
-    context.setIsShowExtraHeader(true)
-  }, [])
+    setIsShowExtraHeader(true)
+  })
 
   if (!Number.isFinite(categoryId)) {
     console.log(`Unable to parse category id ${idStr}`)
@@ -47,7 +47,7 @@ const TopContributorsPage = () => {
       to: "/",
     },
     {
-      title: `${categoryName ?? "Total "} details`,
+      title: `Category ${alignedIndexes.categories[categoryId].code ?? alignedIndexes.categories[categoryId].name}`,
       to: `/contributors/category-analysis/${scopeId}`,
     },
     {
@@ -65,6 +65,7 @@ const TopContributorsPage = () => {
           justifyContent="space-between"
           width="100%"
           position="relative"
+          marginBlock="1rem"
         >
           <Breadcrumb
             custom

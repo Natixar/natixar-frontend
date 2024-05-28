@@ -1,5 +1,5 @@
 import { CSSObject } from "@mui/material/styles"
-import { Stack, Box, Collapse } from "@mui/material"
+import { Stack, Box, Collapse, Typography } from "@mui/material"
 import { StackProps, SxProps } from "@mui/system"
 import React, { useMemo } from "react"
 
@@ -175,8 +175,11 @@ export const NatixarExpandableRow = ({
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Box>{title}</Box>
-          <Box>Total : {total}</Box>
+          <Box flexGrow={1}>{title}</Box>
+          <Stack marginRight={2}>
+            <Typography sx={{ lineHeight: "0.8" }}>Total</Typography>
+            <Typography variant="h5">{total}</Typography>
+          </Stack>
           {active && <UpArrowIcon customColor={textColor} />}
           {!active && <DownArrowIcon customColor={textColor} />}
         </Stack>

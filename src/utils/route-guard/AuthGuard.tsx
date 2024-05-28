@@ -8,16 +8,23 @@ import { getFusionConfig } from "./FusionConfiguration"
 // It checks that user is authenticated, redirects to login page otherwise
 const AuthGuard = ({ children }: GuardProps) => {
   const { isAuthenticated } = useFusionAuth()
-  const { enabled: fusionIsEnabled } = getFusionConfig()
+  const fusionIsEnabled = getFusionConfig().enabled === "true"
   const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => {
-    if (fusionIsEnabled && fusionIsEnabled === "true" && !isAuthenticated) {
-      navigate("authentication/login")
+    if (!isAuthenticated && fusionIsEnabled) {
+      navigate("/authentication/login")
     }
   }, [fusionIsEnabled, isAuthenticated, navigate, location])
-  return children
+
+  return (
+    <>
+      {!fusionIsEnabled && children}
+      {fusionIsEnabled && isAuthenticated && children}
+      {fusionIsEnabled && !isAuthenticated && <div>Loading...</div>}
+    </>
+  )
 }
 
 export default AuthGuard

@@ -12,6 +12,7 @@ import { CategoryLabel } from "components/categories/CategoriesLegend"
 import _ from "lodash"
 import { formatEmissionAmount } from "data/domain/transformers/EmissionTransformers"
 import { EmissionDataPoint } from "data/domain/types/emissions/EmissionTypes"
+import { useNavigate } from "react-router"
 
 const tableLayout = {
   CONTRIBUTOR: "company",
@@ -52,12 +53,15 @@ const fixedHeaderContent = () => (
 )
 
 function rowContent(_index: number, row: EmissionDataPoint) {
+  const navigate = useNavigate()
+  const handleLinkClick = () => {
+    navigate(`/contributors/analysis/${row.companyId}`)
+  }
+
   return (
     <>
       <TableCell key="company">
-        <Link href={`/contributors/analysis/${row.companyId}`}>
-          {row.companyName}
-        </Link>
+        <Link onClick={handleLinkClick}>{row.companyName}</Link>
       </TableCell>
       <TableCell key="data-source">ERP</TableCell>
       <TableCell key="emissionAmount" align="right">
