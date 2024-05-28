@@ -159,14 +159,16 @@ const Breadcrumbs = ({
         {main.title}
       </Typography>
     )
+    const mainCardStyle = {
+      mb: 3,
+      borderRadius: 0,
+      ...(!card && { bgcolor: "transparent" }),
+      ...sx,
+    }
     breadcrumbContent = (
       <MainCard
         border={card}
-        sx={
-          card === false
-            ? { mb: 3, bgcolor: "transparent", ...sx }
-            : { mb: 3, ...sx }
-        }
+        sx={mainCardStyle}
         {...others}
         content={card}
         shadow="none"
@@ -260,6 +262,7 @@ const Breadcrumbs = ({
           sx={{
             width: "50vw",
             "& .MuiBreadcrumbs-ol": { justifyContent: "center" },
+            "& .MuiBreadcrumbs-li": { "max-width": `${100 / links.length}%` },
           }}
         >
           {links?.map((link: BreadcrumbLinkProps, index: number) => {
@@ -270,7 +273,13 @@ const Breadcrumbs = ({
                 key={index}
                 {...(link.to && { component: Link, to: link.to })}
                 variant={!link.to ? "subtitle1" : "h6"}
-                sx={{ textDecoration: "none" }}
+                sx={{
+                  textDecoration: "none",
+                  maxWidth: "fit-content",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
                 color={!link.to ? "text.primary" : "#1890FF"}
               >
                 {link.icon && <CollapseIcon style={iconSX} />}
@@ -284,14 +293,16 @@ const Breadcrumbs = ({
 
     // main
     if (item?.breadcrumbs !== false || custom) {
+      const mainCardStyle = {
+        mb: 3,
+        borderRadius: 0,
+        ...(!card && { bgcolor: "transparent" }),
+        ...sx,
+      }
       breadcrumbContent = (
         <MainCard
           border={card}
-          sx={
-            card === false
-              ? { mb: 3, bgcolor: "transparent", ...sx }
-              : { mb: 3, ...sx }
-          }
+          sx={mainCardStyle}
           {...others}
           content={card}
           shadow="none"
