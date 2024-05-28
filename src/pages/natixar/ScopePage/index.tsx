@@ -123,15 +123,6 @@ const ScopePage = () => {
             width="100%"
             padding="10px 0px"
           >
-            <NavLink to="/">
-              <Button
-                sx={{ color: "primary.contrastText" }}
-                variant="contained"
-                startIcon={<ArrowLeftOutlined color="primary.contrastText" />}
-              >
-                Back
-              </Button>
-            </NavLink>
             <Breadcrumb
               custom
               title={false}
