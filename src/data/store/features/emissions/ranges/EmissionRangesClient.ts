@@ -1,6 +1,10 @@
 import { createApi } from "@reduxjs/toolkit/query/react"
 import { backendBaseQuery } from "data/store/config/BackendConfigs"
-import { EmissionRangesRequest, EmissionRangesPayload, EmissionResponse } from "./EndpointTypes"
+import {
+  EmissionRangesRequest,
+  EmissionRangesPayload,
+  EmissionResponse,
+} from "./EndpointTypes"
 
 const encodeRangeParameters = (r: EmissionRangesRequest): string => {
   const parameterString =
@@ -15,11 +19,11 @@ export const emissionRangesApi = createApi({
   baseQuery: backendBaseQuery(),
   endpoints: (builder) => ({
     getEmissionRanges: builder.query<
-       //EmissionRangesPayload,
+      // EmissionRangesPayload,
       EmissionResponse,
       EmissionRangesRequest
     >({
-      query: (request) => ({
+      query: (request: EmissionRangesRequest) => ({
         url: `/api/v0/data/ranges?${encodeRangeParameters(request)}`,
         method: "GET",
       }),
