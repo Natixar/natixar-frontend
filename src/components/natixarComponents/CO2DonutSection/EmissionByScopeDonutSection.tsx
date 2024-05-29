@@ -1,5 +1,4 @@
-import { Box, Stack, useMediaQuery, useTheme } from "@mui/material"
-
+import { Stack, useMediaQuery, useTheme } from "@mui/material"
 import { filter, sum, summarize, tidy } from "@tidyjs/tidy"
 import { ApexOptions } from "apexcharts"
 import {
@@ -132,7 +131,7 @@ const EmissionByCategorySection = ({
   const [selectedScopeId, setSelectedScopeId]: [number | null, Function] =
     useState(null)
   const handleRowClicked = (scopeId: number) => {
-    setSelectedScopeId(selectedScopeId != scopeId ? scopeId : null)
+    setSelectedScopeId(selectedScopeId !== scopeId ? scopeId : null)
   }
 
   useAsyncWork(
@@ -159,9 +158,7 @@ const EmissionByCategorySection = ({
           count: total,
           categoryName: scope.name,
           categoryColor: getColorByCategory(eraOrCodeKey),
-          active: (scope.id === selectedScopeId && !scope.active
-            ? true
-            : false) as boolean,
+          active: scope.id === selectedScopeId && !scope.active,
         }
       })
       return Object.values(categoryAggregators)
@@ -179,7 +176,7 @@ const EmissionByCategorySection = ({
   const theme = useTheme()
   const downMD = useMediaQuery(theme.breakpoints.down("md"))
 
-  const noDataFound = series.reduce((acc, item) => acc + item, 0) == 0
+  const noDataFound = series.reduce((acc, item) => acc + item, 0) === 0
 
   return (
     <Stack
@@ -187,7 +184,7 @@ const EmissionByCategorySection = ({
       flexDirection={downMD ? "column" : "row"}
     >
       {noDataFound && (
-        <Stack alignItems={"center"} justifyContent={"center"} minWidth={100}>
+        <Stack alignItems="center" justifyContent="center" minWidth={100}>
           No data found
         </Stack>
       )}
@@ -207,18 +204,16 @@ const EmissionByCategorySection = ({
 
       <Stack minWidth={500} flex="2 1 0" flexDirection="column" gap={2}>
         {pieChartData.map((scope, index) => (
-          <>
-            <NatixarExpandableRow
-              scopeId={scope.categoryId}
-              index={index}
-              title={scope.categoryName}
-              key={scope.categoryId + "-" + index}
-              onRowClicked={() => handleRowClicked(scope.categoryId)}
-              active={scope.active}
-              textColor={"#fff"}
-              bgcolor={scope.categoryColor}
-            />
-          </>
+          <NatixarExpandableRow
+            scopeId={scope.categoryId}
+            index={index}
+            title={scope.categoryName}
+            key={`${scope.categoryId}-${index + 1}`}
+            onRowClicked={() => handleRowClicked(scope.categoryId)}
+            active={scope.active}
+            textColor="#fff"
+            bgcolor={scope.categoryColor}
+          />
         ))}
       </Stack>
     </Stack>
