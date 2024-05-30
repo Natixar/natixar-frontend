@@ -1,5 +1,4 @@
 import { Stack, useMediaQuery, useTheme } from "@mui/material"
-import { filter, sum, summarize, tidy } from "@tidyjs/tidy"
 import { ApexOptions } from "apexcharts"
 import {
   extractNameOfEra,
@@ -12,11 +11,10 @@ import {
   EmissionDataPoint,
 } from "data/domain/types/emissions/EmissionTypes"
 import { selectRequestEmissionProtocol } from "data/store/api/EmissionSelectors"
-import { memo, useMemo, useState } from "react"
+import { memo, useEffect, useMemo, useState } from "react"
 import ReactApexChart from "react-apexcharts"
 import { useSelector } from "react-redux"
 import { getColorByCategory } from "utils/CategoryColors"
-import useAsyncWork from "hooks/useAsyncWork"
 import { ContainerStyles } from "./styled"
 import { NatixarExpandableRow } from "../ScopeTable/NatixarExpandableRow"
 
@@ -134,56 +132,46 @@ const EmissionByCategorySection = ({
     setSelectedScopeId(selectedScopeId !== scopeId ? scopeId : null)
   }
 
-  useAsyncWork(
-    () => {
-      const categoryAggregators: Record<string, ByCategoryItem> = {}
+  useEffect(() => {
+    const categoryAggregators: Record<string, ByCategoryItem> = {}
+    scopes.forEach((scope) => {
+      const allIdsOfInterest = expandId(
+        [scope.id],
+        alignedIndexes.categoryHierarchy,
+      )
+      const total = allDataPoints
+        .filter((dataPoint) => allIdsOfInterest.includes(dataPoint.categoryId))
+        ?.map((dataPoint) => dataPoint.totalEmissionAmount)
+        ?.reduce((a, b) => a + b, 0)
 
-      scopes.forEach((scope) => {
-        const allIdsOfInterest = expandId(
-          [scope.id],
-          alignedIndexes.categoryHierarchy,
-        )
-        const total = tidy(
-          allDataPoints,
-          filter((edp) => allIdsOfInterest.includes(edp.categoryId)),
-          summarize({ totalEmission: sum("totalEmissionAmount") }),
-        )[0].totalEmission
+      const era = extractNameOfEra(scope.era)
 
-        const era = extractNameOfEra(scope.era)
+      // Make scope data with extra data for display
+      const eraOrCodeKey = scope.code ? String(scope.code) : era
+      categoryAggregators[eraOrCodeKey] = {
+        categoryId: scope.id,
+        count: total,
+        categoryName: scope.name,
+        categoryColor: getColorByCategory(eraOrCodeKey),
+        active: scope.id === selectedScopeId && !scope.active,
+      }
+    })
+    setPieChartData(Object.values(categoryAggregators))
+  }, [allDataPoints, alignedIndexes, selectedScopeId, setPieChartData])
 
-        // Make scope data with extra data for display
-        const eraOrCodeKey = scope.code ? String(scope.code) : era
-        categoryAggregators[eraOrCodeKey] = {
-          categoryId: scope.id,
-          count: total,
-          categoryName: scope.name,
-          categoryColor: getColorByCategory(eraOrCodeKey),
-          active: scope.id === selectedScopeId && !scope.active,
-        }
-      })
-      return Object.values(categoryAggregators)
-    },
-    setPieChartData,
-    [allDataPoints, alignedIndexes, selectedScopeId, setPieChartData],
-  )
-
-  const series = pieChartData.map((a) => a.count)
-  const labels = pieChartData.map((a) => a.categoryName)
-  const colors = pieChartData.map((a) => a.categoryColor)
-
-  const totalEmission = series.reduce((a, b) => a + b, 0)
+  const totalEmission = pieChartData
+    .map((a) => a.count)
+    .reduce((a, b) => a + b, 0)
 
   const theme = useTheme()
   const downMD = useMediaQuery(theme.breakpoints.down("md"))
-
-  const noDataFound = series.reduce((acc, item) => acc + item, 0) === 0
 
   return (
     <Stack
       sx={{ ...ContainerStyles, gap: "30px", flexWrap: "wrap" }}
       flexDirection={downMD ? "column" : "row"}
     >
-      {noDataFound && (
+      {!totalEmission && (
         <Stack alignItems="center" justifyContent="center" minWidth={100}>
           No data found
         </Stack>
@@ -193,10 +181,10 @@ const EmissionByCategorySection = ({
           options={{
             ...optionsOverrides,
             ...configurableOptions(totalEmission),
-            labels,
-            colors,
+            labels: pieChartData.map((a) => a.categoryName),
+            colors: pieChartData.map((a) => a.categoryColor),
           }}
-          series={series}
+          series={pieChartData.map((a) => a.count)}
           type="donut"
           width={400}
         />
