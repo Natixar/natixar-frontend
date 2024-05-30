@@ -115,6 +115,8 @@ const EmissionByCategorySection = ({
 }: EmissionByCategorySectionProps) => {
   const protocol = useSelector(selectRequestEmissionProtocol)
   const [pieChartData, setPieChartData] = useState<ByCategoryItem[]>([])
+  const theme = useTheme()
+  const downMD = useMediaQuery(theme.breakpoints.down("md"))
 
   const scopes = useMemo(
     () =>
@@ -162,9 +164,6 @@ const EmissionByCategorySection = ({
   const totalEmission = pieChartData
     .map((a) => a.count)
     .reduce((a, b) => a + b, 0)
-
-  const theme = useTheme()
-  const downMD = useMediaQuery(theme.breakpoints.down("md"))
 
   return (
     <Stack
