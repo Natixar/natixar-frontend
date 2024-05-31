@@ -197,6 +197,7 @@ export const emissionsGroupByTime = (
       emissionPoint.startTimeSlot,
       timeWindow,
     )
+
     const timeKey = timeMeasureKeyFn(
       timeWindow.startTimestamp + totalTimeOffset,
       showYear,
