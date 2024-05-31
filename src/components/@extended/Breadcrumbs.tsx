@@ -262,7 +262,7 @@ const Breadcrumbs = ({
           sx={{
             width: "50vw",
             "& .MuiBreadcrumbs-ol": { justifyContent: "center" },
-            "& .MuiBreadcrumbs-li": { "max-width": `${100 / links.length}%` },
+            "& .MuiBreadcrumbs-li": { maxWidth: `${100 / links.length}%` },
           }}
         >
           {links?.map((link: BreadcrumbLinkProps, index: number) => {

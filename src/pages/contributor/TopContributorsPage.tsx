@@ -11,6 +11,7 @@ import {
 import TopContributorsSection from "sections/contributor/emissions-by-scope/TopContributorsSection"
 import { useAppDispatch } from "data/store"
 import { clearFilterSelection } from "data/store/features/emissions/ranges/EmissionRangesSlice"
+import { useEffect } from "react"
 import useConfig from "hooks/useConfig"
 import Breadcrumb from "../../components/@extended/Breadcrumbs"
 
