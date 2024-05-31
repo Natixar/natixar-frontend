@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux"
+import { useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { RightOutlined } from "@ant-design/icons"
 import { Button, Stack, Typography } from "@mui/material"
@@ -10,7 +11,6 @@ import {
 import TopContributorsSection from "sections/contributor/emissions-by-scope/TopContributorsSection"
 import { useAppDispatch } from "data/store"
 import { clearFilterSelection } from "data/store/features/emissions/ranges/EmissionRangesSlice"
-import { useEffect } from "react"
 import useConfig from "hooks/useConfig"
 import Breadcrumb from "../../components/@extended/Breadcrumbs"
 
