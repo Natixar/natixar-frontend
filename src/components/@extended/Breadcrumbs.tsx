@@ -262,6 +262,7 @@ const Breadcrumbs = ({
           sx={{
             width: "50vw",
             "& .MuiBreadcrumbs-ol": { justifyContent: "center" },
+            "& .MuiBreadcrumbs-li": { maxWidth: `${100 / links.length}%` },
           }}
         >
           {links?.map((link: BreadcrumbLinkProps, index: number) => {
@@ -274,7 +275,6 @@ const Breadcrumbs = ({
                 variant={!link.to ? "subtitle1" : "h6"}
                 sx={{
                   textDecoration: "none",
-                  width: `${100 / links.length}%`,
                   maxWidth: "fit-content",
                   whiteSpace: "nowrap",
                   overflow: "hidden",

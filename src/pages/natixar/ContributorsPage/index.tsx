@@ -52,14 +52,6 @@ const ContributorsPage = () => {
             width="100%"
             padding="10px 0px"
           >
-            <Button
-              variant="contained"
-              sx={{ color: "#FFF", position: "absolute", left: 0, top: 0 }}
-              startIcon={<ArrowLeftOutlined color="#FFF" />}
-              onClick={() => navigate(-1)}
-            >
-              Back to scope {scopeID}
-            </Button>
             <Breadcrumb
               custom
               title={false}
