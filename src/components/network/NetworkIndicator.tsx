@@ -45,7 +45,7 @@ const NetworkIndicator = (props: SxProps) => {
     [protocol, timeRangeOfInterest],
   )
   useGetEmissionRangesQuery(requestParams, {
-    pollingInterval: 10000,
+    pollingInterval: 3600000,
   })
   useEffect(() => {
     getEmissionData(requestParams)
