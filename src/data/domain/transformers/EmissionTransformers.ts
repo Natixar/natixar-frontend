@@ -1,7 +1,6 @@
 import { v4 as uuid } from "uuid"
 import { TimeWindow } from "data/domain/types/time/TimeRelatedTypes"
 import { CountryLocation } from "data/domain/types/participants/ContributorsTypes"
-import _ from "lodash"
 import { IndexesContainer } from "data/store/features/emissions/ranges/EndpointTypes"
 import {
   AirEmissionMeasureUnits,
@@ -198,6 +197,7 @@ export const emissionsGroupByTime = (
       emissionPoint.startTimeSlot,
       timeWindow,
     )
+
     const timeKey = timeMeasureKeyFn(
       timeWindow.startTimestamp + totalTimeOffset,
       showYear,
