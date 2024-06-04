@@ -11,6 +11,7 @@ import {
 import { useSelector } from "react-redux"
 import { useAppDispatch } from "data/store"
 import { EmissionDataPoint } from "data/domain/types/emissions/EmissionTypes"
+import type { RootState } from "data/store"
 
 const ClusteredMapSection = ({ ...sxProps }: SxProps) => {
   const dispatch = useAppDispatch()
@@ -28,7 +29,9 @@ const ClusteredMapSection = ({ ...sxProps }: SxProps) => {
     [setTableCloseVeto],
   )
 
-  let categories = useSelector(selectAllVisibleCategoryEras)
+  let categories = useSelector<RootState, string[]>(
+    selectAllVisibleCategoryEras,
+  )
   const dataPoints = useSelector(pointsSelector)
 
   if (categories.length > 0) {
