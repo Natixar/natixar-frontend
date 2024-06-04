@@ -1306,7 +1306,12 @@ const emissions_isotr14069 = [
   }
 ]
 
-const categoriesToIgnore = [3, 8, 11, 32, 38, 41, 59, 65, 68, 86, 92, 95, 101, 107, 112]
+const categoriesToIgnore = [ // by index position, not id
+	0, 1, 2, 7, 10, 11, 21,
+	30, 31, 37, 40,
+	57, 58, 64, 67,
+	84, 85, 91, 94, 100, 106, 111
+]
 const energyCategories = [3, 8, 9, 32, 38, 39, 59, 65, 66, 86, 92, 93]
 const areas = [3, 4, 8, 9, 12, 13, 16, 17, 18]
 const thirdParties = [0, 1, 16]  // plus 17 for energy categories
@@ -1323,11 +1328,11 @@ const generateDataPoint = (start_time, end_time, time_scale, taxonomy) => {
       break;
     case "isotr140692013":
       start = 46;
-      end = 69;
+      end = 72;
       break;
     case "begesv5":
-      start = 70;
-      end = 91;
+      start = 73;
+      end = 101;
       break;
     default:
       //case "ghgprotocol":
@@ -1373,7 +1378,7 @@ const generateDataPoint = (start_time, end_time, time_scale, taxonomy) => {
 const generateData = (start_time, end_time, scale, taxonomy) => {
   let a = 0
   const newDataPoints = []
-  while (a < 100) {
+  while (a < 1000) {
     newDataPoints.push(generateDataPoint(start_time, end_time, scale, taxonomy))
     a++
   }
