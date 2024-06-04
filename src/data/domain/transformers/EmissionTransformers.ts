@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid"
 import { TimeWindow } from "data/domain/types/time/TimeRelatedTypes"
 import { CountryLocation } from "data/domain/types/participants/ContributorsTypes"
-import _ from "lodash"
+import { IndexesContainer } from "data/store/features/emissions/ranges/EndpointTypes"
 import {
   AirEmissionMeasureUnits,
   AlignedIndexes,
@@ -18,7 +18,6 @@ import {
   slotsAreInSameYear,
 } from "./TimeTransformers"
 import { IndexOf } from "../types/structures/StructuralTypes"
-import { IndexesContainer } from "data/store/features/emissions/ranges/EndpointTypes"
 
 const emptyDecimal = ".0"
 
@@ -156,6 +155,7 @@ export const dataPointsGroupBySomeIdAndCategory = (
     if (typeof result[categoryEra] === "undefined") {
       result[categoryEra] = {}
     }
+    // Make byCategory point to one branch of "result".
     const byCategory = result[categoryEra]
 
     const groupKey = groupKeyFunc(emissionPoint)
@@ -182,59 +182,73 @@ export const emissionsGroupByTime = (
   timeMeasureKeyFn: (timestamp: number, showYear: boolean) => string,
 ): Record<string, Record<string, number>> => {
   const result: Record<string, Record<string, number>> = {}
-
-
-  const minTime =
-    _.minBy(points, (point) => point.startTimeSlot)?.startTimeSlot ?? 0
-  const maxTime =
-    _.maxBy(points, (point) => point.endTimeSlot)?.endTimeSlot ?? 0
-
+  const minTime = Math.min(...points.map((point) => point.startTimeSlot))
+  const maxTime = Math.max(...points.map((point) => point.endTimeSlot))
   const showYear = !slotsAreInSameYear(minTime, maxTime, timeWindow)
 
   // Loop over all emission points defined in data/domain/types/emissions/EmissionTypes.ts#L9
   points.forEach((emissionPoint) => {
+    // TODO: We don't need era here; swap for category group
     const categoryEra = emissionPoint.categoryEraName
-    // Initialize result for era if needed TODO: swap for category code
-    if (typeof result[categoryEra] === "undefined") {
+    // Initialize result for era if needed 
+    if (!result[categoryEra]) {
       result[categoryEra] = {}
     }
-    // Define short name
-    const byCategory = result[categoryEra]
 
-    let currentTimeSlot = emissionPoint.startTimeSlot
-    let totalTimeOffset = getTimeOffsetForSlot(
+    // Make byCategory an alias of result[categoryEra]
+    const byCategory = result[categoryEra]
+    const totalTimeOffset = getTimeOffsetForSlot(
       emissionPoint.startTimeSlot,
       timeWindow,
     )
-    do {
-      const timeKey = timeMeasureKeyFn(
-        timeWindow.startTimestamp + totalTimeOffset,
-        showYear,
-      )
-      const currentSlotDelta = getTimeDeltaForSlot(currentTimeSlot, timeWindow)
+    const singleSlot = (emissionPoint.startTimeSlot == emissionPoint.endTimeSlot)
+    
+    if (singleSlot) {
+		    const timeKey = timeMeasureKeyFn(
+		      timeWindow.startTimestamp + totalTimeOffset,
+		      showYear,
+		    )
+		    const currentSlotDelta = getTimeDeltaForSlot(currentTimeSlot, timeWindow)
 
-      if (!byCategory[timeKey]) {
-        byCategory[timeKey] = 0
-      }
+		    if (!byCategory[timeKey]) {
+		      byCategory[timeKey] = 0
+		    }
+		    // Scale emissions
+		    const percent = (1.0 - emissionPoint.startEmissionPercentage) - emissionPoint.endEmissionPercentage
+		    const amount = emissionPoint.emissionIntensity * currentSlotDelta / 1000  // intensity in kg/s, slot delta in ms
+		    byCategory[timeKey] += percent * amount
+    } else {
+		  do {
+		    const timeKey = timeMeasureKeyFn(
+		      timeWindow.startTimestamp + totalTimeOffset,
+		      showYear,
+		    )
+		    const currentSlotDelta = getTimeDeltaForSlot(currentTimeSlot, timeWindow)
 
-      let amount = emissionPoint.emissionIntensity * currentSlotDelta / 1000  // intensity in kg/s, slot delta in ms
-      switch (currentTimeSlot) {
-        case emissionPoint.startTimeSlot:
-          amount *= emissionPoint.startEmissionPercentage
-          break
-        case emissionPoint.endTimeSlot:
-          amount *= emissionPoint.endEmissionPercentage
-          break
-        default:
-          break
-      }
-      byCategory[timeKey] = amount
+		    if (!byCategory[timeKey]) {
+		      byCategory[timeKey] = 0
+		    }
 
-      totalTimeOffset += currentSlotDelta
-      currentTimeSlot += 1
-    } while (currentTimeSlot <= emissionPoint.endTimeSlot)
+		    let amount = emissionPoint.emissionIntensity * currentSlotDelta / 1000  // intensity in kg/s, slot delta in ms
+		    // BUG: This code is not correct in the very common case when startTimeSlot == endTimeSlot !	
+		    switch (currentTimeSlot) {
+		      case emissionPoint.startTimeSlot:
+		        amount *= emissionPoint.startEmissionPercentage
+		        break
+		      case emissionPoint.endTimeSlot:
+		        amount *= emissionPoint.endEmissionPercentage
+		        break
+		      default:
+		        break
+		    }
+		    // Accumulate emissions into "result" via alias
+		    byCategory[timeKey] += amount
+
+		    totalTimeOffset += currentSlotDelta
+		    currentTimeSlot += 1
+		  } while (currentTimeSlot <= emissionPoint.endTimeSlot)
+		}
   })
-
   return result
 }
 
