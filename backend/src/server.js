@@ -63,13 +63,16 @@ app.post("/mappings", express.json(), (req, res) => {
 
 app.get("/api/v0/data/ranges", function (req, res) {
   const defaultRange = { start: "2022-01-01T00:00:00+01:00", end: "2024-01-01T00:00:00+01:00" };
-  let start, end;
+  let start, end
+  let scale = req.query.scale
+;
 
   if (req.query.time_ranges) {
     try {
       const ranges = JSON.parse(req.query.time_ranges)[0];
       start = ranges.start;
       end = ranges.end;
+      scale = ranges.scale ?? scale 
     } catch (error) {
       console.error("Error parsing time_ranges:", error);
       res.status(400).send("Invalid JSON format frtime_rangs");
@@ -86,7 +89,7 @@ app.get("/api/v0/data/ranges", function (req, res) {
     if (protocol === "beges") {
       res
         .contentType("application/json")
-        .send(appendSomeData(new Date(start), new Date(end), protocol));
+        .send(appendSomeData(new Date(start), new Date(end), scale, protocol));
     } else {
       // Send the data for the requested protocol
       res
