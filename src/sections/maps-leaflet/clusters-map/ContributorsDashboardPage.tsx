@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from "react"
+import { memo, useCallback, useEffect, useState } from "react"
 import { Box, Card, Fade, SxProps } from "@mui/material"
 import ClusteredMap from "components/leaflet-maps/cluster-map"
 import CategoriesLegend from "components/categories/CategoriesLegend"
@@ -34,12 +34,12 @@ const ClusteredMapSection = ({ ...sxProps }: SxProps) => {
   )
   const dataPoints = useSelector(pointsSelector)
 
-  if (categories.length > 0) {
-    // We deconstruct here, because redux has immutable values
-    categories = [...categories, "cluster"]
-  }
-
-  const thereAreDataPoints = selectedClusterPoints.length > 0
+  useEffect(() => {
+    if (categories?.length) {
+      // We deconstruct here, because redux has immutable values
+      categories = [...categories, "cluster"]
+    }
+  }, [categories])
 
   return (
     <Box
@@ -83,7 +83,7 @@ const ClusteredMapSection = ({ ...sxProps }: SxProps) => {
         </Fade>
       </Box>
       <Fade
-        in={thereAreDataPoints && !tableCloseVeto}
+        in={selectedClusterPoints?.length > 0 && !tableCloseVeto}
         timeout={300}
         onExited={onAnimationEndListener}
       >
