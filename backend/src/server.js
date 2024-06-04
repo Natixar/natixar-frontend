@@ -86,7 +86,7 @@ app.get("/api/v0/data/ranges", function (req, res) {
     if (protocol === "beges") {
       res
         .contentType("application/json")
-        .send(appendSomeData(new Date(start), new Date(end)));
+        .send(appendSomeData(new Date(start), new Date(end), protocol));
     } else {
       // Send the data for the requested protocol
       res
