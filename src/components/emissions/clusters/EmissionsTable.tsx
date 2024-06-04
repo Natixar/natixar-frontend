@@ -95,7 +95,7 @@ const EmissionsByClusterTable = ({
       data={sortedEmissions}
       components={VirtuosoTableComponents}
       fixedHeaderContent={fixedHeaderContent}
-      itemContent={(index, row) => <RowContent index={index} row={row}/>}
+      itemContent={(index, row) => <RowContent _index={index} row={row}/>}
     />
   )
 }
