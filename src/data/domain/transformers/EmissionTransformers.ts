@@ -197,26 +197,31 @@ export const emissionsGroupByTime = (
 
     // Make byCategory an alias of result[categoryEra]
     const byCategory = result[categoryEra]
-    const totalTimeOffset = getTimeOffsetForSlot(
-      emissionPoint.startTimeSlot,
+    // Emission Point "Slot" information is in fact a slot boundary.
+    // For 12 months, valid values are 0 to 12. For 12 "slots", 13 boundaries.
+    let currentTimeSlot = emissionPoint.startTimeSlot
+
+    let totalTimeOffset = getTimeOffsetForSlot(
+      currentTimeSlot,
       timeWindow,
     )
-    const singleSlot = (emissionPoint.startTimeSlot == emissionPoint.endTimeSlot)
+    // A 1-month aligned emissions is:  [X, 100%, intens, X+1, 100%, coordinates]
+    const singleSlot = (emissionPoint.startTimeSlot == emissionPoint.endTimeSlot - 1)
     
     if (singleSlot) {
-		    const timeKey = timeMeasureKeyFn(
-		      timeWindow.startTimestamp + totalTimeOffset,
-		      showYear,
-		    )
-		    const currentSlotDelta = getTimeDeltaForSlot(currentTimeSlot, timeWindow)
+	    const timeKey = timeMeasureKeyFn(
+	      timeWindow.startTimestamp + totalTimeOffset,
+	      showYear,
+	    )
+	    const currentSlotDelta = getTimeDeltaForSlot(currentTimeSlot, timeWindow)
 
-		    if (!byCategory[timeKey]) {
-		      byCategory[timeKey] = 0
-		    }
-		    // Scale emissions
-		    const percent = (1.0 - emissionPoint.startEmissionPercentage) - emissionPoint.endEmissionPercentage
-		    const amount = emissionPoint.emissionIntensity * currentSlotDelta / 1000  // intensity in kg/s, slot delta in ms
-		    byCategory[timeKey] += percent * amount
+	    if (!byCategory[timeKey]) {
+	      byCategory[timeKey] = 0
+	    }
+	    // Scale emissions
+	    const percent = emissionPoint.endEmissionPercentage - (1.0 - emissionPoint.startEmissionPercentage)
+	    const amount = emissionPoint.emissionIntensity * currentSlotDelta / 1000  // intensity in kg/s, slot delta in ms
+	    byCategory[timeKey] += percent * amount
     } else {
 		  do {
 		    const timeKey = timeMeasureKeyFn(
@@ -235,7 +240,7 @@ export const emissionsGroupByTime = (
 		      case emissionPoint.startTimeSlot:
 		        amount *= emissionPoint.startEmissionPercentage
 		        break
-		      case emissionPoint.endTimeSlot:
+		      case emissionPoint.endTimeSlot - 1:
 		        amount *= emissionPoint.endEmissionPercentage
 		        break
 		      default:
@@ -246,7 +251,7 @@ export const emissionsGroupByTime = (
 
 		    totalTimeOffset += currentSlotDelta
 		    currentTimeSlot += 1
-		  } while (currentTimeSlot <= emissionPoint.endTimeSlot)
+		  } while (currentTimeSlot < emissionPoint.endTimeSlot)
 		}
   })
   return result
