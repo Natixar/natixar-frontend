@@ -15,7 +15,7 @@ export const emissionRangesApi = createApi({
   baseQuery: backendBaseQuery(),
   endpoints: (builder) => ({
     getEmissionRanges: builder.query<
-      //EmissionRangesPayload,
+       //EmissionRangesPayload,
       EmissionResponse,
       EmissionRangesRequest
     >({
