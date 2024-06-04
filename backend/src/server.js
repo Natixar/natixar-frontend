@@ -134,7 +134,7 @@ app.post("/reports", express.json(), (req, res) => {
   res.sendStatus(200);
 });
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT;
 app.listen(port, () =>
   console.log(`Example app is listening on port ${port}.`)
 );
