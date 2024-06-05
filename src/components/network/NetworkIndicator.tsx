@@ -6,7 +6,7 @@ import { memo, useEffect, useMemo } from "react"
 import { useSelector } from "react-redux"
 import { TimeMeasurement } from "data/domain/types/time/TimeRelatedTypes"
 import { selectEmissionRangeRequestParameters } from "data/store/api/EmissionSelectors"
-import { DateTime } from "luxon";
+import { DateTime } from "luxon"
 import {
   EmissionRangesRequest,
   formatProtocolForRangesEndpoint,
