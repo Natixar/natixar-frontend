@@ -4,7 +4,11 @@ import {
   GeographicalArea,
 } from "../participants/ContributorsTypes"
 import { IdTreeNode, IndexOf } from "../structures/StructuralTypes"
-import { TimeRange, TimeWindow } from "../time/TimeRelatedTypes"
+import {
+  TimeRange,
+  TimeWindow,
+  TimeMeasurement,
+} from "../time/TimeRelatedTypes"
 
 export enum EmissionProtocol {
   // https://ghgprotocol.org/
@@ -89,6 +93,7 @@ export interface EmissionFilterState {
 export interface EmissionRetrievalParametersState {
   timeRangeOfInterest: TimeRange
   protocol: EmissionProtocol
+  timeMeasurement: TimeMeasurement
 }
 
 export interface EmissionRangeState {
