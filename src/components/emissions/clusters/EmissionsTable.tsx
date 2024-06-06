@@ -52,23 +52,29 @@ const fixedHeaderContent = () => (
   </TableRow>
 )
 
-function rowContent(_index: number, row: EmissionDataPoint) {
+function RowContent({
+  _index,
+  row,
+}: {
+  _index: number
+  row: EmissionDataPoint
+}) {
   const navigate = useNavigate()
-  const handleLinkClick = () => {
-    navigate(`/contributors/analysis/${row.companyId}`)
-  }
+  const { companyId, companyName, totalEmissionAmount, categoryEraName } = row // to fix linter
 
   return (
     <>
       <TableCell key="company">
-        <Link onClick={handleLinkClick}>{row.companyName}</Link>
+        <Link onClick={() => navigate(`/contributors/analysis/${companyId}`)}>
+          {companyName}
+        </Link>
       </TableCell>
       <TableCell key="data-source">ERP</TableCell>
       <TableCell key="emissionAmount" align="right">
-        {formatEmissionAmount(row.totalEmissionAmount)}
+        {formatEmissionAmount(totalEmissionAmount)}
       </TableCell>
       <TableCell key="category">
-        <CategoryLabel category={_.capitalize(row.categoryEraName)} />
+        <CategoryLabel category={_.capitalize(categoryEraName)} />
       </TableCell>
     </>
   )
@@ -89,7 +95,7 @@ const EmissionsByClusterTable = ({
       data={sortedEmissions}
       components={VirtuosoTableComponents}
       fixedHeaderContent={fixedHeaderContent}
-      itemContent={rowContent}
+      itemContent={(index, row) => <RowContent _index={index} row={row}/>}
     />
   )
 }
