@@ -112,10 +112,10 @@ const NetworkIndicator = (props: SxProps) => {
     return { alignedStart: result.start, alignedEnd: result.end }
   }
 
-  const { timeRangeOfInterest, protocol } = useSelector(
+  const { timeRangeOfInterest, protocol, timeMeasurement } = useSelector(
     selectEmissionRangeRequestParameters,
   )
-  const scale: string = `1${TimeMeasurement.HOURS}`
+  const scale: string = `1${timeMeasurement}`
   const requestParams: EmissionRangesRequest = useMemo(() => {
     const { alignedStart, alignedEnd } = getAlignedDates(
       scale,
@@ -133,7 +133,7 @@ const NetworkIndicator = (props: SxProps) => {
         },
       ],
     } as EmissionRangesRequest
-  }, [protocol, timeRangeOfInterest])
+  }, [protocol, timeRangeOfInterest, timeMeasurement])
 
   useGetEmissionRangesQuery(requestParams, {
     pollingInterval: 3600000,
