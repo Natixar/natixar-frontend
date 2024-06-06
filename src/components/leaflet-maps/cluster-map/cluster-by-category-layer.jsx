@@ -89,10 +89,8 @@ const ClusterByCategoryLayer = ({ dataPoints, onClusterPointsSelect }) => {
     const retrieveMarkers = async () => {
       const markers = dataPoints
         // eslint-disable-next-line react/prop-types
-        .filter((dataPoint) => dataPoint.location)
         .filter(
-          (dataPoint) =>
-            dataPoint.location.lat > 0 && dataPoint.location.lon > 0,
+          (dataPoint) => dataPoint.location?.lat && dataPoint.location?.lon,
         )
         .map((dataPoint) => {
           const address = dataPoint.location
