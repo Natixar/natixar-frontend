@@ -1,8 +1,8 @@
 const _ = require("lodash")
 
 const emissions_time_range = {
-  start: "2022-01-01T00:00:00+02:00",
-  end: "2024-01-01T00:00:00+02:00",
+  start: "2022-01-01T00:00:00+01:00",
+  end: "2024-01-01T00:00:00+01:00",
   step: [
     2678400, 2419200, 2678400, 2592000, 2678400, 2592000,
     2678400, 2678400, 2592000, 2678400, 2592000, 2678400
@@ -570,7 +570,7 @@ const emissions_categories= [
           {
             id: 31,
             parent: 1,
-            name: "beges",
+            name: "BEGES",
             era: ""
           },
           {
@@ -753,6 +753,191 @@ const emissions_categories= [
             era: "U"
           },
           {
+            id: 58,
+            parent: 1,
+            name: "ISO/TR 14069:2013",
+            era: ""
+          },
+          {
+            id: 59,
+            parent: 58,
+            name: "Scope 1",
+            era: "O"
+          },
+          {
+            id: 60,
+            parent: 59,
+            name: "Emissions directes des sources fixes de combustion",
+            code: "1",
+            era: "O"
+          },
+          {
+            id: 61,
+            parent: 59,
+            name: "Emissions directes des sources mobiles de combustion",
+            code: "2",
+            era: "O"
+          },
+          {
+            id: 62,
+            parent: 59,
+            name: "Emissions directes des procédés",
+            code: "3",
+            era: "O"
+          },
+          {
+            id: 63,
+            parent: 59,
+            name: "Emissions directes fugitives",
+            code: "4",
+            era: "O"
+          },
+          {
+            id: 64,
+            parent: 59,
+            name: "Emissions directes issues de l'UTCF",
+            code: "5",
+            era: "O"
+          },
+          {
+            id: 65,
+            parent: 58,
+            name: "Scope 2",
+            era: "U"
+          },
+          {
+            id: 66,
+            parent: 65,
+            name: "Emissions indirectes liées à la consommation d'électricité",
+            code: "6",
+            era: "U"
+          },
+          {
+            id: 67,
+            parent: 65,
+            name: "Emissions indirectes liées à la consommation d'énergie de réseau (hors électricité)",
+            code: "7",
+            era: "U"
+          },
+          {
+            id: 68,
+            parent: 58,
+            name: "Scope 3",
+            era: ""
+          },
+          {
+            id: 69,
+            parent: 68,
+            name: "Emissions liées à l'énergie non incluses dans les postes 1 à 7",
+            code: "8",
+            era: "U"
+          },
+          {
+            id: 70,
+            parent: 68,
+            name: "Achats de produits",
+            code: "9",
+            era: "U"
+          },
+          {
+            id: 71,
+            parent: 68,
+            name: "Biens immobilisés",
+            code: "10",
+            era: "U"
+          },
+          {
+            id: 72,
+            parent: 68,
+            name: "Déchets générés",
+            code: "11",
+            era: "U"
+          },
+          {
+            id: 73,
+            parent: 68,
+            name: "Transport de marchandise amont et distribution",
+            code: "12",
+            era: "U"
+          },
+          {
+            id: 74,
+            parent: 68,
+            name: "Déplacements professionnels",
+            code: "13",
+            era: "U"
+          },
+          {
+            id: 75,
+            parent: 68,
+            name: "Actifs en leasing amont",
+            code: "14",
+            era: "U"
+          },
+          {
+            id: 76,
+            parent: 68,
+            name: "Investissements",
+            code: "15",
+            era: "D"
+          },
+          {
+            id: 77,
+            parent: 68,
+            name: "Transport des visiteurs et des clients",
+            code: "16",
+            era: "U"
+          },
+          {
+            id: 78,
+            parent: 68,
+            name: "Transport de marchandise aval et distribution",
+            code: "17",
+            era: "D"
+          },
+          {
+            id: 79,
+            parent: 68,
+            name: "Utilisation des produits vendus",
+            code: "18",
+            era: "D"
+          },
+          {
+            id: 80,
+            parent: 68,
+            name: "Fin de vie des produits vendus",
+            code: "19",
+            era: "D"
+          },
+          {
+            id: 81,
+            parent: 68,
+            name: "Franchise aval",
+            code: "20",
+            era: "D"
+          },
+          {
+            id: 82,
+            parent: 68,
+            name: "Leasing aval",
+            code: "21",
+            era: "D"
+          },
+          {
+            id: 83,
+            parent: 68,
+            name: "Déplacements domicile travail",
+            code: "22",
+            era: "U"
+          },
+          {
+            id: 84,
+            parent: 68,
+            name: "Autres émissions indirectes",
+            code: "23",
+            era: "U"
+          },
+          {
             id: 85,
             parent: 1,
             name: "BEGES v5",
@@ -763,7 +948,7 @@ const emissions_categories= [
             parent: 85,
             name: "Emissions directes de GES",
             code: "1",
-            era: ""
+            era: "O"
           },
           {
             id: 87,
@@ -868,7 +1053,7 @@ const emissions_categories= [
             parent: 85,
             name: "Emissions indirectes associées aux produits achetés",
             code: "4",
-            era: ""
+            era: "U"
           },
           {
             id: 102,
@@ -907,10 +1092,10 @@ const emissions_categories= [
           },
           {
             id: 107,
-            parent: 41,
+            parent: 85,
             name: "Emissions indirectes associées aux produits vendus",
             code: "5",
-            era: ""
+            era: "D"
           },
           {
             id: 108,
@@ -942,7 +1127,7 @@ const emissions_categories= [
           },
           {
             id: 112,
-            parent: 41,
+            parent: 85,
             name: "Autres émissions indirectes",
             code: "6",
             era: ""
@@ -952,7 +1137,7 @@ const emissions_categories= [
             parent: 112,
             name: "Autres émissions indirectes",
             code: "6-1",
-            era: "U"
+            era: ""
           }
         ];
 
@@ -965,303 +1150,34 @@ const emissions_beges = [
       category: emissions_categories,
     },
     data: [
-      [
-        0,
-        1,
-        0.001002,
-        1,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        1,
-        1,
-        0.000998,
-        2,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        2,
-        1,
-        0.001001,
-        3,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        3,
-        1,
-        0.001003,
-        4,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        4,
-        1,
-        0.001004,
-        5,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        5,
-        1,
-        0.001,
-        6,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        6,
-        1,
-        0.000999,
-        7,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        7,
-        1,
-        0.001005,
-        8,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        8,
-        1,
-        0.001001,
-        9,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        9,
-        1,
-        0.000997,
-        10,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        10,
-        1,
-        0.001002,
-        11,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        11,
-        1,
-        0.001003,
-        12,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        12,
-        1,
-        0.001,
-        13,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        13,
-        1,
-        0.001001,
-        14,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        14,
-        1,
-        0.001004,
-        15,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        15,
-        1,
-        0.000998,
-        16,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        16,
-        1,
-        0.001002,
-        17,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        17,
-        1,
-        0.001001,
-        18,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        18,
-        1,
-        0.001,
-        19,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        19,
-        1,
-        0.000999,
-        20,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        20,
-        1,
-        0.001003,
-        21,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        21,
-        1,
-        0.001,
-        22,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        22,
-        1,
-        0.001002,
-        23,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        23,
-        1,
-        0.000997,
-        24,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        0,
-        1,
-        0.001002,
-        3,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        3,
-        1,
-        0.000801,
-        15,
-        1,
-        6,
-        18,
-        18,
-        33
-      ],
-      [
-        15,
-        1,
-        0.000603,
-        24,
-        1,
-        6,
-        18,
-        18,
-        33
-      ]
+      [  0, 1, 0.001002,  1, 1, 4, 16, 17, 32],
+      [  1, 1, 0.000998,  2, 1, 4, 16, 17, 32],
+      [  2, 1, 0.001001,  3, 1, 4, 16, 17, 32],
+      [  3, 1, 0.001003,  4, 1, 4, 16, 17, 32],
+      [  4, 1, 0.001004,  5, 1, 4, 16, 17, 32],
+      [  5, 1, 0.001000,  6, 1, 4, 16, 17, 32],
+      [  6, 1, 0.000999,  7, 1, 4, 16, 17, 32],
+      [  7, 1, 0.001005,  8, 1, 4, 16, 17, 32],
+      [  8, 1, 0.001001,  9, 1, 4, 16, 17, 32],
+      [  9, 1, 0.000997, 10, 1, 4, 16, 17, 32],
+      [ 10, 1, 0.001002, 11, 1, 4, 16, 17, 32],
+      [ 11, 1, 0.001003, 12, 1, 4, 16, 17, 32],
+      [ 12, 1, 0.001,    13, 1, 4, 16, 17, 32],
+      [ 13, 1, 0.001001, 14, 1, 4, 16, 17, 32],
+      [ 14, 1, 0.001004, 15, 1, 4, 16, 17, 32],
+      [ 15, 1, 0.000998, 16, 1, 4, 16, 17, 32],
+      [ 16, 1, 0.001002, 17, 1, 4, 16, 17, 32],
+      [ 17, 1, 0.001001, 18, 1, 4, 16, 17, 32],
+      [ 18, 1, 0.001,    19, 1, 4, 16, 17, 32],
+      [ 19, 1, 0.000999, 20, 1, 4, 16, 17, 32],
+      [ 20, 1, 0.001003, 21, 1, 4, 16, 17, 32],
+      [ 21, 1, 0.001,    22, 1, 4, 16, 17, 32],
+      [ 22, 1, 0.001002, 23, 1, 4, 16, 17, 32],
+      [ 23, 1, 0.000997, 24, 1, 4, 16, 17, 32],
+      
+      [  0, 1, 0.001002,  3, 1, 4, 16, 17, 32],
+      [  3, 1, 0.000801, 15, 1, 4, 16, 17, 32],
+      [ 15, 1, 0.000603, 24, 1, 4, 16, 17, 32]
     ]}
   ]
 
@@ -1317,49 +1233,130 @@ const emissions_ghgprotocol = [
       category: emissions_categories,
     },
     data: [
-	    [0,  1.0, 1.002e-3, 1,  1.0, 10, 17, 17, 3],
-	    [1,  1.0, 0.998e-3, 2,  1.0, 10, 17, 17, 3],
-	    [2,  1.0, 1.001e-3, 3,  1.0, 10, 17, 17, 3],
-	    [3,  1.0, 1.003e-3, 4,  1.0, 10, 17, 17, 3],
-	    [4,  1.0, 1.004e-3, 5,  1.0, 10, 17, 17, 3],
-	    [5,  1.0, 1.000e-3, 6,  1.0, 10, 17, 17, 3],
-	    [6,  1.0, 0.999e-3, 7,  1.0, 10, 17, 17, 3],
-	    [7,  1.0, 1.005e-3, 8,  1.0, 10, 17, 17, 3],
-	    [8,  1.0, 1.001e-3, 9,  1.0, 10, 17, 17, 3],
-	    [9,  1.0, 0.997e-3, 10, 1.0, 10, 17, 17, 3],
-	    [10, 1.0, 1.002e-3, 11, 1.0, 10, 17, 17, 3],
-	    [11, 1.0, 1.003e-3, 12, 1.0, 10, 17, 17, 3],
-	    [12, 1.0, 1.000e-3, 13, 1.0, 10, 17, 17, 3],
-	    [13, 1.0, 1.001e-3, 14, 1.0, 10, 17, 17, 3],
-	    [14, 1.0, 1.004e-3, 15, 1.0, 10, 17, 17, 3],
-	    [15, 1.0, 0.998e-3, 16, 1.0, 10, 17, 17, 3],
-	    [16, 1.0, 1.002e-3, 17, 1.0, 10, 17, 17, 3],
-	    [17, 1.0, 1.001e-3, 18, 1.0, 10, 17, 17, 3],
-	    [18, 1.0, 1.000e-3, 19, 1.0, 10, 17, 17, 3],
-	    [19, 1.0, 0.999e-3, 20, 1.0, 10, 17, 17, 3],
-	    [20, 1.0, 1.003e-3, 21, 1.0, 10, 17, 17, 3],
-	    [21, 1.0, 1.000e-3, 22, 1.0, 10, 17, 17, 3],
-	    [22, 1.0, 1.002e-3, 23, 1.0, 10, 17, 17, 3],
-	    [23, 1.0, 0.997e-3, 24, 1.0, 10, 17, 17, 3],
+	    [0,  1.0, 1.002e-3, 1,  1.0, 3, 16, 17, 3],
+	    [1,  1.0, 0.998e-3, 2,  1.0, 3, 16, 17, 3],
+	    [2,  1.0, 1.001e-3, 3,  1.0, 3, 16, 17, 3],
+	    [3,  1.0, 1.003e-3, 4,  1.0, 3, 16, 17, 3],
+	    [4,  1.0, 1.004e-3, 5,  1.0, 3, 16, 17, 3],
+	    [5,  1.0, 1.000e-3, 6,  1.0, 3, 16, 17, 3],
+	    [6,  1.0, 0.999e-3, 7,  1.0, 3, 16, 17, 3],
+	    [7,  1.0, 1.005e-3, 8,  1.0, 3, 16, 17, 3],
+	    [8,  1.0, 1.001e-3, 9,  1.0, 3, 16, 17, 3],
+	    [9,  1.0, 0.997e-3, 10, 1.0, 3, 16, 17, 3],
+	    [10, 1.0, 1.002e-3, 11, 1.0, 3, 16, 17, 3],
+	    [11, 1.0, 1.003e-3, 12, 1.0, 3, 16, 17, 3],
+	    [12, 1.0, 1.000e-3, 13, 1.0, 3, 16, 17, 3],
+	    [13, 1.0, 1.001e-3, 14, 1.0, 3, 16, 17, 3],
+	    [14, 1.0, 1.004e-3, 15, 1.0, 3, 16, 17, 3],
+	    [15, 1.0, 0.998e-3, 16, 1.0, 3, 16, 17, 3],
+	    [16, 1.0, 1.002e-3, 17, 1.0, 3, 16, 17, 3],
+	    [17, 1.0, 1.001e-3, 18, 1.0, 3, 16, 17, 3],
+	    [18, 1.0, 1.000e-3, 19, 1.0, 3, 16, 17, 3],
+	    [19, 1.0, 0.999e-3, 20, 1.0, 3, 16, 17, 3],
+	    [20, 1.0, 1.003e-3, 21, 1.0, 3, 16, 17, 3],
+	    [21, 1.0, 1.000e-3, 22, 1.0, 3, 16, 17, 3],
+	    [22, 1.0, 1.002e-3, 23, 1.0, 3, 16, 17, 3],
+	    [23, 1.0, 0.997e-3, 24, 1.0, 3, 16, 17, 3],
 
-	    [0,  1.0, 1.002e-3,  3, 1.0, 10, 17, 17, 3],
-	    [3,  1.0, 0.801e-3, 15, 1.0, 10, 17, 17, 3],
-	    [15, 1.0, 0.603e-3, 24, 1.0, 10, 17, 17, 3]
+	    [0,  1.0, 1.002e-3,  3, 1.0, 3, 16, 17, 3],
+	    [3,  1.0, 0.801e-3, 15, 1.0, 3, 16, 17, 3],
+	    [15, 1.0, 0.603e-3, 24, 1.0, 3, 16, 17, 3]
     ]
   }
 ]
 
-const categoriesToIgnore = [32, 38, 41]
-const areas = [4, 5, 9, 10, 12, 13, 16, 17, 18]
+const emissions_isotr14069 = [
+  {
+    time_range: emissions_time_range,
+    indexes: {
+      entity: emissions_entities,
+      area: emissions_areas,
+      category: emissions_categories,
+    },
+    data: [
+	    [0,  1.0, 1.002e-3, 1,  1.0, 10, 17, 17, 59],
+	    [1,  1.0, 0.998e-3, 2,  1.0, 10, 17, 17, 59],
+	    [2,  1.0, 1.001e-3, 3,  1.0, 10, 17, 17, 59],
+	    [3,  1.0, 1.003e-3, 4,  1.0, 10, 17, 17, 59],
+	    [4,  1.0, 1.004e-3, 5,  1.0, 10, 17, 17, 59],
+	    [5,  1.0, 1.000e-3, 6,  1.0, 10, 17, 17, 59],
+	    [6,  1.0, 0.999e-3, 7,  1.0, 10, 17, 17, 59],
+	    [7,  1.0, 1.005e-3, 8,  1.0, 10, 17, 17, 59],
+	    [8,  1.0, 1.001e-3, 9,  1.0, 10, 17, 17, 59],
+	    [9,  1.0, 0.997e-3, 10, 1.0, 10, 17, 17, 59],
+	    [10, 1.0, 1.002e-3, 11, 1.0, 10, 17, 17, 59],
+	    [11, 1.0, 1.003e-3, 12, 1.0, 10, 17, 17, 59],
+	    [12, 1.0, 1.000e-3, 13, 1.0, 10, 17, 17, 59],
+	    [13, 1.0, 1.001e-3, 14, 1.0, 10, 17, 17, 59],
+	    [14, 1.0, 1.004e-3, 15, 1.0, 10, 17, 17, 59],
+	    [15, 1.0, 0.998e-3, 16, 1.0, 10, 17, 17, 59],
+	    [16, 1.0, 1.002e-3, 17, 1.0, 10, 17, 17, 59],
+	    [17, 1.0, 1.001e-3, 18, 1.0, 10, 17, 17, 59],
+	    [18, 1.0, 1.000e-3, 19, 1.0, 10, 17, 17, 59],
+	    [19, 1.0, 0.999e-3, 20, 1.0, 10, 17, 17, 59],
+	    [20, 1.0, 1.003e-3, 21, 1.0, 10, 17, 17, 59],
+	    [21, 1.0, 1.000e-3, 22, 1.0, 10, 17, 17, 59],
+	    [22, 1.0, 1.002e-3, 23, 1.0, 10, 17, 17, 59],
+	    [23, 1.0, 0.997e-3, 24, 1.0, 10, 17, 17, 59],
+
+	    [0,  1.0, 1.002e-3,  3, 1.0, 10, 17, 17, 59],
+	    [3,  1.0, 0.801e-3, 15, 1.0, 10, 17, 17, 59],
+	    [15, 1.0, 0.603e-3, 24, 1.0, 10, 17, 17, 59]
+    ]
+  }
+]
+
+const categoriesToIgnore = [3, 8, 11, 32, 38, 41, 59, 65, 68, 86, 92, 95, 101, 107, 112]
+const energyCategories = [3, 8, 9, 32, 38, 39, 59, 65, 66, 86, 92, 93]
+const areas = [3, 4, 8, 9, 12, 13, 16, 17, 18]
+const thirdParties = [0, 1, 16]  // plus 17 for energy categories
 
 // Disconnected in this version. Only valid for BEGES taxonomy (uses BEGES categories)
-const generateDataPoint = () => {
-  const randomCompany = _.random(1, 18)
+const generateDataPoint = (start_time, end_time, time_scale, taxonomy) => {
+  // category
+  let start, end;
+
+  switch (taxonomy) {
+    case "beges":
+      start = 23;
+      end = 45;
+      break;
+    case "isotr140692013":
+      start = 46;
+      end = 69;
+      break;
+    case "begesv5":
+      start = 70;
+      end = 91;
+      break;
+    default:
+      //case "ghgprotocol":
+      start = 0;
+      end = 22;
+      break;
+  }
+  let randomCategory = _.random(start, end)
+
+  // Compute final category, skipping scopes and other non-category 
+  // members of the hierarchy.
+  for (const ignored of categoriesToIgnore) {
+    if (ignored <= randomCategory) {
+      randomCategory++;
+    } else {
+      break; // All further ignored categories will be greater, so we can stop checking
+    }
+  }
+
+  const randomCompany = _.random(2, 15)
   const randomArea = _.sample(areas)
-  const randomBegesCategory = _.random(32, 56)
   const randomAmount = _.random(.0001, 2, true)
+  const randomThirdParty = energyCategories.includes(randomCategory) ? 17 : _.sample(thirdParties)
+  
+  // time 
   const randomSlot = _.random(2, 10)
   const randomDelta = _.random(1, 10)
+  
+  // synthesis of CDP
   return [
     randomSlot,
     0.4,
@@ -1368,24 +1365,24 @@ const generateDataPoint = () => {
     0.6,
     randomCompany,
     randomArea,
-    18,
-    categoriesToIgnore.includes(randomBegesCategory) ? randomBegesCategory + 1 : randomBegesCategory
+    randomThirdParty,
+    randomCategory
   ]
 }
 
-const generateData = (start, end) => {
+const generateData = (start_time, end_time, scale, taxonomy) => {
   let a = 0
   const newDataPoints = []
   while (a < 100) {
-    newDataPoints.push(generateDataPoint())
+    newDataPoints.push(generateDataPoint(start_time, end_time, scale, taxonomy))
     a++
   }
   const resultDataCube = {...emissions_beges[0], data: newDataPoints}
-  if (start && start instanceof Date && !isNaN(start)) {
-    resultDataCube.time_range.start = start
+  if (start_time && start_time instanceof Date && !isNaN(start_time)) {
+    resultDataCube.time_range.start = start_time
   }
-  if (end && end instanceof Date && !isNaN(end)) {
-    resultDataCube.time_range.end = end
+  if (end_time && end_time instanceof Date && !isNaN(end_time)) {
+    resultDataCube.time_range.end = end_time
   }
   return [resultDataCube]
 }
@@ -1393,6 +1390,7 @@ const generateData = (start, end) => {
 module.exports.sampleEmissionData = {
   beges: emissions_beges,
   begesv5: emissions_begesv5,
-  ghgprotocol: emissions_ghgprotocol
+  ghgprotocol: emissions_ghgprotocol,
+  isotr140692013: emissions_isotr14069
 }
 module.exports.appendSomeData = generateData

@@ -12,6 +12,7 @@ import { CategoryLabel } from "components/categories/CategoriesLegend"
 import _ from "lodash"
 import { formatEmissionAmount } from "data/domain/transformers/EmissionTransformers"
 import { EmissionDataPoint } from "data/domain/types/emissions/EmissionTypes"
+import { useNavigate } from "react-router"
 
 const tableLayout = {
   CONTRIBUTOR: "company",
@@ -51,20 +52,29 @@ const fixedHeaderContent = () => (
   </TableRow>
 )
 
-function rowContent(_index: number, row: EmissionDataPoint) {
+function RowContent({
+  _index,
+  row,
+}: {
+  _index: number
+  row: EmissionDataPoint
+}) {
+  const navigate = useNavigate()
+  const { companyId, companyName, totalEmissionAmount, categoryEraName } = row // to fix linter
+
   return (
     <>
       <TableCell key="company">
-        <Link href={`/contributors/analysis/${row.companyId}`}>
-          {row.companyName}
+        <Link onClick={() => navigate(`/contributors/analysis/${companyId}`)}>
+          {companyName}
         </Link>
       </TableCell>
       <TableCell key="data-source">ERP</TableCell>
       <TableCell key="emissionAmount" align="right">
-        {formatEmissionAmount(row.totalEmissionAmount)}
+        {formatEmissionAmount(totalEmissionAmount)}
       </TableCell>
       <TableCell key="category">
-        <CategoryLabel category={_.capitalize(row.categoryEraName)} />
+        <CategoryLabel category={_.capitalize(categoryEraName)} />
       </TableCell>
     </>
   )
@@ -85,7 +95,7 @@ const EmissionsByClusterTable = ({
       data={sortedEmissions}
       components={VirtuosoTableComponents}
       fixedHeaderContent={fixedHeaderContent}
-      itemContent={rowContent}
+      itemContent={(index, row) => <RowContent _index={index} row={row}/>}
     />
   )
 }

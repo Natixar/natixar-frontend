@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux"
-import { NavLink, useNavigate, useParams } from "react-router-dom"
-import { ArrowLeftOutlined, RightOutlined } from "@ant-design/icons"
+import { useEffect } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { RightOutlined } from "@ant-design/icons"
 import { Button, Stack, Typography } from "@mui/material"
 import MainCard from "components/MainCard"
 import {
@@ -10,6 +11,7 @@ import {
 import TopContributorsSection from "sections/contributor/emissions-by-scope/TopContributorsSection"
 import { useAppDispatch } from "data/store"
 import { clearFilterSelection } from "data/store/features/emissions/ranges/EmissionRangesSlice"
+import useConfig from "hooks/useConfig"
 import Breadcrumb from "../../components/@extended/Breadcrumbs"
 
 const TopContributorsPage = () => {
@@ -25,6 +27,12 @@ const TopContributorsPage = () => {
     navigate(`/contributors/dashboard`)
   }
 
+  const { setIsShowExtraHeader } = useConfig()
+
+  useEffect(() => {
+    setIsShowExtraHeader(true)
+  })
+
   if (!Number.isFinite(categoryId)) {
     console.log(`Unable to parse category id ${idStr}`)
     return null
@@ -39,8 +47,8 @@ const TopContributorsPage = () => {
       to: "/",
     },
     {
-      title: `${categoryName ?? "Total "} details`,
-      to: `/contributors/scope/${scopeId}`,
+      title: `Category ${alignedIndexes.categories[categoryId].code ?? alignedIndexes.categories[categoryId].name}`,
+      to: `/contributors/category-analysis/${scopeId}`,
     },
     {
       title: `${categoryName ?? "Total "} top contributors`,
@@ -57,15 +65,8 @@ const TopContributorsPage = () => {
           justifyContent="space-between"
           width="100%"
           position="relative"
+          marginBlock="1rem"
         >
-          <Button
-            onClick={() => navigate(-1)}
-            sx={{ color: "primary.contrastText" }}
-            variant="contained"
-            startIcon={<ArrowLeftOutlined color="primary.contrastText" />}
-          >
-            Back
-          </Button>
           <Breadcrumb
             custom
             title={false}

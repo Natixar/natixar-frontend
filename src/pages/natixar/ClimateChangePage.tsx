@@ -68,12 +68,11 @@ const NatixarChart = () => {
   const allPoints = useSelector(emissionsSelector)
   const timeWindow = useSelector(selectTimeWindow)
 
-  let minTime =
-    _.minBy(allPoints, (point) => point.startTimeSlot)?.startTimeSlot ?? 0
+  let minTime = Math.min(...allPoints.map((point) => point.startTimeSlot))
   minTime =
     timeWindow.startTimestamp + getTimeOffsetForSlot(minTime, timeWindow)
-  let maxTime =
-    _.maxBy(allPoints, (point) => point.endTimeSlot)?.endTimeSlot ?? 0
+
+  let maxTime = Math.max(...allPoints.map((point) => point.endTimeSlot))
   maxTime =
     timeWindow.startTimestamp + getTimeOffsetForSlot(maxTime, timeWindow)
 
