@@ -11,6 +11,7 @@ import {
   CardProps,
   CardHeaderProps,
   CardContentProps,
+  useMediaQuery
 } from "@mui/material"
 
 // project import
@@ -75,6 +76,8 @@ const MainCard = forwardRef(
     boxShadow =
       theme.palette.mode === ThemeMode.DARK ? boxShadow || true : boxShadow
 
+    const downSM = useMediaQuery(theme.breakpoints.down("sm"))
+
     return (
       <Card
         elevation={elevation || 0}
@@ -83,7 +86,7 @@ const MainCard = forwardRef(
         sx={{
           position: "relative",
           border: border ? "1px solid" : "none",
-          borderRadius: 1,
+          borderRadius: downSM ? 6 : 12,
           borderColor:
             theme.palette.mode === ThemeMode.DARK
               ? theme.palette.divider

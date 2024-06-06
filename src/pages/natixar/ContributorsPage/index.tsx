@@ -35,7 +35,7 @@ const ContributorsPage = () => {
       to: `/contributor/scope/${scopeID}?scopeID=${scopeID}`,
     },
     {
-      title: "Top contributors of Transportation and destribution",
+      title: "Top contributors of transportation and distribution",
       to: "",
     },
   ]
@@ -52,14 +52,6 @@ const ContributorsPage = () => {
             width="100%"
             padding="10px 0px"
           >
-            <Button
-              variant="contained"
-              sx={{ color: "#FFF", position: "absolute", left: 0, top: 0 }}
-              startIcon={<ArrowLeftOutlined color="#FFF" />}
-              onClick={() => navigate(-1)}
-            >
-              Back to scope {scopeID}
-            </Button>
             <Breadcrumb
               custom
               title={false}
@@ -73,7 +65,7 @@ const ContributorsPage = () => {
         </Grid>
         <Grid item xs={12} md={12} xl={12}>
           <Typography variant="h5">
-            Top contributors of Transportation and destribution
+            Top contributors of transportation and distribution
           </Typography>
         </Grid>
         <Grid item xs={12} md={12} xl={12}>
@@ -91,7 +83,7 @@ const ContributorsPage = () => {
             sx={{ color: "#FFF", marginBottom: "15px" }}
             onClick={() => navigate("/contributor/dashboard")}
           >
-            Go to Top contributors page
+            Go to top contributors page
           </Button>
         </Grid>
       </Grid>

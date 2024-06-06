@@ -57,8 +57,7 @@ const MainDrawer = ({ window }: Props) => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: DRAWER_WIDTH,
-              borderRight: `1px solid ${theme.palette.divider}`,
-              backgroundImage: "none",
+              backgroundImage: "linear-gradient(#053759,#0B76BF)",
               boxShadow: "inherit",
             },
           }}

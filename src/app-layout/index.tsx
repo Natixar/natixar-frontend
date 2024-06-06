@@ -52,7 +52,12 @@ const AppLayout = () => {
 
         <Stack
           component="main"
-          sx={{ width: "calc(100% - 260px)", flexGrow: 1, p: { xs: 2, sm: 3 } }}
+          sx={{
+            bgcolor: "common.white",
+            width: "calc(100% - 260px)",
+            flexGrow: 1,
+            p: { xs: 2, sm: 3 },
+          }}
         >
           {makeExtraPadding && (
             <Toolbar sx={{ mt: isHorizontal ? 8 : "inherit" }} />
@@ -62,6 +67,10 @@ const AppLayout = () => {
             sx={{
               ...(container && { px: { xs: 0, sm: 3 } }),
               position: "relative",
+              top: 60,
+              minHeight: "calc(100vh - 110px)",
+              display: "flex",
+              flexDirection: "column",
               paddingTop: isShowExtraHeader && makeExtraPadding ? 17 : 9,
             }}
           >

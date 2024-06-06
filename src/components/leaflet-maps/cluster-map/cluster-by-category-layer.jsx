@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef } from "react"
 
 import L from "leaflet"
 import MarkerClusterGroup from "react-leaflet-cluster"
@@ -64,7 +64,6 @@ const createClusterCustomIcon = (cluster) => {
 // eslint-disable-next-line react/prop-types
 const ClusterByCategoryLayer = ({ dataPoints, onClusterPointsSelect }) => {
   const clusterGroupRef = useRef()
-  const [initialSnap, setInitialSnap] = useState(true)
 
   const map = useMap()
 
@@ -84,44 +83,30 @@ const ClusterByCategoryLayer = ({ dataPoints, onClusterPointsSelect }) => {
   )
 
   useEffect(() => {
-    let acceptTransformation = true
-
-    const retrieveMarkers = async () => {
-      const markers = dataPoints
-        // eslint-disable-next-line react/prop-types
-        .filter((dataPoint) => dataPoint.location)
-        .filter(
-          (dataPoint) =>
-            dataPoint.location.lat > 0 && dataPoint.location.lon > 0,
-        )
-        .map((dataPoint) => {
-          const address = dataPoint.location
-          const marker = L.marker(new L.LatLng(address.lat, address.lon), {
-            key: dataPoint.id,
-            title: address.country,
-            icon: customIcon,
-            dataPoint,
-          })
-          return marker
+    const markers = dataPoints
+      // eslint-disable-next-line react/prop-types
+      .filter((dataPoint) => dataPoint.location)
+      .filter(
+        (dataPoint) => dataPoint.location?.lat && dataPoint.location?.lon,
+      )
+      .map((dataPoint) => {
+        const address = dataPoint.location
+        const marker = L.marker(new L.LatLng(address.lat, address.lon), {
+          key: dataPoint.id,
+          title: address.country,
+          icon: customIcon,
+          dataPoint,
         })
+        return marker
+      })
 
-      if (initialSnap && acceptTransformation) {
-        const clusterGr = clusterGroupRef.current
-        clusterGr.clearLayers()
-        clusterGr.addLayers(markers)
-        map.fitBounds(clusterGr.getBounds().pad(0.5), {
-          animate: true,
-        })
-        setInitialSnap(false)
-      }
-    }
-
-    retrieveMarkers()
-
-    return () => {
-      acceptTransformation = false
-    }
-  }, [dataPoints, setInitialSnap])
+    const clusterGr = clusterGroupRef.current
+    clusterGr.clearLayers()
+    clusterGr.addLayers(markers)
+    map.fitBounds(clusterGr.getBounds().pad(0.5), {
+      animate: true,
+    })
+  }, [dataPoints])
 
   return (
     <MarkerClusterGroup

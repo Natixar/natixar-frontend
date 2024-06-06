@@ -9,7 +9,13 @@ That's why we have two basequeries here.
 */
 
 export const backendBaseQuery = () =>
-  fetchBaseQuery({ baseUrl: import.meta.env.VITE_NATIXAR_BACKEND_URL })
+  fetchBaseQuery({
+    baseUrl: import.meta.env.VITE_NATIXAR_BACKEND_URL, 
+    prepareHeaders: (headers: Headers) => {
+      headers.set("CO2-Customer-Key", import.meta.env.NATIXAR_API_KEY)
+      return headers
+    },
+  })
 
 export const backupBackendBaseQuery = () =>
   fetchBaseQuery({ baseUrl: import.meta.env.VITE_COLLABRIUM_BACKEND_URL })

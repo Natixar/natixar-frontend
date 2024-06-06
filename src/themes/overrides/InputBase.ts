@@ -7,6 +7,9 @@ export default function InputBase() {
         sizeSmall: {
           fontSize: "0.75rem",
         },
+        root: {
+          borderRadius: '20px',
+        }
       },
     },
   }

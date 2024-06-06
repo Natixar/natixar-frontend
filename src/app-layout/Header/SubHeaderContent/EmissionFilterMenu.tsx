@@ -3,14 +3,20 @@ import {
   Button,
   ButtonGroup,
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
   Stack,
   SxProps,
   Typography,
+  useMediaQuery,
+  Theme,
+  useTheme,
+  Box,
 } from "@mui/material"
+import BarChartIcon from "@mui/icons-material/BarChart"
+import { FactoryIcon } from "assets/icons/FactoryIcon"
+import { PinIcon } from "assets/icons/PinIcon"
 import { CategoryLabel } from "components/categories/CategoriesLegend"
 import DateRangePicker from "components/inputs/date/DateRangePicker"
 import { CheckboxItem } from "components/natixarComponents/AreaCheckbox/CheckboxItem"
@@ -35,7 +41,14 @@ import {
   updateFilterSelection as updateFilterAction,
 } from "data/store/features/emissions/ranges/EmissionRangesSlice"
 import _ from "lodash"
-import { ChangeEvent, memo, useCallback, useMemo, useState } from "react"
+import {
+  ChangeEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
 import { useSelector } from "react-redux"
 
 // import { DateRangePicker, SingleInputDateRangeField } from '@mui/x-date-pickers-pro';
@@ -119,6 +132,39 @@ const entitiesToCheckboxes = (
     treeItems,
   )
 
+const StyleLabel = () => ({
+  color: "#053759",
+  fontFamily: "Urbanist",
+  fontWeight: 600,
+  marginLeft: 2,
+  mt: 1,
+  fontSize: "16px",
+  lineHeight: "24px",
+  marginBottom: 0.3,
+})
+
+/**
+ * hook to change style for selector value when needed
+ * @param labels string[]
+ * @returns
+ */
+const useConditionnalStyleToSelectorValue = (labels: string[]) => {
+  const [conditionnalStyleToSelectValue, setConditionnalStyleToSelectValue] =
+    useState({})
+
+  useEffect(() => {
+    if (
+      labels.includes("All") ||
+      labels.filter((label) => label.endsWith("elements selected")).length > 0
+    ) {
+      setConditionnalStyleToSelectValue({ "font-style": "italic" })
+    } else {
+      setConditionnalStyleToSelectValue({})
+    }
+  }, [labels])
+  return conditionnalStyleToSelectValue
+}
+
 const EntityControlForm = memo(
   ({
     allEntities,
@@ -139,11 +185,26 @@ const EntityControlForm = memo(
       entityHierarchy,
       checkCallback,
     )
+    const theme = useTheme()
+    const conditionnalStyleToSelectValue =
+      useConditionnalStyleToSelectorValue(selectedLabels)
 
     return (
-      <FormControl sx={{ width: 220 }}>
-        <InputLabel>Business Entity / Facility</InputLabel>
-        <Select value={selectedLabels} renderValue={multiSelectJoiner} multiple>
+      <FormControl sx={{ mt: -3, width: 220 }}>
+        <Typography sx={StyleLabel}>
+          <FactoryIcon
+            sx={{ position: "relative", top: 3, marginRight: 1 }}
+            customColor={theme.palette.primary.main}
+          />
+          Business Entity / Facility
+        </Typography>
+        {/* <InputLabel>Business Entity / Facility</InputLabel> */}
+        <Select
+          value={selectedLabels}
+          renderValue={multiSelectJoiner}
+          sx={conditionnalStyleToSelectValue}
+          multiple
+        >
           {entityCheckboxes}
         </Select>
       </FormControl>
@@ -165,6 +226,10 @@ const AreaControlForm = memo(
     areaHierarchy: IdTreeNode[] | undefined
     checkCallback: (id: number, selected: boolean) => void
   }) => {
+    const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
+    const theme = useTheme()
+    const conditionnalStyleToSelectValue =
+      useConditionnalStyleToSelectorValue(selectedAreaLabels)
     const areaCheckboxes = areasToCheckboxes(
       allAreas,
       selectedAreas,
@@ -173,11 +238,19 @@ const AreaControlForm = memo(
     )
 
     return (
-      <FormControl sx={{ width: 160 }}>
-        <InputLabel>Geographic Area</InputLabel>
+      <FormControl sx={{ mt: downSM ? -2 : -3, width: downSM ? "100%" : 190 }}>
+        <Typography sx={StyleLabel}>
+          <PinIcon
+            sx={{ position: "relative", top: 3, marginRight: 1 }}
+            customColor={theme.palette.primary.main}
+          />
+          Geographic Area
+        </Typography>
+        {/* <InputLabel>Geographic Area</InputLabel> */}
         <Select
           value={selectedAreaLabels}
           renderValue={multiSelectJoiner}
+          sx={conditionnalStyleToSelectValue}
           multiple
         >
           {areaCheckboxes}
@@ -199,6 +272,8 @@ const CategoriesControlForm = memo(
       event: SelectChangeEvent<typeof selectedCategories>,
     ) => void
   }) => {
+    const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
+
     const categoryNodes = allCategories
       .map((category) => _.capitalize(category))
       .map((category) => (
@@ -208,8 +283,15 @@ const CategoriesControlForm = memo(
       ))
 
     return (
-      <FormControl sx={{ width: 100 }}>
-        <InputLabel>Scope</InputLabel>
+      <FormControl sx={{ mt: -3, width: downSM ? "100%" : 120 }}>
+        <Typography sx={StyleLabel}>
+          <BarChartIcon
+            sx={{ position: "relative", top: 3, marginRight: 1 }}
+            color="primary"
+          />
+          Scope
+        </Typography>
+        {/* <InputLabel>Scope</InputLabel> */}
         <Select
           value={selectedCategories}
           renderValue={multiSelectJoiner}
@@ -223,7 +305,14 @@ const CategoriesControlForm = memo(
   },
 )
 
-const GlobalFilterMenu = ({ ...sxProps }: SxProps) => {
+interface Props {
+  closeDialog?: Function
+  sx?: SxProps
+}
+
+const GlobalFilterMenu = ({ closeDialog, ...sxProps }: Props) => {
+  const downLG = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"))
+  const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"))
   const dispatch = useAppDispatch()
 
   const alignedIndexes = useSelector(indexesSelector)
@@ -244,15 +333,35 @@ const GlobalFilterMenu = ({ ...sxProps }: SxProps) => {
   )
 
   const entityLabel = useMemo(() => {
-    const entityNames = selectedBusinessEntities.map(
-      (id) => alignedIndexes.entities[id].name,
-    )
+    const entityNames: string[] = []
+    if (selectedBusinessEntities.length > 2) {
+      entityNames.push(`${selectedBusinessEntities.length} elements selected`)
+    } else if (!selectedBusinessEntities.length) {
+      // TODO Add All if all element are checked
+      entityNames.push("All")
+    } else {
+      entityNames.push(
+        ...(selectedBusinessEntities?.map(
+          (id) => alignedIndexes.entities[id].name,
+        ) ?? []),
+      )
+    }
     entityNames.sort()
     return entityNames
   }, [selectedBusinessEntities])
 
   const areaLabel = useMemo(() => {
-    const areasNames = selectedAreas.map((id) => alignedIndexes.areas[id].name)
+    const areasNames: string[] = []
+    if (selectedAreas.length > 2) {
+      areasNames.push(`${selectedAreas.length} elements selected`)
+    } else if (!selectedAreas.length) {
+      // TODO Add All if all element are checked
+      areasNames.push("All")
+    } else {
+      areasNames.push(
+        ...(selectedAreas?.map((id) => alignedIndexes.areas[id].name) ?? []),
+      )
+    }
     areasNames.sort()
     return areasNames
   }, [selectedAreas])
@@ -271,6 +380,7 @@ const GlobalFilterMenu = ({ ...sxProps }: SxProps) => {
       selectedCategories: [...selectedCategories],
     }
     dispatch(updateFilterAction(newFilter))
+    if (closeDialog) closeDialog()
   }, [
     dispatch,
     updateFilterAction,
@@ -329,56 +439,125 @@ const GlobalFilterMenu = ({ ...sxProps }: SxProps) => {
   }
 
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      gap={2.5}
-      sx={{
-        width: "100%",
-        ml: { xs: 0, md: 1, lg: -1 },
-        p: 1,
-        ...sxProps,
-      }}
-    >
-      <Typography>Filter</Typography>
-      <EntityControlForm
-        allEntities={availableEntities}
-        selectedEntities={selectedBusinessEntities}
-        selectedLabels={entityLabel}
-        entityHierarchy={alignedIndexes.entityHierarchy}
-        checkCallback={onEntitySelectionChange}
-      />
-
-      <AreaControlForm
-        selectedAreaLabels={areaLabel}
-        allAreas={availableAreas}
-        areaHierarchy={alignedIndexes.areaHierarchy}
-        selectedAreas={selectedAreas}
-        checkCallback={onAreaSelectionChange}
-      />
-
-      <CategoriesControlForm
-        allCategories={allCategories}
-        selectedCategories={selectedCategories}
-        onSelectionChange={onCategoriesSelectionChange}
-      />
-
-      <DateRangePicker timeRange={timeRangeOfInterest} />
-
-      <ButtonGroup disableElevation variant="contained">
-        <Button
+    <>
+      {!downLG && (
+        <Stack
+          direction="row"
+          alignItems="center"
+          gap={2.5}
           sx={{
-            color: "primary.contrastText",
+            width: "100%",
+            ml: { xs: 0, md: 1, lg: -1 },
+            p: 1,
+            ...sxProps,
           }}
-          onClick={onApplyClick}
         >
-          Apply
-        </Button>
-        <Button onClick={onClearClick} variant="outlined">
-          Clear
-        </Button>
-      </ButtonGroup>
-    </Stack>
+          <EntityControlForm
+            allEntities={availableEntities}
+            selectedEntities={selectedBusinessEntities}
+            selectedLabels={entityLabel}
+            entityHierarchy={alignedIndexes.entityHierarchy}
+            checkCallback={onEntitySelectionChange}
+          />
+
+          <AreaControlForm
+            selectedAreaLabels={areaLabel}
+            allAreas={availableAreas}
+            areaHierarchy={alignedIndexes.areaHierarchy}
+            selectedAreas={selectedAreas}
+            checkCallback={onAreaSelectionChange}
+          />
+
+          <CategoriesControlForm
+            allCategories={allCategories}
+            selectedCategories={selectedCategories}
+            onSelectionChange={onCategoriesSelectionChange}
+          />
+
+          <DateRangePicker timeRange={timeRangeOfInterest} />
+
+          <ButtonGroup disableElevation variant="contained">
+            <Button
+              sx={{
+                color: "primary.contrastText",
+              }}
+              onClick={onApplyClick}
+            >
+              Apply
+            </Button>
+            <Button onClick={onClearClick} variant="outlined">
+              Clear
+            </Button>
+          </ButtonGroup>
+        </Stack>
+      )}
+      {downLG && (
+        <Stack
+          direction="column"
+          alignItems="center"
+          gap={2.5}
+          sx={{
+            width: "100%",
+            ml: { xs: 0, md: 1, lg: -1 },
+            p: 1,
+            ...sxProps,
+          }}
+        >
+          <Stack
+            display="flex"
+            gap={2}
+            flexDirection={downSM ? "column" : "row"}
+          >
+            <EntityControlForm
+              allEntities={availableEntities}
+              selectedEntities={selectedBusinessEntities}
+              selectedLabels={entityLabel}
+              entityHierarchy={alignedIndexes.entityHierarchy}
+              checkCallback={onEntitySelectionChange}
+            />
+
+            <AreaControlForm
+              selectedAreaLabels={areaLabel}
+              allAreas={availableAreas}
+              areaHierarchy={alignedIndexes.areaHierarchy}
+              selectedAreas={selectedAreas}
+              checkCallback={onAreaSelectionChange}
+            />
+          </Stack>
+
+          <Stack
+            display="flex"
+            gap={2}
+            flexDirection={downSM ? "column" : "row"}
+            alignItems="center"
+          >
+            <CategoriesControlForm
+              allCategories={allCategories}
+              selectedCategories={selectedCategories}
+              onSelectionChange={onCategoriesSelectionChange}
+            />
+
+            <Box sx={{ marginTop: 2 }}>
+              <DateRangePicker timeRange={timeRangeOfInterest} />
+            </Box>
+          </Stack>
+
+          <ButtonGroup disableElevation variant="contained">
+            <Button
+              sx={{
+                color: "primary.contrastText",
+              }}
+              onClick={onApplyClick}
+            >
+              Apply
+            </Button>
+            <Button onClick={onClearClick} variant="outlined">
+              Clear
+            </Button>
+          </ButtonGroup>
+        </Stack>
+      )}
+    </>
   )
 }
 

@@ -138,7 +138,9 @@ const Profile = () => {
   }
 
   const iconBackColorOpen =
-    theme.palette.mode === ThemeMode.DARK ? "background.default" : "grey.100"
+    theme.palette.mode === ThemeMode.DARK
+      ? "background.default"
+      : "primary.light"
   const userName =
     user?.given_name && user?.family_name
       ? `${user?.given_name} ${user?.family_name}`
@@ -149,13 +151,13 @@ const Profile = () => {
       <ButtonBase
         sx={{
           p: 0.25,
-          bgcolor: open ? iconBackColorOpen : "transparent",
+          bgcolor: open ? iconBackColorOpen : "primary.main",
           borderRadius: 1,
           "&:hover": {
             bgcolor:
               theme.palette.mode === ThemeMode.DARK
-                ? "secondary.light"
-                : "secondary.lighter",
+                ? "primary.lighter"
+                : "primary.light",
           },
           "&:focus-visible": {
             outline: `2px solid ${theme.palette.secondary.dark}`,
@@ -177,7 +179,13 @@ const Profile = () => {
           <Avatar {...stringAvatar(userName)} />
           <Typography
             variant="subtitle1"
-            sx={{ textTransform: "capitalize", textOverflow: "ellipsis" }}
+            sx={{
+              textTransform: "capitalize",
+              display: "inline-block",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              color: "common.white",
+            }}
           >
             {userName}
           </Typography>

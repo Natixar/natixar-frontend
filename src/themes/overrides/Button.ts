@@ -6,12 +6,14 @@ import getColors from "utils/getColors"
 import getShadow from "utils/getShadow"
 
 // types
-import { ButtonVariantProps, ExtendedStyleProps } from "types/extended"
+import { ButtonVariantProps, ColorProps, ExtendedStyleProps } from "types/extended"
 
 // ==============================|| BUTTON - COLORS ||============================== //
 
 interface ButtonStyleProps extends ExtendedStyleProps {
   variant: ButtonVariantProps
+  color: ColorProps
+  theme: Theme
 }
 
 function getColorStyle({ variant, color, theme }: ButtonStyleProps) {
@@ -37,6 +39,8 @@ function getColorStyle({ variant, color, theme }: ButtonStyleProps) {
   switch (variant) {
     case "contained":
       return {
+        backgroundColor: main,
+        color: '#fff',
         "&:hover": {
           backgroundColor: dark,
         },
@@ -118,8 +122,13 @@ export default function Button(theme: Theme) {
       },
       styleOverrides: {
         root: {
-          color: "#000",
-          fontWeight: 400,
+          color: "#053759",
+          fontWeight: 800,
+          fontFamily: 'Urbanist',
+          borderRadius: '32px',
+          "&:hover": {
+            backgroundColor: theme.palette.success.dark
+          },
           "&::after": {
             content: '""',
             display: "block",
@@ -128,7 +137,7 @@ export default function Button(theme: Theme) {
             top: 0,
             width: "100%",
             height: "100%",
-            borderRadius: 4,
+            borderRadius: '20px',
             opacity: 0,
             transition: "all 0.5s",
           },
@@ -139,7 +148,7 @@ export default function Button(theme: Theme) {
 
           "&:active::after": {
             position: "absolute",
-            borderRadius: 4,
+            borderRadius: '20px',
             left: 0,
             top: 0,
             opacity: 1,
@@ -151,6 +160,8 @@ export default function Button(theme: Theme) {
         },
         outlined: {
           ...disabledStyle,
+          fontFamily: 'Urbanist',
+          fontWeight: '400',
         },
         text: {
           boxShadow: "none",

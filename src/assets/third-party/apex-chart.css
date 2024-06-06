@@ -7,7 +7,33 @@
 .apexcharts-legend.apx-legend-position-top .apexcharts-legend-series {
   gap: 8px;
 }
+
 .apexcharts-legend-series {
   display: flex;
   gap: 8px;
+}
+
+.apexcharts-tooltip {
+  color: #053759 !important;
+  /* transform: translateX(10px) translateY(10px); */
+  /* overflow: visible !important; */
+  /* white-space: normal !important; */
+  background: #fff !important;
+  padding: 8px 16px !important;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25) !important;
+  border-radius: 24px !important;
+}
+
+.apexcharts-datalabel-label {
+  fill: #053759;
+  font-size: 26px;
+  font-family: "Questrial", sans-serif;
+  transform: translateY(10px);
+}
+
+.apexcharts-datalabel-value {
+  font-family: "Urbanist", sans-serif !important;
+  font-size: 28px;
+  font-weight: bold;
+  fill: #053759;
 }

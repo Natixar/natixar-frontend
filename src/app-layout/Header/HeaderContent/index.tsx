@@ -20,6 +20,7 @@ const HeaderContent = () => {
         direction="row"
         alignItems="center"
         gap={1}
+        paddingRight={1}
         sx={{
           px: 1,
         }}

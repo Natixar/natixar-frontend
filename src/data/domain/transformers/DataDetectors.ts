@@ -9,6 +9,10 @@ import {
 } from "../types/emissions/EmissionTypes"
 import { frCategoryMessages } from "../types/emissions/CategoryDescriptions"
 
+/* If entityId corresponds to a manufacturing step or a business division,
+ * look upwards in the hierarchy until a "company" is found.
+ * Return the corresponding Entity object from alignedIndexes.
+ */
 export const detectCompany = (
   entityId: number,
   indexes: AlignedIndexes,
@@ -25,6 +29,9 @@ export const detectCompany = (
   return entity
 }
 
+/* Searches upwards from a referenced area until it finds a "top order area"
+ * If the geoAreaId corresponds to a "top order area" the corresponding object
+ * indexes.areas[geoAreaId] is returned immediately. */
 export const TOP_ORDER_AREAS = ["World region", "Continent", "Country"]
 export const detectCountry = (
   geoAreaId: number,

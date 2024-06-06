@@ -24,12 +24,12 @@ export default defineConfig({
       //   find: 'assets',
       //   replacement: path.join(process.cwd(), 'src/assets')
       // },
-    ]
+    ],
   },
   server: {
     // this ensures that the browser opens upon server start
     open: true,
     // this sets a default port to 3000
-    port: 3000
+    port: 3000,
   }
 });

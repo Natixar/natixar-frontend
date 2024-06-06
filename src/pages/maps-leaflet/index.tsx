@@ -9,6 +9,9 @@ const ContributorDashboardPage = () => (
     <Typography variant="h4" gutterBottom>
       Map
     </Typography>
+    <Typography variant="body2">
+      The map represents your emissions grouped by geographic area. Zoom in or zoom out to a micro or macro view of your emissions.
+    </Typography>
     <ClusteredMapSection />
     <ByCompanySection />
     <ByCountrySection />

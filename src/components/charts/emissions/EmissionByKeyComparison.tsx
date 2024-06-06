@@ -59,7 +59,7 @@ const optionOverrides = (keys: string[]): ApexOptions => ({
 })
 
 const produceSeries = (
-  dataSet: Record<string, Record<string, number>>,
+  dataSet: Record<string, Record<string, number | undefined>>,
   groupName: string,
   categories: string[],
   keys: string[],
@@ -75,7 +75,7 @@ const produceSeries = (
 
     Object.entries(entry[1]).forEach((seriesEntry) => {
       const keyIndex = keys.indexOf(seriesEntry[0])
-      const data: number[] = byKeyData[categoryIndex]
+      const data: (number | undefined)[] = byKeyData[categoryIndex]
       const amount = seriesEntry[1]
       data[keyIndex] = amount
     })
@@ -103,7 +103,7 @@ const EmissionByKeyComparison = ({
   ...sxProps
 }: {
   dataSetA: Record<string, Record<string, number>>
-  dataSetB?: Record<string, Record<string, number>>
+  dataSetB?: Record<string, Record<string, number | undefined>>
   keys: string[]
 } & SxProps) => {
   const categories = Object.keys(dataSetA)

@@ -8,10 +8,11 @@ export const ContainerStyles = {
 }
 
 export const ChartContainerStyles = {
-  width: "100%",
+  minwidth: "400px",
+  flex: "1 1 0",
   height: "100%",
   display: "flex",
-  justifyContent: "center",
+  justifyContent: "space-between",
   alignItems: "center",
 }
 

@@ -2,7 +2,7 @@ import { TypographyVariantsOptions } from "@mui/material/styles"
 
 const Typography: TypographyVariantsOptions = {
   htmlFontSize: 16,
-  fontFamily: `'Inter', sans-serif`,
+  fontFamily: `'Questrial','Urbanist', sans-serif`,
   fontWeightLight: 300,
   fontWeightRegular: 400,
   fontWeightMedium: 500,

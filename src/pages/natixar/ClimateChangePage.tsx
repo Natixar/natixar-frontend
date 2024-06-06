@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, Typography } from "@mui/material"
+import { Grid } from "@mui/material"
 
 // project import
 import MainCard from "components/MainCard"
@@ -10,8 +10,8 @@ import {
   selectTimeWindow,
 } from "data/store/api/EmissionSelectors"
 import { useSelector } from "react-redux"
-import TotalEmissionByTimeSection from "sections/charts/emissions/TotalEmissionByTimeSection"
 import EmissionByTimeCompareToPreviousSection from "sections/charts/emissions/EmissionByTimeCompareToPreviousSection"
+import TotalEmissionByTimeSection from "sections/charts/emissions/TotalEmissionByTimeSection"
 import {
   getTimeOffsetForSlot,
   sortDays,
@@ -25,7 +25,11 @@ import {
   timestampToYear,
 } from "data/domain/transformers/TimeTransformers"
 import _ from "lodash"
-import { useState } from "react"
+import { useCallback, useState } from "react"
+import { NatixarSectionTitle } from "components/natixarComponents/ChartCard/NatixarSectionTitle"
+import { selectTimeMeasurement } from "data/store/features/emissions/ranges/EmissionRangesSlice"
+import { TimeMeasurement } from "data/domain/types/time/TimeRelatedTypes"
+import { useAppDispatch } from "data/store"
 import EmissionByCategorySection from "../../components/natixarComponents/CO2DonutSection/EmissionByScopeDonutSection"
 
 // ==============================|| WIDGET - CHARTS ||============================== //
@@ -44,33 +48,60 @@ const detailUnitLayout: Record<
   Year: [timestampToYear, (a, b) => a.localeCompare(b)],
 }
 
+const mapTimeUnitimeMeasurement = (timeUnit: string): TimeMeasurement => {
+  if (!(timeUnit in detailUnitLayout)) return TimeMeasurement.MONTHS
+
+  if (timeUnit === "Hour") return TimeMeasurement.HOURS
+  if (timeUnit === "Day") return TimeMeasurement.DAYS
+  if (timeUnit === "Month") return TimeMeasurement.MONTHS
+  if (timeUnit === "Quarter") return TimeMeasurement.QUARTERS
+  if (timeUnit === "Year") return TimeMeasurement.YEARS
+  return TimeMeasurement.MONTHS
+}
+
 const NatixarChart = () => {
   const [totalUnit, setTotalUnit] = useState("Month")
   const [comparisonUnit, setComparisonUnit] = useState("Month")
 
+  const dispatch = useAppDispatch()
   const alignedIndexes = useSelector(indexSelector)
   const allPoints = useSelector(emissionsSelector)
   const timeWindow = useSelector(selectTimeWindow)
 
-  let minTime =
-    _.minBy(allPoints, (point) => point.startTimeSlot)?.startTimeSlot ?? 0
+  let minTime = Math.min(...allPoints.map((point) => point.startTimeSlot))
   minTime =
     timeWindow.startTimestamp + getTimeOffsetForSlot(minTime, timeWindow)
-  let maxTime =
-    _.maxBy(allPoints, (point) => point.endTimeSlot)?.endTimeSlot ?? 0
+
+  let maxTime = Math.max(...allPoints.map((point) => point.endTimeSlot))
   maxTime =
     timeWindow.startTimestamp + getTimeOffsetForSlot(maxTime, timeWindow)
 
   const minDate = new Date(minTime)
   const maxDate = new Date(maxTime)
 
+  const onTotalEmissionUnitClick = useCallback(
+    (timeUnit: string) => {
+      setTotalUnit(timeUnit)
+      const timeMeasurement = mapTimeUnitimeMeasurement(timeUnit)
+      dispatch(selectTimeMeasurement(timeMeasurement))
+    },
+    [dispatch, selectTimeMeasurement],
+  )
+
+  const onTimeCompareEmissionUnitClick = useCallback(
+    (timeUnit: string) => {
+      setComparisonUnit(timeUnit)
+      const timeMeasurement = mapTimeUnitimeMeasurement(timeUnit)
+      dispatch(selectTimeMeasurement(timeMeasurement))
+    },
+    [dispatch, selectTimeMeasurement],
+  )
+
   return (
     <Grid container rowSpacing={4.5} columnSpacing={3}>
       <Grid item xs={12} md={12} xl={12}>
         <MainCard>
-          <Typography variant="h5" sx={{ marginBottom: "15px" }}>
-            Scope Emissions
-          </Typography>
+          <NatixarSectionTitle>Scope Emissions</NatixarSectionTitle>
           <EmissionByCategorySection
             allDataPoints={allPoints}
             alignedIndexes={alignedIndexes}
@@ -84,7 +115,7 @@ const NatixarChart = () => {
           startDate={minDate}
           endDate={maxDate}
           timeDetailUnit={totalUnit}
-          setTimeDetailUnit={setTotalUnit}
+          setTimeDetailUnit={onTotalEmissionUnitClick}
         />
       </Grid>
       <Grid item xs={12} md={12} lg={12}>
@@ -94,7 +125,7 @@ const NatixarChart = () => {
           startDate={minDate}
           endDate={maxDate}
           timeDetailUnit={comparisonUnit}
-          setTimeDetailUnit={setComparisonUnit}
+          setTimeDetailUnit={onTimeCompareEmissionUnitClick}
         />
       </Grid>
     </Grid>
