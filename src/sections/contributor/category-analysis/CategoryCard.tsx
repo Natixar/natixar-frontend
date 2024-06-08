@@ -1,4 +1,6 @@
 import { useState } from "react"
+import { NavLink, useNavigate } from "react-router-dom"
+
 
 // material-ui
 import {
@@ -57,7 +59,6 @@ export const CategoryCard = ({
     formattedEmissionAmount: "",
     subCategories: [],
   })
-  const [selectedIndex, setSelectedIndex] = useState(0)
 
   const indexes = useSelector(selectAlignedIndexes)
   const allEmissions = useSelector(selectAllPoints)
@@ -96,11 +97,12 @@ export const CategoryCard = ({
       }
     },
     setCardState,
-    [indexes, allEmissions],
+    [indexes, allEmissions, categoryId],
   )
 
-  const handleListItemClick = (index: number) => {
-    setSelectedIndex(index)
+  const navigate = useNavigate()
+  const handleListItemClick = (categoryId: number) => {
+    navigate(`/contributors/category-analysis/${categoryId}`)
   }
 
   const {
@@ -179,7 +181,7 @@ export const CategoryCard = ({
               {subCategories.map((subCat) => (
                 <ListItemButton
                   key={subCat.id}
-                  onClick={() => console.log("Subcategory clicked", subCat)}
+                  onClick={() => handleListItemClick(subCat.id)}
                 >
                   <ListItemText primary={subCat.name} />
                 </ListItemButton>
