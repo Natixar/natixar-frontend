@@ -270,7 +270,11 @@ const AreaControlForm = memo(
         <Select
           value={selectedAreaLabels}
           renderValue={(selected: string[]) =>
-            multiSelectJoiner(selected, allAreas.length, "Geographic Area")
+            multiSelectJoiner(
+              selected,
+              Array.of(allAreas).length,
+              "Geographic Area",
+            )
           }
           displayEmpty
           sx={conditionnalStyleToSelectValue}
