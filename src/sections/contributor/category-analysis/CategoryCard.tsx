@@ -1,4 +1,6 @@
 import { useState } from "react"
+import { NavLink, useNavigate } from "react-router-dom"
+
 
 // material-ui
 import {
@@ -38,6 +40,12 @@ interface CardState {
   category?: EmissionCategory
   description?: string
   formattedEmissionAmount: string
+  subCategories?: SubCategory[]
+}
+
+interface SubCategory {
+  id: number
+  name: string
 }
 
 export const CategoryCard = ({
@@ -49,8 +57,8 @@ export const CategoryCard = ({
   const theme = useTheme()
   const [cardState, setCardState] = useState<CardState>({
     formattedEmissionAmount: "",
+    subCategories: [],
   })
-  const [selectedIndex, setSelectedIndex] = useState(0)
 
   const indexes = useSelector(selectAlignedIndexes)
   const allEmissions = useSelector(selectAllPoints)
@@ -65,6 +73,12 @@ export const CategoryCard = ({
       const relevantCategories = categoryId
         ? expandId([categoryId], indexes.categoryHierarchy)
         : []
+      const subCategories = relevantCategories
+        .map((subCatId) => ({
+          id: subCatId,
+          name: indexes.categories[subCatId].name,
+        }))
+        .filter((subCat) => subCat.id !== categoryId)
       const { totalCategoryEmissions } = tidy(
         allEmissions,
         filter((edp) => relevantCategories.includes(edp.categoryId)),
@@ -83,14 +97,21 @@ export const CategoryCard = ({
       }
     },
     setCardState,
-    [indexes, allEmissions],
+    [indexes, allEmissions, categoryId],
   )
 
-  const handleListItemClick = (index: number) => {
-    setSelectedIndex(index)
+  const navigate = useNavigate()
+  const handleListItemClick = (categoryId: number) => {
+    navigate(`/contributors/category-analysis/${categoryId}`)
   }
 
-  const { scope, category, description, formattedEmissionAmount } = cardState
+  const {
+    scope,
+    category,
+    description,
+    formattedEmissionAmount,
+    subCategories,
+  } = cardState
 
   return (
     <MainCard sx={{ padding: 0, ...sxProps }}>
@@ -155,41 +176,22 @@ export const CategoryCard = ({
           >
             Subcategories
           </Typography>
-          <List
-            component="nav"
-            sx={{
-              p: 0,
-              "& .MuiListItemIcon-root": {
-                minWidth: 32,
-                color: theme.palette.grey[500],
-              },
-            }}
-          >
-            <ListItemButton
-              selected={selectedIndex === 0}
-              onClick={() => handleListItemClick(0)}
-            >
-              <ListItemText primary="Road transportation" />
-            </ListItemButton>
-            <ListItemButton
-              selected={selectedIndex === 1}
-              onClick={() => handleListItemClick(1)}
-            >
-              <ListItemText primary="Road transportation" />
-            </ListItemButton>
-            <ListItemButton
-              selected={selectedIndex === 2}
-              onClick={() => handleListItemClick(2)}
-            >
-              <ListItemText primary="Road transportation" />
-            </ListItemButton>
-            <ListItemButton
-              selected={selectedIndex === 3}
-              onClick={() => handleListItemClick(3)}
-            >
-              <ListItemText primary="Road transportation" />
-            </ListItemButton>
-          </List>
+          {subCategories && subCategories.length > 0 ? (
+            <List component="nav">
+              {subCategories.map((subCat) => (
+                <ListItemButton
+                  key={subCat.id}
+                  onClick={() => handleListItemClick(subCat.id)}
+                >
+                  <ListItemText primary={subCat.name} />
+                </ListItemButton>
+              ))}
+            </List>
+          ) : (
+            <Typography sx={{ fontStyle: "italic" }} color="textSecondary">
+              No subcategories found
+            </Typography>
+          )}
         </Box>
       </Stack>
     </MainCard>
