@@ -14,7 +14,7 @@ import {
   useTheme,
   Box,
 } from "@mui/material"
-import BarChartIcon from "@mui/icons-material/BarChart"
+import { BarChart, Done } from "@mui/icons-material"
 import { FactoryIcon } from "assets/icons/FactoryIcon"
 import { PinIcon } from "assets/icons/PinIcon"
 import { CategoryLabel } from "components/categories/CategoriesLegend"
@@ -55,7 +55,16 @@ import { useSelector } from "react-redux"
 
 // ==============================|| HEADER CONTENT - SEARCH ||============================== //
 
-const multiSelectJoiner = (selected: string[]) => selected.sort().join(", ")
+const multiSelectJoiner = (selected: string[], maxItems: number): string => {
+  if (selected.length === 0 || selected.length === maxItems) {
+    return "All"
+  }
+  if (selected.length > 1) {
+    return `${selected.length} scopes are selected`
+  }
+  return selected.sort().join(", ")
+}
+
 const parseSelectedValues = (receivedValues: string | string[]): string[] =>
   receivedValues === "string"
     ? receivedValues.split(",").sort()
@@ -157,7 +166,7 @@ const useConditionnalStyleToSelectorValue = (labels: string[]) => {
       labels.includes("All") ||
       labels.filter((label) => label.endsWith("elements selected")).length > 0
     ) {
-      setConditionnalStyleToSelectValue({ "font-style": "italic" })
+      setConditionnalStyleToSelectValue({ fontStyle: "italic" })
     } else {
       setConditionnalStyleToSelectValue({})
     }
@@ -277,15 +286,26 @@ const CategoriesControlForm = memo(
     const categoryNodes = allCategories
       .map((category) => _.capitalize(category))
       .map((category) => (
-        <MenuItem key={category} value={category}>
+        <MenuItem
+          key={category}
+          value={category}
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            minWidth: "10rem",
+          }}
+        >
           <CategoryLabel category={category} />
+          {selectedCategories.includes(category) && (
+            <Done sx={{ marginLeft: "1rem", width: "15px" }} />
+          )}
         </MenuItem>
       ))
 
     return (
       <FormControl sx={{ mt: -3, width: downSM ? "100%" : 120 }}>
         <Typography sx={StyleLabel}>
-          <BarChartIcon
+          <BarChart
             sx={{ position: "relative", top: 3, marginRight: 1 }}
             color="primary"
           />
@@ -294,7 +314,9 @@ const CategoriesControlForm = memo(
         {/* <InputLabel>Scope</InputLabel> */}
         <Select
           value={selectedCategories}
-          renderValue={multiSelectJoiner}
+          renderValue={(selected: string[]) =>
+            multiSelectJoiner(selected, categoryNodes.length)
+          }
           onChange={onSelectionChange}
           multiple
         >
