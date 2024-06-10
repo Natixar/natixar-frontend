@@ -55,12 +55,16 @@ import { useSelector } from "react-redux"
 
 // ==============================|| HEADER CONTENT - SEARCH ||============================== //
 
-const multiSelectJoiner = (selected: string[], maxItems: number) => {
+const multiSelectJoiner = (
+  selected: string[],
+  maxItems: number,
+  selectorName: string,
+) => {
   if (selected.length === 0 || selected.length === maxItems) {
     return "All"
   }
   if (selected.length > 1) {
-    return `${selected.length} scopes are selected`
+    return `${selected.length} ${selectorName} are selected`
   }
   return selected.sort().join(", ")
 }
@@ -210,7 +214,14 @@ const EntityControlForm = memo(
         {/* <InputLabel>Business Entity / Facility</InputLabel> */}
         <Select
           value={selectedLabels}
-          renderValue={multiSelectJoiner}
+          renderValue={(selected: string[]) =>
+            multiSelectJoiner(
+              selected,
+              entityCheckboxes?.length || 0,
+              "Business",
+            )
+          }
+          displayEmpty
           sx={conditionnalStyleToSelectValue}
           multiple
         >
@@ -258,7 +269,10 @@ const AreaControlForm = memo(
         {/* <InputLabel>Geographic Area</InputLabel> */}
         <Select
           value={selectedAreaLabels}
-          renderValue={multiSelectJoiner}
+          renderValue={(selected: string[]) =>
+            multiSelectJoiner(selected, allAreas.length, "Geographic Area")
+          }
+          displayEmpty
           sx={conditionnalStyleToSelectValue}
           multiple
         >
@@ -315,8 +329,9 @@ const CategoriesControlForm = memo(
         <Select
           value={selectedCategories}
           renderValue={(selected: string[]) =>
-            multiSelectJoiner(selected, categoryNodes.length)
+            multiSelectJoiner(selected, categoryNodes.length, "Scope")
           }
+          displayEmpty
           onChange={onSelectionChange}
           multiple
         >
@@ -356,34 +371,20 @@ const GlobalFilterMenu = ({ closeDialog, ...sxProps }: Props) => {
 
   const entityLabel = useMemo(() => {
     const entityNames: string[] = []
-    if (selectedBusinessEntities.length > 2) {
-      entityNames.push(`${selectedBusinessEntities.length} elements selected`)
-    } else if (!selectedBusinessEntities.length) {
-      // TODO Add All if all element are checked
-      entityNames.push("All")
-    } else {
-      entityNames.push(
-        ...(selectedBusinessEntities?.map(
-          (id) => alignedIndexes.entities[id].name,
-        ) ?? []),
-      )
-    }
+    entityNames.push(
+      ...(selectedBusinessEntities?.map(
+        (id) => alignedIndexes.entities[id].name,
+      ) ?? []),
+    )
     entityNames.sort()
     return entityNames
   }, [selectedBusinessEntities])
 
   const areaLabel = useMemo(() => {
     const areasNames: string[] = []
-    if (selectedAreas.length > 2) {
-      areasNames.push(`${selectedAreas.length} elements selected`)
-    } else if (!selectedAreas.length) {
-      // TODO Add All if all element are checked
-      areasNames.push("All")
-    } else {
-      areasNames.push(
-        ...(selectedAreas?.map((id) => alignedIndexes.areas[id].name) ?? []),
-      )
-    }
+    areasNames.push(
+      ...(selectedAreas?.map((id) => alignedIndexes.areas[id].name) ?? []),
+    )
     areasNames.sort()
     return areasNames
   }, [selectedAreas])
