@@ -14,7 +14,7 @@ import {
   useTheme,
   Box,
 } from "@mui/material"
-import BarChartIcon from "@mui/icons-material/BarChart"
+import { BarChart, Done } from "@mui/icons-material"
 import { FactoryIcon } from "assets/icons/FactoryIcon"
 import { PinIcon } from "assets/icons/PinIcon"
 import { CategoryLabel } from "components/categories/CategoriesLegend"
@@ -55,7 +55,20 @@ import { useSelector } from "react-redux"
 
 // ==============================|| HEADER CONTENT - SEARCH ||============================== //
 
-const multiSelectJoiner = (selected: string[]) => selected.sort().join(", ")
+const multiSelectJoiner = (
+  selected: string[],
+  maxItems: number,
+  selectorName: string,
+) => {
+  if (selected.length === 0 || selected.length === maxItems) {
+    return "All"
+  }
+  if (selected.length > 1) {
+    return `${selected.length} ${selectorName} are selected`
+  }
+  return selected.sort().join(", ")
+}
+
 const parseSelectedValues = (receivedValues: string | string[]): string[] =>
   receivedValues === "string"
     ? receivedValues.split(",").sort()
@@ -157,7 +170,7 @@ const useConditionnalStyleToSelectorValue = (labels: string[]) => {
       labels.includes("All") ||
       labels.filter((label) => label.endsWith("elements selected")).length > 0
     ) {
-      setConditionnalStyleToSelectValue({ "font-style": "italic" })
+      setConditionnalStyleToSelectValue({ fontStyle: "italic" })
     } else {
       setConditionnalStyleToSelectValue({})
     }
@@ -201,7 +214,14 @@ const EntityControlForm = memo(
         {/* <InputLabel>Business Entity / Facility</InputLabel> */}
         <Select
           value={selectedLabels}
-          renderValue={multiSelectJoiner}
+          renderValue={(selected: string[]) =>
+            multiSelectJoiner(
+              selected,
+              entityCheckboxes?.length || 0,
+              "Business",
+            )
+          }
+          displayEmpty
           sx={conditionnalStyleToSelectValue}
           multiple
         >
@@ -249,7 +269,14 @@ const AreaControlForm = memo(
         {/* <InputLabel>Geographic Area</InputLabel> */}
         <Select
           value={selectedAreaLabels}
-          renderValue={multiSelectJoiner}
+          renderValue={(selected: string[]) =>
+            multiSelectJoiner(
+              selected,
+              Array.of(allAreas).length,
+              "Geographic Area",
+            )
+          }
+          displayEmpty
           sx={conditionnalStyleToSelectValue}
           multiple
         >
@@ -277,15 +304,26 @@ const CategoriesControlForm = memo(
     const categoryNodes = allCategories
       .map((category) => _.capitalize(category))
       .map((category) => (
-        <MenuItem key={category} value={category}>
+        <MenuItem
+          key={category}
+          value={category}
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            minWidth: "10rem",
+          }}
+        >
           <CategoryLabel category={category} />
+          {selectedCategories.includes(category) && (
+            <Done sx={{ marginLeft: "1rem", width: "15px" }} />
+          )}
         </MenuItem>
       ))
 
     return (
       <FormControl sx={{ mt: -3, width: downSM ? "100%" : 120 }}>
         <Typography sx={StyleLabel}>
-          <BarChartIcon
+          <BarChart
             sx={{ position: "relative", top: 3, marginRight: 1 }}
             color="primary"
           />
@@ -294,7 +332,10 @@ const CategoriesControlForm = memo(
         {/* <InputLabel>Scope</InputLabel> */}
         <Select
           value={selectedCategories}
-          renderValue={multiSelectJoiner}
+          renderValue={(selected: string[]) =>
+            multiSelectJoiner(selected, categoryNodes.length, "Scope")
+          }
+          displayEmpty
           onChange={onSelectionChange}
           multiple
         >
@@ -334,34 +375,20 @@ const GlobalFilterMenu = ({ closeDialog, ...sxProps }: Props) => {
 
   const entityLabel = useMemo(() => {
     const entityNames: string[] = []
-    if (selectedBusinessEntities.length > 2) {
-      entityNames.push(`${selectedBusinessEntities.length} elements selected`)
-    } else if (!selectedBusinessEntities.length) {
-      // TODO Add All if all element are checked
-      entityNames.push("All")
-    } else {
-      entityNames.push(
-        ...(selectedBusinessEntities?.map(
-          (id) => alignedIndexes.entities[id].name,
-        ) ?? []),
-      )
-    }
+    entityNames.push(
+      ...(selectedBusinessEntities?.map(
+        (id) => alignedIndexes.entities[id].name,
+      ) ?? []),
+    )
     entityNames.sort()
     return entityNames
   }, [selectedBusinessEntities])
 
   const areaLabel = useMemo(() => {
     const areasNames: string[] = []
-    if (selectedAreas.length > 2) {
-      areasNames.push(`${selectedAreas.length} elements selected`)
-    } else if (!selectedAreas.length) {
-      // TODO Add All if all element are checked
-      areasNames.push("All")
-    } else {
-      areasNames.push(
-        ...(selectedAreas?.map((id) => alignedIndexes.areas[id].name) ?? []),
-      )
-    }
+    areasNames.push(
+      ...(selectedAreas?.map((id) => alignedIndexes.areas[id].name) ?? []),
+    )
     areasNames.sort()
     return areasNames
   }, [selectedAreas])
