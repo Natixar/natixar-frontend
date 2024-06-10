@@ -55,7 +55,7 @@ import { useSelector } from "react-redux"
 
 // ==============================|| HEADER CONTENT - SEARCH ||============================== //
 
-const multiSelectJoiner = (selected: string[], maxItems: number): string => {
+const multiSelectJoiner = (selected: string[], maxItems: number) => {
   if (selected.length === 0 || selected.length === maxItems) {
     return "All"
   }
