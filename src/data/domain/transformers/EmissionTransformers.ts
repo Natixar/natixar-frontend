@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid"
-import { TimeWindow } from "data/domain/types/time/TimeRelatedTypes"
+import { TimeRange, TimeWindow } from "data/domain/types/time/TimeRelatedTypes"
 import { CountryLocation } from "data/domain/types/participants/ContributorsTypes"
 import { IndexesContainer } from "data/store/features/emissions/ranges/EndpointTypes"
 import {
@@ -18,6 +18,7 @@ import {
   slotsAreInSameYear,
 } from "./TimeTransformers"
 import { IndexOf } from "../types/structures/StructuralTypes"
+
 
 const emptyDecimal = ".0"
 
@@ -84,11 +85,27 @@ const calculateTotalAmount = (
   timeWindow: TimeWindow,
 ): number => {
   const startTimeSlot = dataPoint[CdpLayoutItem.CDP_LAYOUT_START]
-  const endTimeSlot = dataPoint[CdpLayoutItem.CDP_LAYOUT_END]
+  let endTimeSlot = dataPoint[CdpLayoutItem.CDP_LAYOUT_END]
+  const maxSlot = timeWindow.timeOffsets.length - 2; // to be able to getTimeDeltaforSlot need slot plus slot+1
 
-  const duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE] * getTimeDeltaForSlot(startTimeSlot, timeWindow) +
+  let duration = 0;
+  // handle cases where a datapoint timeslot is out of bounds
+  if (startTimeSlot > maxSlot) {
+    // completely outside bounds, cannot do calculation
+    duration = 0;
+  } else if (startTimeSlot == maxSlot) {
+    // only count start slot
+    duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE] * getTimeDeltaForSlot(startTimeSlot, timeWindow)
+  } else if (endTimeSlot > maxSlot) {
+    // count from start until max slot
+    duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE] * getTimeDeltaForSlot(startTimeSlot, timeWindow) +
+    (getTimeOffsetForSlot(maxSlot, timeWindow) - getTimeOffsetForSlot(startTimeSlot + 1, timeWindow))
+  } else {
+    // standard calculation
+    duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE] * getTimeDeltaForSlot(startTimeSlot, timeWindow) +
     dataPoint[CdpLayoutItem.CDP_LAYOUT_END_PERCENTAGE] * getTimeDeltaForSlot(endTimeSlot - 1, timeWindow) +
     (getTimeOffsetForSlot(endTimeSlot - 1, timeWindow) - getTimeOffsetForSlot(startTimeSlot + 1, timeWindow))
+  }
 
   // The data point is in kgCO2eq/s so duration in ms must be divided by 1000
   return dataPoint[CdpLayoutItem.CDP_LAYOUT_INTENSITY] * duration / 1000
@@ -175,6 +192,7 @@ export const dataPointsGroupByCountryAndCategory = (
   points: EmissionDataPoint[],
 ) => dataPointsGroupBySomeIdAndCategory(points, (point) => point.countryId)
 
+
 export const emissionsGroupByTime = (
   points: EmissionDataPoint[],
   timeWindow: TimeWindow,
@@ -185,6 +203,7 @@ export const emissionsGroupByTime = (
   const maxTime = Math.max(...points.map((point) => point.endTimeSlot))
   const showYear = !slotsAreInSameYear(minTime, maxTime, timeWindow)
 
+
   // Loop over all emission points defined in data/domain/types/emissions/EmissionTypes.ts#L9
   points.forEach((emissionPoint) => {
     const categoryEra = emissionPoint.categoryEraName
@@ -193,24 +212,83 @@ export const emissionsGroupByTime = (
       result[categoryEra] = {}
     }
 
-    const totalTimeOffset = getTimeOffsetForSlot(
-      emissionPoint.startTimeSlot,
-      timeWindow,
-    )
+    if (emissionPoint.startTimeSlot < timeWindow.timeOffsets.length - 1) // test data contains values out of bounds
+    { 
+      const totalTimeOffset = getTimeOffsetForSlot(
+        emissionPoint.startTimeSlot,
+        timeWindow,
+      )
 
-    const timeKey = timeMeasureKeyFn(
-      timeWindow.startTimestamp + totalTimeOffset,
-      showYear,
-    )
+      const timeKey = timeMeasureKeyFn(
+        timeWindow.startTimestamp + totalTimeOffset,
+        showYear,
+      )
 
-    if (!result[categoryEra][timeKey]) {
-      result[categoryEra][timeKey] = 0
+      if (!result[categoryEra][timeKey]) {
+        result[categoryEra][timeKey] = 0
+      }
+  
+      result[categoryEra][timeKey] += emissionPoint.totalEmissionAmount
     }
-
-    result[categoryEra][timeKey] += emissionPoint.totalEmissionAmount
   })
   return result
 }
+
+/* Work in Progress
+*  groups based on datapicker, so if there is missing data in the response, or extra data the chart displays correctly
+export const emissionsGroupByTime = (
+  points: EmissionDataPoint[],
+  timeWindow: TimeWindow,
+  timeMeasureKeyFn: (timestamp: number, showYear: boolean) => string,
+  dataPickerWindow: TimeRange
+): Record<string, Record<string, number>> => {
+  const result: Record<string, Record<string, number >> = {}
+  const minTime = Math.min(...points.map((point) => point.startTimeSlot))
+  const maxTime = Math.max(...points.map((point) => point.endTimeSlot))
+  const showYear = !slotsAreInSameYear(minTime, maxTime, timeWindow)
+
+  // create list of timekeys that match datapicker range
+  const startDataPickerTime = dataPickerWindow.start
+  const endDataPickerTime = dataPickerWindow.end
+  const timestep = getTimeOffsetForSlot(1,timeWindow)
+  let sum = startDataPickerTime
+  const dataPickerKeys: string[] = []
+  do {
+    dataPickerKeys.push(timeMeasureKeyFn(sum,showYear))
+    sum += timestep
+  } while (sum < endDataPickerTime)
+
+  // Loop over all emission points defined in data/domain/types/emissions/EmissionTypes.ts#L9
+  points.forEach((emissionPoint) => {
+    const categoryEra = emissionPoint.categoryEraName
+    // Initialize result for era if needed TODO: swap for category code
+    if (!result[categoryEra]) {
+      result[categoryEra] = {}
+      dataPickerKeys.forEach(timeKey => {
+        result[categoryEra][timeKey] = 0;
+      });    
+    }
+
+    if (emissionPoint.startTimeSlot < timeWindow.timeOffsets.length - 1) 
+    { // test data contains values out of bounds
+      const totalTimeOffset = getTimeOffsetForSlot(
+        emissionPoint.startTimeSlot,
+        timeWindow,
+      )
+
+      const timeKey = timeMeasureKeyFn(
+        timeWindow.startTimestamp + totalTimeOffset,
+        showYear,
+      )
+
+      if (timeKey in result[categoryEra]) {
+        result[categoryEra][timeKey] += emissionPoint.totalEmissionAmount
+      }
+    }
+  })
+  return result
+}
+*/
 
 export const getScopesOfProtocol = (
   protocol: EmissionProtocol,
