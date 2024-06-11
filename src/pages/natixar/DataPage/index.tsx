@@ -14,13 +14,12 @@ const DataPage = () => (
     <Grid item xs={12} lg={6} md={6}>
       <SourcesTable title="Private Data" />
     </Grid>
-    {/* uncomment as needed */}
-    {/* <Grid item xs={12} lg={12} md={12}> 
+    <Grid item xs={12} lg={12} md={12}>
       <Typography variant="h5">Data mapping</Typography>
     </Grid>
     <Grid item xs={12} md={12} lg={12}>
       <UnknownMappings />
-    </Grid> */}
+    </Grid>
   </Grid>
 )
 

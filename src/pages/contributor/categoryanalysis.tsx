@@ -67,11 +67,10 @@ const CategoryAnalysis = () => {
         Category Analysis
       </Typography>
       <Grid container rowSpacing={4.5} columnSpacing={3}>
-        <Grid item sx={{ width: 100 }}>
-          {/* xs={12} md={4} */}
+        <Grid item xs={12} md={4}>
           <CategoryCard categoryId={scopeId} />
         </Grid>
-        {/* <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={8}>
           <MainCard contentSX={{ p: "0 !important" }}>
             <Grid item xs={12} md={12} xl={12}>
               <Typography sx={{ p: "1.7rem" }} variant="h5">
@@ -82,7 +81,7 @@ const CategoryAnalysis = () => {
               <CategoryCalcTable data={calculationMethods} />
             </Grid>
           </MainCard>
-        </Grid> */}
+        </Grid>
       </Grid>
     </>
   )
