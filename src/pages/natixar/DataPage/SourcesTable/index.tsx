@@ -1,6 +1,7 @@
 import {
   Chip,
   ChipProps,
+  Tooltip,
   Table,
   TableBody,
   TableCell,
@@ -11,80 +12,98 @@ import {
 
 // project imports
 import MainCard from "components/MainCard"
-import { useState } from "react"
 
-// table data
-const createData = (badgeText: string, badgeType: ChipProps["color"]) => ({
-  badgeText,
-  badgeType,
-})
+const fakeData = {
+  public: [
+    {
+      id: 1,
+      source: "Base empreinte",
+      status: "up to date",
+      lastUpdate: "recently accessed",
+    },
+    {
+      id: 2,
+      source: "Base agrobalyse",
+      status: "up to date",
+      lastUpdate: "recently accessed",
+    },
+  ],
+  private: [
+    {
+      id: 3,
+      source: "GrDF",
+      status: "up to date",
+      lastUpdate: "recently accessed",
+    },
+    {
+      id: 4,
+      source: "Klio",
+      status: "partially up to date",
+      lastUpdate: "not recently accessed",
+    },
+    {
+      id: 5,
+      source: "Accounting File",
+      status: "missing mapping",
+      lastUpdate: "not recently accessed",
+    },
+    {
+      id: 6,
+      source: "Accounting File",
+      status: "missing mapping",
+      lastUpdate: "not recently accessed",
+    },
+    {
+      id: 7,
+      source: "Accounting File",
+      status: "up to date",
+      lastUpdate: "recently accessed",
+    },
+  ],
+}
 
-const rows = [
-  createData("Good", "success"),
-  createData("Stale", "warning"),
-  createData("Old", "error"),
-]
-
-const rows2 = [
-  {
-    id: 1,
-    source: "Emissions factors",
-    lastUpdate: "04.02.2024 15:06",
-  },
-  {
-    id: 2,
-    source: "Emissions factors",
-    lastUpdate: "04.02.2024 15:06",
-  },
-  {
-    id: 3,
-    source: "Emissions factors",
-    lastUpdate: "04.02.2024 15:06",
-  },
-]
-
-const Row = ({
-  row,
-  rowsData,
-}: {
-  row: ReturnType<typeof createData>
-  rowsData: { id: number; source: string; lastUpdate: string }[]
-}) => {
-  const [open, setOpen] = useState(false)
-
-  const handleOpen = () => {
-    if (rowsData.length) {
-      setOpen(!open)
-    }
+const StatusDot = ({ type }: { type: string }) => {
+  let color = "#22c55e"
+  if (type === "partially up to date") {
+    color = "#eab308"
   }
-
+  if (type === "missing mapping") {
+    color = "#ef4444"
+  }
   return (
-    <>
-      <TableRow
-        hover
-        onClick={handleOpen}
-        sx={{ background: rowsData.length ? "#E6F7FF" : undefined }}
-      >
-        <TableCell sx={{ pr: 3 }}>
-          <Chip color={row.badgeType} label={row.badgeText} size="small" />
-          {"  "}({rowsData.length})
-        </TableCell>
-        <TableCell />
-        <TableCell />
-        <TableCell />
-      </TableRow>
-      {open &&
-        rowsData.map((rowData) => (
-          <TableRow key={rowData.id}>
-            <TableCell sx={{ pr: 3 }} />
-            <TableCell>{rowData.id}</TableCell>
-            <TableCell>{rowData.source}</TableCell>
-            <TableCell align="right">{rowData.lastUpdate}</TableCell>
-          </TableRow>
-        ))}
-    </>
+    <Tooltip title={type}>
+      <div
+        style={{
+          borderRadius: "100%",
+          width: 10,
+          height: 10,
+          marginLeft: "1rem",
+          backgroundColor: color,
+        }}
+      />
+    </Tooltip>
   )
 }
+
+const Row = ({
+  data,
+}: {
+  data: {
+    status: string
+    id: number
+    source: string
+    lastUpdate: string
+  }
+}) => (
+  <TableRow>
+    <TableCell sx={{ pr: 3 }}>
+      <StatusDot type={data.status} />
+    </TableCell>
+    <TableCell>{data.id}</TableCell>
+    <TableCell>{data.source}</TableCell>
+    <TableCell align="right">{data.lastUpdate}</TableCell>
+  </TableRow>
+)
 
 const SourcesTable = ({ title }: { title: string }) => (
   <MainCard title={title} content={false}>
@@ -92,17 +111,19 @@ const SourcesTable = ({ title }: { title: string }) => (
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ pl: 3 }}>STATUS</TableCell>
+            <TableCell sx={{ pl: 3, textTransform: "none" }}>Status</TableCell>
             <TableCell>#</TableCell>
-            <TableCell>SOURCE</TableCell>
-            <TableCell align="right" sx={{ pr: 3 }}>
-              LAST UPDATE
+            <TableCell sx={{ textTransform: "none" }}>Source</TableCell>
+            <TableCell align="right" sx={{ pr: 3, textTransform: "none" }}>
+              Last Update
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, index) => (
-            <Row row={row} key={index} rowsData={rows2} />
+          {fakeData[
+            title.split(" ")[0].toLowerCase() as "public" | "private"
+          ].map((row, index) => (
+            <Row data={row} key={index} />
           ))}
         </TableBody>
       </Table>
