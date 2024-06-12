@@ -1,8 +1,8 @@
 const _ = require("lodash")
 
 const emissions_time_range = {
-  start: "2022-01-01T00:00:00+01:00",
-  end: "2024-01-01T00:00:00+01:00",
+  start: "2022-01-01T00:00:00+00:00",
+  end: "2024-01-01T00:00:00+00:00",
   step: [
     2678400, 2419200, 2678400, 2592000, 2678400, 2592000,
     2678400, 2678400, 2592000, 2678400, 2592000, 2678400
@@ -1143,7 +1143,7 @@ const emissions_categories= [
 
 const emissions_beges = [
   {
-    time_range: emissions_time_range,
+    time_range: { ...emissions_time_range },
     indexes: {
       entity: emissions_entities,
       area: emissions_areas,
@@ -1183,7 +1183,7 @@ const emissions_beges = [
 
 const emissions_begesv5 = [
   {
-    time_range: emissions_time_range,
+    time_range: { ...emissions_time_range },
     indexes: {
       entity: emissions_entities,
       area: emissions_areas,
@@ -1226,7 +1226,7 @@ const emissions_begesv5 = [
 
 const emissions_ghgprotocol = [
   {
-    time_range: emissions_time_range,
+    time_range: { ...emissions_time_range },
     indexes: {
       entity: emissions_entities,
       area: emissions_areas,
@@ -1267,7 +1267,7 @@ const emissions_ghgprotocol = [
 
 const emissions_isotr14069 = [
   {
-    time_range: emissions_time_range,
+    time_range: { ...emissions_time_range },
     indexes: {
       entity: emissions_entities,
       area: emissions_areas,
@@ -1316,6 +1316,28 @@ const energyCategories = [3, 8, 9, 32, 38, 39, 59, 65, 66, 86, 92, 93]
 const areas = [3, 4, 8, 9, 12, 13, 16, 17, 18]
 const thirdParties = [0, 1, 16]  // plus 17 for energy categories
 
+const convertTimeScale = (start_time, end_time, scale_as_string) => {
+  if (! start_time instanceof Date) {
+    throw new Error("Invalid 'start' datetime input")
+  }
+  if (! end_time instanceof Date) {
+    throw new Error("Invalid 'end' datetime input")
+  }
+  if (scale_as_string.slice(0,-1) !== "1") {
+    throw new Error("Time scale factors other than 1 are unsupported")
+  }
+  scale_as_string = scale_as_string.slice(-1)  // Keep only the last character
+  // Check
+  switch (scale_as_string) {
+    case "m":
+      return 60
+    case "h":
+      return 3600
+    default:
+      return 86400  // not valid with DST in timezone due to 23 hr and 25 hr long days...
+  }
+}
+
 // Disconnected in this version. Only valid for BEGES taxonomy (uses BEGES categories)
 const generateDataPoint = (start_time, end_time, time_scale, taxonomy) => {
   // category
@@ -1354,20 +1376,46 @@ const generateDataPoint = (start_time, end_time, time_scale, taxonomy) => {
 
   const randomCompany = _.random(2, 15)
   const randomArea = _.sample(areas)
-  const randomAmount = _.random(.0001, 2, true)
+  const randomAmount = _.random(.0001, 0.01, true)
   const randomThirdParty = energyCategories.includes(randomCategory) ? 17 : _.sample(thirdParties)
   
-  // time 
-  const randomSlot = _.random(2, 10)
-  const randomDelta = _.random(1, 10)
+  // time
+  // Compute the number of time intervals between start and end at the requested time_scale
+  const step=convertTimeScale(start_time, end_time, time_scale) // in seconds, typ. 60
+  // Calculate the time difference in milliseconds
+  const timeDiff = end_time.getTime() - start_time.getTime();
+  // Calculate the number of intervals
+  const numIntervals = Math.floor(timeDiff / (step * 1000));
+  const ext1 = _.random(-numIntervals, 2*numIntervals)
+  const ext2 = _.random(-numIntervals, 2*numIntervals)
+
+  let intervalStart = ext1
+  let intervalEnd = ext2
+  if (ext1 >= ext2) {
+    intervalStart = ext2
+    intervalEnd = ext1
+    if (ext1 === ext2) {
+      intervalEnd += 1
+    }
+  }
+  // Apply bounds
+  if (intervalStart < 0) {
+    intervalStart = 0
+  }
+  if (intervalEnd > numIntervals) {
+    intervalEnd = numIntervals
+  }
+
+  //const randomSlot = _.random(2, 10)
+  //const randomDelta = _.random(1, 10)
   
   // synthesis of CDP
   return [
-    randomSlot,
-    0.4,
+    intervalStart,
+    _.random(0.0, 1.0, true),
     randomAmount,
-    randomSlot + randomDelta,
-    0.6,
+    intervalEnd,
+    _.random(0.0, 1.0, true),
     randomCompany,
     randomArea,
     randomThirdParty,
@@ -1383,12 +1431,15 @@ const generateData = (start_time, end_time, scale, taxonomy) => {
     a++
   }
   const resultDataCube = {...emissions_beges[0], data: newDataPoints}
+  // data is always requested at 1-minute (1m) scale
+  resultDataCube.time_range.step=convertTimeScale(start_time, end_time, scale)
   if (start_time && start_time instanceof Date && !isNaN(start_time)) {
     resultDataCube.time_range.start = start_time
   }
   if (end_time && end_time instanceof Date && !isNaN(end_time)) {
     resultDataCube.time_range.end = end_time
   }
+  console.log("Data sent from : " + resultDataCube.time_range.start + " to " + resultDataCube.time_range.end)
   return [resultDataCube]
 }
 

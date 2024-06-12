@@ -62,7 +62,7 @@ app.post("/mappings", express.json(), (req, res) => {
 });
 
 app.get("/api/v0/data/ranges", function (req, res) {
-  const defaultRange = { start: "2022-01-01T00:00:00+01:00", end: "2024-01-01T00:00:00+01:00" };
+  const defaultRange = { start: "2022-01-01T00:00:00+00:00", end: "2024-01-01T00:00:00+00:00" };
   let start, end
   let scale = req.query.scale
 ;
@@ -81,7 +81,7 @@ app.get("/api/v0/data/ranges", function (req, res) {
     start = defaultRange.start;
     end = defaultRange.end;
   }
-
+  console.log("Data requested from : " + start + " to " + end + " at " + scale)
   const protocol = req.query.protocol; // Get the protocol parameter from the query string
 
   // Check if the protocol exists in the sampleEmissionData dictionary
@@ -92,6 +92,7 @@ app.get("/api/v0/data/ranges", function (req, res) {
         .send(appendSomeData(new Date(start), new Date(end), scale, protocol));
     } else {
       // Send the data for the requested protocol
+      console.log("Fixed data sent from : " + sampleEmissionData[protocol][0].time_range.start + " to " + sampleEmissionData[protocol][0].time_range.end)
       res
         .contentType("application/json")
         .send(sampleEmissionData[protocol]);
