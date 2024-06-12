@@ -3,11 +3,12 @@ import { backendBaseQuery } from "data/store/config/BackendConfigs"
 import { EmissionRangesRequest, EmissionRangesPayload, EmissionResponse } from "./EndpointTypes"
 
 const encodeRangeParameters = (r: EmissionRangesRequest): string => {
+  const timeRangeString = `${encodeURIComponent(JSON.stringify(r.timeRanges))}`
   const parameterString =
     `scale=${r.scale}` +
     `&protocol=${r.protocol}` +
-    `&time_ranges=${JSON.stringify(r.timeRanges)}`
-  return encodeURI(parameterString)
+    `&time_ranges=`
+  return encodeURI(parameterString) + timeRangeString
 }
 
 export const emissionRangesApi = createApi({
