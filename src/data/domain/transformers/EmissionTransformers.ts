@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid"
-import { TimeWindow } from "data/domain/types/time/TimeRelatedTypes"
+import { TimeRange, TimeWindow } from "data/domain/types/time/TimeRelatedTypes"
 import { CountryLocation } from "data/domain/types/participants/ContributorsTypes"
 import { IndexesContainer } from "data/store/features/emissions/ranges/EndpointTypes"
 import {
@@ -18,6 +18,7 @@ import {
   slotsAreInSameYear,
 } from "./TimeTransformers"
 import { IndexOf } from "../types/structures/StructuralTypes"
+
 
 const emptyDecimal = ".0"
 
@@ -61,9 +62,29 @@ export const formatEmissionAmount = (kgCO2eqAmount: number): string => {
   return `${formattedAmount} ${measureUnits[measureUnitIndex]}`
 }
 
+export const formatEmissionIntensityUnit = (scale: string): string => {
+  switch (scale.toLowerCase()) {
+    case "year":
+      return "yr"
+    case "quarter":
+      return "qtr"
+    case "month":
+      return "mth"
+    case "day":
+      return "dy"
+    case "hour":
+      return "hr"
+    default:
+      return ""
+  }
+}
+
 export const extractNameOfEra = (era: string | undefined) => {
   if (typeof era === "undefined") {
     return ""
+  }
+  if (era === "") {
+      return "Upstream"
   }
   switch (era.toLowerCase()) {
     case "d":
@@ -84,11 +105,30 @@ const calculateTotalAmount = (
   timeWindow: TimeWindow,
 ): number => {
   const startTimeSlot = dataPoint[CdpLayoutItem.CDP_LAYOUT_START]
-  const endTimeSlot = dataPoint[CdpLayoutItem.CDP_LAYOUT_END]
+  let endTimeSlot = dataPoint[CdpLayoutItem.CDP_LAYOUT_END]
+  const maxSlot = timeWindow.timeOffsets.length - 2; // to be able to getTimeDeltaforSlot need slot plus slot+1
 
-  const duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE] * getTimeDeltaForSlot(startTimeSlot, timeWindow) +
+  let duration = 0;
+  // handle cases where a datapoint timeslot is out of bounds
+  if (startTimeSlot > maxSlot) {
+    // completely outside bounds, cannot do calculation
+    duration = 0;
+  } else if (startTimeSlot == maxSlot) {
+    // only count start slot
+    duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE] * getTimeDeltaForSlot(startTimeSlot, timeWindow)
+  } else if (endTimeSlot > maxSlot) {
+    // count from start until max slot
+    duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE] * getTimeDeltaForSlot(startTimeSlot, timeWindow) +
+    (getTimeOffsetForSlot(maxSlot, timeWindow) - getTimeOffsetForSlot(startTimeSlot + 1, timeWindow))
+  } else if (startTimeSlot == endTimeSlot - 1) {
+    // single slot
+    duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_END_PERCENTAGE]  * getTimeDeltaForSlot(startTimeSlot, timeWindow)
+  } else {
+    // standard calculation
+    duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE] * getTimeDeltaForSlot(startTimeSlot, timeWindow) +
     dataPoint[CdpLayoutItem.CDP_LAYOUT_END_PERCENTAGE] * getTimeDeltaForSlot(endTimeSlot - 1, timeWindow) +
     (getTimeOffsetForSlot(endTimeSlot - 1, timeWindow) - getTimeOffsetForSlot(startTimeSlot + 1, timeWindow))
+  }
 
   // The data point is in kgCO2eq/s so duration in ms must be divided by 1000
   return dataPoint[CdpLayoutItem.CDP_LAYOUT_INTENSITY] * duration / 1000
@@ -176,7 +216,7 @@ export const dataPointsGroupByCountryAndCategory = (
   points: EmissionDataPoint[],
 ) => dataPointsGroupBySomeIdAndCategory(points, (point) => point.countryId)
 
-export const emissionsGroupByTime = (
+export const emissionsIntensityGroupByTime = (
   points: EmissionDataPoint[],
   timeWindow: TimeWindow,
   timeMeasureKeyFn: (timestamp: number, showYear: boolean) => string,
@@ -188,6 +228,91 @@ export const emissionsGroupByTime = (
 
   // Loop over all emission points defined in data/domain/types/emissions/EmissionTypes.ts#L9
   points.forEach((emissionPoint) => {
+    const categoryEra = emissionPoint.categoryEraName
+    // Initialize result for era if needed TODO: swap for category code
+    if (!result[categoryEra]) {
+      result[categoryEra] = {}
+    }
+
+    if (emissionPoint.startTimeSlot < timeWindow.timeOffsets.length - 1) // test data contains values out of bounds
+    {
+
+      // Make byCategory an alias of result[categoryEra]
+      const byCategory = result[categoryEra]
+      // Emission Point "Slot" information is in fact a slot boundary.
+      // For 12 months, valid values are 0 to 12. For 12 "slots", 13 boundaries.
+      let currentTimeSlot = emissionPoint.startTimeSlot
+	
+      let totalTimeOffset = getTimeOffsetForSlot(
+        emissionPoint.startTimeSlot,
+        timeWindow,
+      )
+      // A 1-month aligned emissions is:  [X, 100%, intens, X+1, 100%, coordinates]
+      const singleSlot = (emissionPoint.startTimeSlot == emissionPoint.endTimeSlot - 1)
+
+      if (singleSlot) {
+        const timeKey = timeMeasureKeyFn(
+          timeWindow.startTimestamp + totalTimeOffset,
+          showYear,
+        )
+        const currentSlotDelta = getTimeDeltaForSlot(currentTimeSlot, timeWindow)
+
+        if (!byCategory[timeKey]) {
+          byCategory[timeKey] = 0
+        }
+        // Scale emissions
+        const percent = emissionPoint.endEmissionPercentage - (1.0 - emissionPoint.startEmissionPercentage)
+        const amount = emissionPoint.emissionIntensity * currentSlotDelta / 1000  // intensity in kg/s, slot delta in ms
+        byCategory[timeKey] += percent * amount
+      } else {
+        do {
+          const timeKey = timeMeasureKeyFn(
+            timeWindow.startTimestamp + totalTimeOffset,
+            showYear,
+          )
+          const currentSlotDelta = getTimeDeltaForSlot(currentTimeSlot, timeWindow)
+
+          if (!byCategory[timeKey]) {
+            byCategory[timeKey] = 0
+          }
+
+          let amount = emissionPoint.emissionIntensity * currentSlotDelta / 1000  // intensity in kg/s, slot delta in ms
+          // BUG: This code is not correct in the very common case when startTimeSlot == endTimeSlot !	
+          switch (currentTimeSlot) {
+            case emissionPoint.startTimeSlot:
+              amount *= emissionPoint.startEmissionPercentage
+              break
+            case emissionPoint.endTimeSlot - 1:
+              amount *= emissionPoint.endEmissionPercentage
+              break
+            default:
+              break
+          }
+          // Accumulate emissions into "result" via alias
+          byCategory[timeKey] += amount
+
+          totalTimeOffset += currentSlotDelta
+          currentTimeSlot += 1
+        } while (currentTimeSlot < emissionPoint.endTimeSlot)
+      }
+    }
+  })
+  return result
+}
+
+export const emissionsGroupByTime = (
+  points: EmissionDataPoint[],
+  timeWindow: TimeWindow,
+  timeMeasureKeyFn: (timestamp: number, showYear: boolean) => string,
+): Record<string, Record<string, number>> => {
+  const result: Record<string, Record<string, number>> = {}
+  const minTime = Math.min(...points.map((point) => point.startTimeSlot))
+  const maxTime = Math.max(...points.map((point) => point.endTimeSlot))
+  const showYear = !slotsAreInSameYear(minTime, maxTime, timeWindow)
+
+
+  // Loop over all emission points defined in data/domain/types/emissions/EmissionTypes.ts#L9
+  points.forEach((emissionPoint) => {
     // TODO: We don't need era here; swap for category group
     const categoryEra = emissionPoint.categoryEraName
     // Initialize result for era if needed 
@@ -195,67 +320,83 @@ export const emissionsGroupByTime = (
       result[categoryEra] = {}
     }
 
-    // Make byCategory an alias of result[categoryEra]
-    const byCategory = result[categoryEra]
-    // Emission Point "Slot" information is in fact a slot boundary.
-    // For 12 months, valid values are 0 to 12. For 12 "slots", 13 boundaries.
-    let currentTimeSlot = emissionPoint.startTimeSlot
+    if (emissionPoint.startTimeSlot < timeWindow.timeOffsets.length - 1) // test data contains values out of bounds
+    { 
+      const totalTimeOffset = getTimeOffsetForSlot(
+        emissionPoint.startTimeSlot,
+        timeWindow,
+      )
 
-    let totalTimeOffset = getTimeOffsetForSlot(
-      currentTimeSlot,
-      timeWindow,
-    )
-    // A 1-month aligned emissions is:  [X, 100%, intens, X+1, 100%, coordinates]
-    const singleSlot = (emissionPoint.startTimeSlot == emissionPoint.endTimeSlot - 1)
-    
-    if (singleSlot) {
-	    const timeKey = timeMeasureKeyFn(
-	      timeWindow.startTimestamp + totalTimeOffset,
-	      showYear,
-	    )
-	    const currentSlotDelta = getTimeDeltaForSlot(currentTimeSlot, timeWindow)
+      const timeKey = timeMeasureKeyFn(
+        timeWindow.startTimestamp + totalTimeOffset,
+        showYear,
+      )
 
-	    if (!byCategory[timeKey]) {
-	      byCategory[timeKey] = 0
-	    }
-	    // Scale emissions
-	    const percent = emissionPoint.endEmissionPercentage - (1.0 - emissionPoint.startEmissionPercentage)
-	    const amount = emissionPoint.emissionIntensity * currentSlotDelta / 1000  // intensity in kg/s, slot delta in ms
-	    byCategory[timeKey] += percent * amount
-    } else {
-		  do {
-		    const timeKey = timeMeasureKeyFn(
-		      timeWindow.startTimestamp + totalTimeOffset,
-		      showYear,
-		    )
-		    const currentSlotDelta = getTimeDeltaForSlot(currentTimeSlot, timeWindow)
-
-		    if (!byCategory[timeKey]) {
-		      byCategory[timeKey] = 0
-		    }
-
-		    let amount = emissionPoint.emissionIntensity * currentSlotDelta / 1000  // intensity in kg/s, slot delta in ms
-		    // BUG: This code is not correct in the very common case when startTimeSlot == endTimeSlot !	
-		    switch (currentTimeSlot) {
-		      case emissionPoint.startTimeSlot:
-		        amount *= emissionPoint.startEmissionPercentage
-		        break
-		      case emissionPoint.endTimeSlot - 1:
-		        amount *= emissionPoint.endEmissionPercentage
-		        break
-		      default:
-		        break
-		    }
-		    // Accumulate emissions into "result" via alias
-		    byCategory[timeKey] += amount
-
-		    totalTimeOffset += currentSlotDelta
-		    currentTimeSlot += 1
-		  } while (currentTimeSlot < emissionPoint.endTimeSlot)
-		}
+      if (!result[categoryEra][timeKey]) {
+        result[categoryEra][timeKey] = 0
+      }
+  
+      result[categoryEra][timeKey] += emissionPoint.totalEmissionAmount
+    }
   })
   return result
 }
+
+/* Work in Progress
+*  groups based on datapicker, so if there is missing data in the response, or extra data the chart displays correctly
+export const emissionsGroupByTime = (
+  points: EmissionDataPoint[],
+  timeWindow: TimeWindow,
+  timeMeasureKeyFn: (timestamp: number, showYear: boolean) => string,
+  dataPickerWindow: TimeRange
+): Record<string, Record<string, number>> => {
+  const result: Record<string, Record<string, number >> = {}
+  const minTime = Math.min(...points.map((point) => point.startTimeSlot))
+  const maxTime = Math.max(...points.map((point) => point.endTimeSlot))
+  const showYear = !slotsAreInSameYear(minTime, maxTime, timeWindow)
+
+  // create list of timekeys that match datapicker range
+  const startDataPickerTime = dataPickerWindow.start
+  const endDataPickerTime = dataPickerWindow.end
+  const timestep = getTimeOffsetForSlot(1,timeWindow)
+  let sum = startDataPickerTime
+  const dataPickerKeys: string[] = []
+  do {
+    dataPickerKeys.push(timeMeasureKeyFn(sum,showYear))
+    sum += timestep
+  } while (sum < endDataPickerTime)
+
+  // Loop over all emission points defined in data/domain/types/emissions/EmissionTypes.ts#L9
+  points.forEach((emissionPoint) => {
+    const categoryEra = emissionPoint.categoryEraName
+    // Initialize result for era if needed TODO: swap for category code
+    if (!result[categoryEra]) {
+      result[categoryEra] = {}
+      dataPickerKeys.forEach(timeKey => {
+        result[categoryEra][timeKey] = 0;
+      });    
+    }
+
+    if (emissionPoint.startTimeSlot < timeWindow.timeOffsets.length - 1) 
+    { // test data contains values out of bounds
+      const totalTimeOffset = getTimeOffsetForSlot(
+        emissionPoint.startTimeSlot,
+        timeWindow,
+      )
+
+      const timeKey = timeMeasureKeyFn(
+        timeWindow.startTimestamp + totalTimeOffset,
+        showYear,
+      )
+
+      if (timeKey in result[categoryEra]) {
+        result[categoryEra][timeKey] += emissionPoint.totalEmissionAmount
+      }
+    }
+  })
+  return result
+}
+*/
 
 export const getScopesOfProtocol = (
   protocol: EmissionProtocol,

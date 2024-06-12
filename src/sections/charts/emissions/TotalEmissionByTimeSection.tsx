@@ -2,7 +2,7 @@ import EmissionByKeyStacked from "components/charts/emissions/EmissionByKeyStack
 import { ChartCard } from "components/natixarComponents/ChartCard/ChartCard"
 import { selectTimeWindow as timeWindowSelector } from "data/store/api/EmissionSelectors"
 import {
-  emissionsGroupByTime,
+  emissionsIntensityGroupByTime,
   formatEmissionAmount,
 } from "data/domain/transformers/EmissionTransformers"
 import { EmissionDataPoint } from "data/domain/types/emissions/EmissionTypes"
@@ -54,7 +54,7 @@ const TotalEmissionByTimeSection = ({
     Record<string, Record<string, number>>
   >({})
   useAsyncWork(
-    () => emissionsGroupByTime(emissionPoints, timeWindow, timeFormatter),
+    () => emissionsIntensityGroupByTime(emissionPoints, timeWindow, timeFormatter),
     setChartData,
     [emissionPoints, timeWindow, timeFormatter],
   )
@@ -76,7 +76,7 @@ const TotalEmissionByTimeSection = ({
       selectedSlot={timeDetailUnit}
       setSelectedSlot={setTimeDetailUnit}
     >
-      <EmissionByKeyStacked groupedData={groupedByTime} keys={allKeys} />
+      <EmissionByKeyStacked groupedData={groupedByTime} keys={allKeys} timeUnit={timeDetailUnit}/>
     </ChartCard>
   )
 }
