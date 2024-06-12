@@ -67,7 +67,7 @@ const CategoryAnalysis = () => {
         Category Analysis
       </Typography>
       <Grid container rowSpacing={4.5} columnSpacing={3}>
-        <Grid item sx={{ width: 100 }}>
+        <Grid item sx={{ width: "100%" }}>
           {/* xs={12} md={4} */}
           <CategoryCard categoryId={scopeId} />
         </Grid>
