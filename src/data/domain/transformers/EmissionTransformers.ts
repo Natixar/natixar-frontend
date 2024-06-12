@@ -78,6 +78,7 @@ export const formatEmissionIntensityUnit = (scale: string): string => {
       return ""
   }
 }
+
 export const extractNameOfEra = (era: string | undefined) => {
   if (typeof era === "undefined") {
     return ""
@@ -119,6 +120,9 @@ const calculateTotalAmount = (
     // count from start until max slot
     duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE] * getTimeDeltaForSlot(startTimeSlot, timeWindow) +
     (getTimeOffsetForSlot(maxSlot, timeWindow) - getTimeOffsetForSlot(startTimeSlot + 1, timeWindow))
+  } else if (startTimeSlot == endTimeSlot - 1) {
+    // single slot
+    duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_END_PERCENTAGE]  * getTimeDeltaForSlot(startTimeSlot, timeWindow)
   } else {
     // standard calculation
     duration = dataPoint[CdpLayoutItem.CDP_LAYOUT_START_PERCENTAGE] * getTimeDeltaForSlot(startTimeSlot, timeWindow) +
