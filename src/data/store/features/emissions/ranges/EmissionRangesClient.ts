@@ -7,8 +7,8 @@ const encodeRangeParameters = (r: EmissionRangesRequest): string => {
   const parameterString =
     `scale=${r.scale}` +
     `&protocol=${r.protocol}` +
-    `&time_ranges=${timeRangeString}`
-  return encodeURI(parameterString)
+    `&time_ranges=`
+  return encodeURI(parameterString) + timeRangeString
 }
 
 export const emissionRangesApi = createApi({
