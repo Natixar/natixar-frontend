@@ -195,6 +195,7 @@ export const dataPointsGroupBySomeIdAndCategory = (
     if (typeof result[categoryEra] === "undefined") {
       result[categoryEra] = {}
     }
+    // Make byCategory point to one branch of "result".
     const byCategory = result[categoryEra]
 
     const groupKey = groupKeyFunc(emissionPoint)
@@ -312,8 +313,9 @@ export const emissionsGroupByTime = (
 
   // Loop over all emission points defined in data/domain/types/emissions/EmissionTypes.ts#L9
   points.forEach((emissionPoint) => {
+    // TODO: We don't need era here; swap for category group
     const categoryEra = emissionPoint.categoryEraName
-    // Initialize result for era if needed TODO: swap for category code
+    // Initialize result for era if needed 
     if (!result[categoryEra]) {
       result[categoryEra] = {}
     }
