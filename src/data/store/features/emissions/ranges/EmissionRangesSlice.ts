@@ -196,8 +196,7 @@ const computeTimeOffset = (startTimestamp: number, endTimestamp: number, timeSte
     index++
   } while (startTimestamp + sum < endTimestamp)
 
-  timeOffsets.push(endTimestamp - startTimestamp) // last value pushed
-
+  timeOffsets.push(sum)
   return timeOffsets
 }
 
