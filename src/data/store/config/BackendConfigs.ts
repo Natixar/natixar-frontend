@@ -12,7 +12,7 @@ export const backendBaseQuery = () =>
   fetchBaseQuery({
     baseUrl: import.meta.env.VITE_NATIXAR_BACKEND_URL, 
     prepareHeaders: (headers: Headers) => {
-      headers.set("CO2-Customer-Key", import.meta.env.NATIXAR_API_KEY)
+      headers.set("x-client-api-key:", import.meta.env.VITE_NATIXAR_API_KEY)
       return headers
     },
   })
