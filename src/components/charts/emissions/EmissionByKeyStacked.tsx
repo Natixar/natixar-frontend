@@ -1,6 +1,6 @@
 import { SxProps } from "@mui/system"
 import { ApexOptions } from "apexcharts"
-import { formatEmissionAmount, formatEmissionIntensityUnit } from "data/domain/transformers/EmissionTransformers"
+import { formatEmissionAmount } from "data/domain/transformers/EmissionTransformers"
 import { memo, useMemo } from "react"
 import ReactApexChart from "react-apexcharts"
 import { getOpaqueColorByCategory } from "utils/CategoryColors"
@@ -12,7 +12,7 @@ const defaultOptions: ApexOptions = {
   },
   yaxis: {
     title: {
-      text: "Emission Intensity",
+      text: "Emissions",
     },
     labels: {
       formatter(val) {
@@ -52,19 +52,17 @@ const optionOverrides = (keys: string[]): ApexOptions => ({
     labels: {
       rotate: -30,
       rotateAlways: true,
-      },
+    },
   },
 })
 
 const EmissionByKeyStacked = ({
   groupedData,
   keys,
-  timeUnit,
   ...sxProps
 }: {
   groupedData: Record<string, Record<string, number>>
   keys: string[]
-  timeUnit: string
 } & SxProps) => {
   const series = useMemo(() => {
     const categories = Object.keys(groupedData)
@@ -96,21 +94,7 @@ const EmissionByKeyStacked = ({
     return chartData
   }, [groupedData, keys])
 
-  const options = useMemo(() => {
-    return {
-      ...defaultOptions,
-      ...optionOverrides(keys),
-      yaxis: {
-        ...defaultOptions.yaxis,
-        labels: {
-          formatter(val: number) {
-            return `${formatEmissionAmount(val)}/${formatEmissionIntensityUnit(timeUnit)}`
-          },
-        },
-      },
-    }
-  }, [keys, timeUnit])
-  
+  const options = { ...defaultOptions, ...optionOverrides(keys) }
   return (
     <ReactApexChart
       sx={{ sxProps }}
